@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class TicTacToeApplication
 
 fun main(args: Array<String>) {
-	runApplication<TicTacToeApplication>(*args)
+  runApplication<TicTacToeApplication>(*args)
 }
