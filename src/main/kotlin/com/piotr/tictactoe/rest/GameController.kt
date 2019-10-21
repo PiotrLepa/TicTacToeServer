@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -37,12 +38,13 @@ class GameController {
     return ResponseEntity(game, HttpStatus.CREATED)
   }
 
-  @PutMapping("{gameId}/field")
-  fun setField(@PathVariable("gameId") gameId: String) {
-
+  @PutMapping("field")
+  fun setField(@RequestBody game: GameDto): ResponseEntity<GameDto> {
+    val game = gameService.setField(game)
+    return ResponseEntity(game, HttpStatus.OK)
   }
 
-  @PostMapping("{gameId}/reset")
+  @PostMapping("reset")
   fun resetGame(@PathVariable("gameId") gameId: String) {
 
   }

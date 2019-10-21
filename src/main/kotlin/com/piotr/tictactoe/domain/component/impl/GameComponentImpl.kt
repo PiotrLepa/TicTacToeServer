@@ -31,6 +31,11 @@ class GameComponentImpl : GameComponent {
     }
   }
 
+  override fun setField(game: GameDto): GameDto {
+    // TODO check if gameDto from user is correct compare to saved gameDto
+    return aiMoveComponent.setFieldByAi(game)
+  }
+
   private fun getPlayerWhichStart(): GameStatus =
       if (Random().nextBoolean()) GameStatus.PLAYER_TURN else GameStatus.AI_TURN
 

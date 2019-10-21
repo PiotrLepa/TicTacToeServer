@@ -5,4 +5,6 @@ import com.piotr.tictactoe.domain.dto.GameDto
 interface GameService {
 
   fun createGame(): GameDto
+
+  fun setField(game: GameDto): GameDto
 }

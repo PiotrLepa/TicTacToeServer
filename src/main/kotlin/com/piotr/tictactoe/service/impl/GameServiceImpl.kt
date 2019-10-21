@@ -22,4 +22,10 @@ class GameServiceImpl : GameService {
     fileResource.saveGame(game)
     return game
   }
+
+  override fun setField(game: GameDto): GameDto {
+    val updatedGame = gameComponent.setField(game)
+    fileResource.saveGame(updatedGame)
+    return updatedGame
+  }
 }

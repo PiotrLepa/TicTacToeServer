@@ -6,4 +6,6 @@ import com.piotr.tictactoe.domain.dto.GameDto
 interface GameComponent {
 
   fun createGameBoard(difficultyLevel: DifficultyLevel): GameDto
+
+  fun setField(game: GameDto): GameDto
 }
