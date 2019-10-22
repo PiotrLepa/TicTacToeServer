@@ -6,6 +6,7 @@ import com.piotr.tictactoe.domain.dto.DifficultyLevel
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
 import com.piotr.tictactoe.domain.dto.Mark
+import com.piotr.tictactoe.domain.dto.PlayerMoveDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.Random
@@ -29,8 +30,12 @@ class GameComponentImpl : GameComponent {
     }
   }
 
-  override fun setField(game: GameDto): GameDto {
-    // TODO check if gameDto from user is correct compare to saved gameDto
+  override fun setField(
+    game: GameDto,
+    playerMove: PlayerMoveDto
+  ): GameDto {
+    val (index, mark) = playerMove.field
+    game.board[index].mark = mark
     return aiMoveComponent.setFieldByAi(game)
   }
 

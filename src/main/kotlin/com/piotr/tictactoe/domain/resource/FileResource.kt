@@ -5,4 +5,6 @@ import com.piotr.tictactoe.domain.dto.GameDto
 interface FileResource {
 
   fun saveGame(game: GameDto)
+
+  fun loadGame(gameId: Long): GameDto
 }

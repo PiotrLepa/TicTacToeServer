@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.rest
 
 import com.piotr.tictactoe.domain.dto.GameDto
+import com.piotr.tictactoe.domain.dto.PlayerMoveDto
 import com.piotr.tictactoe.service.GameService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,8 +40,8 @@ class GameController {
   }
 
   @PutMapping("field")
-  fun setField(@RequestBody game: GameDto): ResponseEntity<GameDto> {
-    val game = gameService.setField(game)
+  fun setField(@RequestBody playerMove: PlayerMoveDto): ResponseEntity<GameDto> {
+    val game = gameService.setField(playerMove)
     return ResponseEntity(game, HttpStatus.OK)
   }
 
