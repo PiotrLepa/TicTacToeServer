@@ -6,8 +6,8 @@ import com.piotr.tictactoe.domain.dto.DifficultyLevel.HARD
 import com.piotr.tictactoe.domain.dto.DifficultyLevel.MEDIUM
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
-import com.piotr.tictactoe.domain.dto.GameStatus
 import com.piotr.tictactoe.domain.dto.Mark
+import com.piotr.tictactoe.domain.exeptions.GameEndedException
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
@@ -15,11 +15,11 @@ import java.util.Random
 @Component
 class AiMoveComponentImpl : AiMoveComponent {
 
-  private lateinit var playerMark: Mark
+  private lateinit var humanMark: Mark
   private lateinit var aiMark: Mark
 
   override fun setFieldByAi(gameDto: GameDto): GameDto {
-    playerMark = gameDto.playerMark
+    humanMark = gameDto.playerMark
     aiMark = gameDto.aiMark
 
     val aiMove = when (gameDto.difficultyLevel) {
@@ -31,7 +31,7 @@ class AiMoveComponentImpl : AiMoveComponent {
     if (aiMove.index != -1) {
       setAiMoveToBoard(gameDto, aiMove)
     } else {
-      gameDto.gameStatus = GameStatus.GAME_ENDED
+      throw GameEndedException()
     }
     return gameDto
   }
@@ -45,10 +45,10 @@ class AiMoveComponentImpl : AiMoveComponent {
       return Move(0, -1)
     }
 
-    val availSpots = getAvailableSpots(board)
+    val availSpots = getAvailableSpotsIndexes(board)
     if (availSpots.size >= 8 && maxCalls < 4) { // TODO hardcoded
       val random = Random().nextInt(availSpots.size)
-      return Move(0, availSpots[random].index)
+      return Move(0, availSpots[random])
     }
 
     if (checkWin(board, playerMark)) {
@@ -62,45 +62,28 @@ class AiMoveComponentImpl : AiMoveComponent {
     val moves = ArrayList<Move>()
 
     for (availSpot in availSpots) {
-      val fieldIndex = board[availSpot.index].index
+      board[availSpot].mark = playerMark
 
-      board[availSpot.index].mark = playerMark
-
-      val score = if (playerMark == aiMark) {
-        minMax(board, playerMark, maxCalls - 1).score
+      val move = if (playerMark == aiMark) {
+        minMax(board, humanMark, maxCalls - 1)
       } else {
-        minMax(board, aiMark, maxCalls - 1).score
+        minMax(board, aiMark, maxCalls - 1)
       }
 
-      board[availSpot.index].mark = Mark.EMPTY
+      board[availSpot].mark = Mark.EMPTY
 
-      moves.add(Move(fieldIndex, score))
+      moves.add(Move(move.score, availSpot))
     }
 
-    var bestMove = 0
-    if (playerMark == aiMark) {
-      var bestScore = -10000
-      for (move in moves) {
-        if (move.score > bestScore) {
-          bestScore = move.score
-          bestMove = move.index
-        }
-      }
+    return if (playerMark == aiMark) {
+      moves.maxBy { it.score }!!
     } else {
-      var bestScore = 10000
-      for (move in moves) {
-        if (move.score > bestScore) {
-          bestScore = move.score
-          bestMove = move.index
-        }
-      }
+      moves.minBy { it.score }!!
     }
-
-    return moves[bestMove]
   }
 
-  private fun getAvailableSpots(board: List<FieldDto>) =
-      board.filter { it.mark == Mark.EMPTY }
+  private fun getAvailableSpotsIndexes(board: List<FieldDto>): List<Int> =
+      board.filter { it.mark == Mark.EMPTY }.map { it.index }
 
   private fun checkWin(board: List<FieldDto>, mark: Mark): Boolean {
     for (combination in WINNING_COMBINATIONS) {
