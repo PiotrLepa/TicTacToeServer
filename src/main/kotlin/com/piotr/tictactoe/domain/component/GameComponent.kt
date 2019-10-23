@@ -6,7 +6,7 @@ import com.piotr.tictactoe.domain.dto.PlayerMoveDto
 
 interface GameComponent {
 
-  fun createGameBoard(difficultyLevel: DifficultyLevel): GameDto
+  fun createGame(difficultyLevel: DifficultyLevel, gameId: Long = System.nanoTime()): GameDto
 
   fun setField(
     game: GameDto,

@@ -17,11 +17,14 @@ class GameComponentImpl : GameComponent {
   @Autowired
   private lateinit var aiMoveComponent: AiMoveComponent
 
-  override fun createGameBoard(difficultyLevel: DifficultyLevel): GameDto {
+  override fun createGame(
+    difficultyLevel: DifficultyLevel,
+    gameId: Long
+  ): GameDto {
 
     val playerMark = getPlayerMark()
     val aiMark = if (playerMark == Mark.X) Mark.O else Mark.X
-    val gameDto = GameDto(System.nanoTime(), difficultyLevel, createEmptyBoard(), playerMark, aiMark)
+    val gameDto = GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark)
 
     return if (playerMark == Mark.X) {
       gameDto
