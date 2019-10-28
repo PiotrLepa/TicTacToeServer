@@ -7,7 +7,10 @@ import com.piotr.tictactoe.domain.dto.DifficultyLevel.MEDIUM
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
 import com.piotr.tictactoe.domain.dto.Mark
-import com.piotr.tictactoe.domain.exeptions.GameEndedException
+import com.piotr.tictactoe.utils.GameUtils.checkWin
+import com.piotr.tictactoe.utils.GameUtils.getAvailableSpotsIndexes
+import com.piotr.tictactoe.utils.GameUtils.setAiMoveToBoard
+import com.piotr.tictactoe.utils.GameUtils.setGameEnded
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
@@ -25,19 +28,16 @@ class AiMoveComponentImpl : AiMoveComponent {
     val aiMove = when (gameDto.difficultyLevel) {
       EASY -> minMax(gameDto.board, gameDto.aiMark, 2)
       MEDIUM -> minMax(gameDto.board, gameDto.aiMark, 3)
-      HARD -> minMax(gameDto.board, gameDto.aiMark, 999999999)
+      HARD -> minMax(gameDto.board, gameDto.aiMark, Int.MAX_VALUE)
     }
 
     if (aiMove.index != -1) {
-      setAiMoveToBoard(gameDto, aiMove)
+      setAiMoveToBoard(gameDto, FieldDto(aiMove.index, aiMark))
     } else {
-      throw GameEndedException()
+      // game ended
+      setGameEnded(gameDto)
     }
     return gameDto
-  }
-
-  private fun setAiMoveToBoard(gameDto: GameDto, move: Move) {
-    gameDto.board[move.index].mark = aiMark
   }
 
   private fun minMax(board: List<FieldDto>, playerMark: Mark, maxCalls: Int): Move {
@@ -82,36 +82,8 @@ class AiMoveComponentImpl : AiMoveComponent {
     }
   }
 
-  private fun getAvailableSpotsIndexes(board: List<FieldDto>): List<Int> =
-      board.filter { it.mark == Mark.EMPTY }.map { it.index }
-
-  private fun checkWin(board: List<FieldDto>, mark: Mark): Boolean {
-    for (combination in WINNING_COMBINATIONS) {
-      if (board[combination[0]].mark == mark
-          && board[combination[1]].mark == mark
-          && board[combination[2]].mark == mark) {
-        return true
-      }
-    }
-
-    return false
-  }
-
   private inner class Move(
     var score: Int,
     var index: Int
   )
-
-  companion object {
-    val WINNING_COMBINATIONS = arrayOf(
-        intArrayOf(0, 1, 2),
-        intArrayOf(3, 4, 5),
-        intArrayOf(6, 7, 8),
-        intArrayOf(0, 3, 6),
-        intArrayOf(1, 4, 7),
-        intArrayOf(2, 5, 8),
-        intArrayOf(0, 4, 8),
-        intArrayOf(2, 4, 6)
-    )
-  }
 }

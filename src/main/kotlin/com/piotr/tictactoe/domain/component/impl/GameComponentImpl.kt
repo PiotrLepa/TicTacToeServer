@@ -5,6 +5,7 @@ import com.piotr.tictactoe.domain.component.GameComponent
 import com.piotr.tictactoe.domain.dto.DifficultyLevel
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
+import com.piotr.tictactoe.domain.dto.GameStatus
 import com.piotr.tictactoe.domain.dto.Mark
 import com.piotr.tictactoe.domain.dto.PlayerMoveDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +25,7 @@ class GameComponentImpl : GameComponent {
 
     val playerMark = getPlayerMark()
     val aiMark = if (playerMark == Mark.X) Mark.O else Mark.X
-    val gameDto = GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark)
+    val gameDto = GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark, GameStatus.IN_GAME)
 
     return if (playerMark == Mark.X) {
       gameDto

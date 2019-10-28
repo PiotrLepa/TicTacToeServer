@@ -36,7 +36,6 @@ class GameController {
 
   @PostMapping("create")
   fun createGame(): ResponseEntity<GameDto> {
-    LOGGER.debug("CREATE GAME")
     val game = gameService.createGame()
     return ResponseEntity(game, HttpStatus.CREATED)
   }
