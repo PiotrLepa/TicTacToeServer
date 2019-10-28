@@ -18,6 +18,14 @@ object GameUtils {
       intArrayOf(2, 4, 6)
   )
 
+  fun isGameEnded(gameDto: GameDto): Boolean =
+      isDraw(gameDto)
+          || checkWin(gameDto.board, Mark.X)
+          || checkWin(gameDto.board, Mark.O)
+
+  fun isDraw(gameDto: GameDto) =
+      gameDto.board.none { it.mark == Mark.EMPTY }
+
   fun checkWin(board: List<FieldDto>, mark: Mark): Boolean {
     for (combination in WINNING_COMBINATIONS) {
       if (board[combination[0]].mark == mark

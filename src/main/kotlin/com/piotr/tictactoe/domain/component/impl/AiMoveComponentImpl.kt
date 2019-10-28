@@ -9,6 +9,7 @@ import com.piotr.tictactoe.domain.dto.GameDto
 import com.piotr.tictactoe.domain.dto.Mark
 import com.piotr.tictactoe.utils.GameUtils.checkWin
 import com.piotr.tictactoe.utils.GameUtils.getAvailableSpotsIndexes
+import com.piotr.tictactoe.utils.GameUtils.isGameEnded
 import com.piotr.tictactoe.utils.GameUtils.setAiMoveToBoard
 import com.piotr.tictactoe.utils.GameUtils.setGameEnded
 import org.springframework.stereotype.Component
@@ -34,7 +35,10 @@ class AiMoveComponentImpl : AiMoveComponent {
     if (aiMove.index != -1) {
       setAiMoveToBoard(gameDto, FieldDto(aiMove.index, aiMark))
     } else {
-      // game ended
+      setGameEnded(gameDto)
+    }
+
+    if (isGameEnded(gameDto)) {
       setGameEnded(gameDto)
     }
     return gameDto
