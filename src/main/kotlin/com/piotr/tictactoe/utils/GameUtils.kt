@@ -2,7 +2,6 @@ package com.piotr.tictactoe.utils
 
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
-import com.piotr.tictactoe.domain.dto.GameStatus
 import com.piotr.tictactoe.domain.dto.Mark
 
 object GameUtils {
@@ -17,11 +16,6 @@ object GameUtils {
       intArrayOf(0, 4, 8),
       intArrayOf(2, 4, 6)
   )
-
-  fun isGameEnded(gameDto: GameDto): Boolean =
-      isDraw(gameDto)
-          || checkWin(gameDto.board, Mark.X)
-          || checkWin(gameDto.board, Mark.O)
 
   fun isDraw(gameDto: GameDto) =
       gameDto.board.none { it.mark == Mark.EMPTY }
@@ -42,9 +36,5 @@ object GameUtils {
 
   fun setAiMoveToBoard(gameDto: GameDto, fieldDto: FieldDto) {
     gameDto.board[fieldDto.index].mark = fieldDto.mark
-  }
-
-  fun setGameEnded(gameDto: GameDto) {
-    gameDto.status = GameStatus.ENDED
   }
 }

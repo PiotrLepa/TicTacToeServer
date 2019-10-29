@@ -6,12 +6,12 @@ import com.piotr.tictactoe.domain.dto.DifficultyLevel.HARD
 import com.piotr.tictactoe.domain.dto.DifficultyLevel.MEDIUM
 import com.piotr.tictactoe.domain.dto.FieldDto
 import com.piotr.tictactoe.domain.dto.GameDto
+import com.piotr.tictactoe.domain.dto.GameStatus
 import com.piotr.tictactoe.domain.dto.Mark
 import com.piotr.tictactoe.utils.GameUtils.checkWin
 import com.piotr.tictactoe.utils.GameUtils.getAvailableSpotsIndexes
-import com.piotr.tictactoe.utils.GameUtils.isGameEnded
+import com.piotr.tictactoe.utils.GameUtils.isDraw
 import com.piotr.tictactoe.utils.GameUtils.setAiMoveToBoard
-import com.piotr.tictactoe.utils.GameUtils.setGameEnded
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
@@ -35,13 +35,20 @@ class AiMoveComponentImpl : AiMoveComponent {
     if (aiMove.index != -1) {
       setAiMoveToBoard(gameDto, FieldDto(aiMove.index, aiMark))
     } else {
-      setGameEnded(gameDto)
+      checkGameEnd(gameDto)
     }
 
-    if (isGameEnded(gameDto)) {
-      setGameEnded(gameDto)
-    }
+    checkGameEnd(gameDto)
+
     return gameDto
+  }
+
+  private fun checkGameEnd(gameDto: GameDto) {
+    when {
+      isDraw(gameDto) -> gameDto.status = GameStatus.DRAW
+      checkWin(gameDto.board, humanMark) -> gameDto.status = GameStatus.PLAYER_WON
+      checkWin(gameDto.board, aiMark) -> gameDto.status = GameStatus.PLAYER_DEFEAT
+    }
   }
 
   private fun minMax(board: List<FieldDto>, playerMark: Mark, maxCalls: Int): Move {
