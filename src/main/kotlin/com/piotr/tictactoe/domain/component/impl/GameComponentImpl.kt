@@ -35,9 +35,8 @@ class GameComponentImpl : GameComponent {
   override fun resetBoard(
     game: GameDto
   ): GameDto {
-    val game = game.copy(board = createEmptyBoard())
-
-    return setupInitiallyBoard(game)
+    val newGame = game.copy(board = createEmptyBoard(), status = GameStatus.IN_GAME)
+    return setupInitiallyBoard(newGame)
   }
 
   private fun setupInitiallyBoard(
