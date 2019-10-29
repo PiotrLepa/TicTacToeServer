@@ -4,7 +4,7 @@ import com.piotr.tictactoe.domain.component.GameComponent
 import com.piotr.tictactoe.domain.dto.DifficultyLevel
 import com.piotr.tictactoe.domain.dto.GameDto
 import com.piotr.tictactoe.domain.dto.PlayerMoveDto
-import com.piotr.tictactoe.domain.dto.ResetGameDto
+import com.piotr.tictactoe.domain.dto.ResetBoardDto
 import com.piotr.tictactoe.domain.resource.FileResource
 import com.piotr.tictactoe.service.GameService
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,9 +32,9 @@ class GameServiceImpl : GameService {
         .also(fileResource::saveGame)
   }
 
-  override fun resetBoard(resetGame: ResetGameDto): GameDto {
-    val (gameId, difficultyLevel) = resetGame
-    return gameComponent.createGame(difficultyLevel, gameId)
+  override fun resetBoard(resetBoard: ResetBoardDto): GameDto {
+    val game = fileResource.loadGame(resetBoard.gameId)
+    return gameComponent.resetBoard(game)
         .also(fileResource::saveGame)
   }
 }

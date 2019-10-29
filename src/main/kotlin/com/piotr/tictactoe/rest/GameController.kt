@@ -2,7 +2,7 @@ package com.piotr.tictactoe.rest
 
 import com.piotr.tictactoe.domain.dto.GameDto
 import com.piotr.tictactoe.domain.dto.PlayerMoveDto
-import com.piotr.tictactoe.domain.dto.ResetGameDto
+import com.piotr.tictactoe.domain.dto.ResetBoardDto
 import com.piotr.tictactoe.service.GameService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,9 +44,9 @@ class GameController {
     return ResponseEntity(game, HttpStatus.OK)
   }
 
-  @PostMapping("reset")
-  fun resetGame(@RequestBody resetGame: ResetGameDto): ResponseEntity<GameDto> {
-    val game = gameService.resetBoard(resetGame)
+  @PostMapping("resetBoard")
+  fun resetBoard(@RequestBody resetBoard: ResetBoardDto): ResponseEntity<GameDto> {
+    val game = gameService.resetBoard(resetBoard)
     return ResponseEntity(game, HttpStatus.OK)
   }
 
