@@ -6,5 +6,8 @@ data class GameDto(
   val board: List<FieldDto>,
   val playerMark: Mark,
   val aiMark: Mark,
-  var status: GameStatus
+  var status: GameStatus,
+  var playerWins: Int,
+  var playerDefeats: Int,
+  var draws: Int
 )

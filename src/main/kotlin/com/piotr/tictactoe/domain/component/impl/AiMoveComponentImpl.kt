@@ -44,10 +44,21 @@ class AiMoveComponentImpl : AiMoveComponent {
   }
 
   private fun checkGameEnd(gameDto: GameDto) {
-    when {
-      isDraw(gameDto) -> gameDto.status = GameStatus.DRAW
-      checkWin(gameDto.board, humanMark) -> gameDto.status = GameStatus.PLAYER_WON
-      checkWin(gameDto.board, aiMark) -> gameDto.status = GameStatus.PLAYER_DEFEAT
+    with(gameDto) {
+      when {
+        isDraw(gameDto) -> {
+          draws++
+          status = GameStatus.DRAW
+        }
+        checkWin(board, humanMark) -> {
+          playerWins++
+          status = GameStatus.PLAYER_WON
+        }
+        checkWin(board, aiMark) -> {
+          playerDefeats++
+          status = GameStatus.PLAYER_DEFEAT
+        }
+      }
     }
   }
 

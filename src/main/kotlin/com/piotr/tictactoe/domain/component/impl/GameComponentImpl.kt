@@ -25,7 +25,9 @@ class GameComponentImpl : GameComponent {
 
     val playerMark = getPlayerMark()
     val aiMark = if (playerMark == Mark.X) Mark.O else Mark.X
-    val gameDto = GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark, GameStatus.IN_GAME)
+    val gameDto =
+        GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark, GameStatus.IN_GAME,
+            0, 0, 0)
 
     return if (playerMark == Mark.X) {
       gameDto
