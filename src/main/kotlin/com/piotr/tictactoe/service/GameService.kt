@@ -10,5 +10,5 @@ interface GameService {
 
   fun setField(playerMove: PlayerMoveDto): GameDto
 
-  fun resetGame(resetGame: ResetGameDto): GameDto
+  fun resetBoard(resetGame: ResetGameDto): GameDto
 }

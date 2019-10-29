@@ -26,6 +26,10 @@ class AiMoveComponentImpl : AiMoveComponent {
     humanMark = gameDto.playerMark
     aiMark = gameDto.aiMark
 
+    if (checkGameEnd(gameDto)) {
+      return gameDto
+    }
+
     val aiMove = when (gameDto.difficultyLevel) {
       EASY -> minMax(gameDto.board, gameDto.aiMark, 2)
       MEDIUM -> minMax(gameDto.board, gameDto.aiMark, 3)
@@ -43,22 +47,24 @@ class AiMoveComponentImpl : AiMoveComponent {
     return gameDto
   }
 
-  private fun checkGameEnd(gameDto: GameDto) {
-    with(gameDto) {
-      when {
-        isDraw(gameDto) -> {
-          draws++
-          status = GameStatus.DRAW
-        }
-        checkWin(board, humanMark) -> {
-          playerWins++
-          status = GameStatus.PLAYER_WON
-        }
-        checkWin(board, aiMark) -> {
-          playerDefeats++
-          status = GameStatus.PLAYER_DEFEAT
-        }
+  private fun checkGameEnd(gameDto: GameDto): Boolean = gameDto.let {
+    when {
+      isDraw(gameDto) -> {
+        it.draws++
+        it.status = GameStatus.DRAW
+        true
       }
+      checkWin(it.board, humanMark) -> {
+        it.playerWins++
+        it.status = GameStatus.PLAYER_WON
+        true
+      }
+      checkWin(it.board, aiMark) -> {
+        it.playerDefeats++
+        it.status = GameStatus.PLAYER_DEFEAT
+        true
+      }
+      else -> false
     }
   }
 

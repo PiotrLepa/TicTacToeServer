@@ -8,6 +8,8 @@ interface GameComponent {
 
   fun createGame(difficultyLevel: DifficultyLevel, gameId: Long = System.nanoTime()): GameDto
 
+  fun resetBoard(game: GameDto): GameDto
+
   fun setField(
     game: GameDto,
     playerMove: PlayerMoveDto

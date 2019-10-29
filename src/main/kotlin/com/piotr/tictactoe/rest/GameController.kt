@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -48,7 +46,7 @@ class GameController {
 
   @PostMapping("reset")
   fun resetGame(@RequestBody resetGame: ResetGameDto): ResponseEntity<GameDto> {
-    val game = gameService.resetGame(resetGame)
+    val game = gameService.resetBoard(resetGame)
     return ResponseEntity(game, HttpStatus.OK)
   }
 

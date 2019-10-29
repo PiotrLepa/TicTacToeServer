@@ -32,7 +32,7 @@ class GameServiceImpl : GameService {
         .also(fileResource::saveGame)
   }
 
-  override fun resetGame(resetGame: ResetGameDto): GameDto {
+  override fun resetBoard(resetGame: ResetGameDto): GameDto {
     val (gameId, difficultyLevel) = resetGame
     return gameComponent.createGame(difficultyLevel, gameId)
         .also(fileResource::saveGame)

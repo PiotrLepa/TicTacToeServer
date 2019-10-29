@@ -29,11 +29,23 @@ class GameComponentImpl : GameComponent {
         GameDto(gameId, difficultyLevel, createEmptyBoard(), playerMark, aiMark, GameStatus.IN_GAME,
             0, 0, 0)
 
-    return if (playerMark == Mark.X) {
-      gameDto
-    } else {
-      aiMoveComponent.setFieldByAi(gameDto)
-    }
+    return setupInitiallyBoard(gameDto)
+  }
+
+  override fun resetBoard(
+    game: GameDto
+  ): GameDto {
+    val game = game.copy(board = createEmptyBoard())
+
+    return setupInitiallyBoard(game)
+  }
+
+  private fun setupInitiallyBoard(
+    gameDto: GameDto
+  ): GameDto = if (gameDto.playerMark == STARTING_PLAYER) {
+    gameDto
+  } else {
+    aiMoveComponent.setFieldByAi(gameDto)
   }
 
   override fun setField(
@@ -50,4 +62,8 @@ class GameComponentImpl : GameComponent {
 
   private fun createEmptyBoard(): List<FieldDto> =
       MutableList(9) { index -> FieldDto(index, Mark.EMPTY) }
+
+  companion object {
+    private val STARTING_PLAYER = Mark.X
+  }
 }
