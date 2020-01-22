@@ -1,8 +1,8 @@
 package com.piotr.tictactoe.game.domain.util
 
+import com.piotr.tictactoe.game.domain.model.Mark
 import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
-import com.piotr.tictactoe.game.dto.Mark
 
 object GameEndChecker {
 

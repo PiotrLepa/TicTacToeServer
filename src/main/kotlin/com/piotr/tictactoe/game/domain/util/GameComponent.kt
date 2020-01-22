@@ -1,10 +1,10 @@
 package com.piotr.tictactoe.game.domain.util
 
-import com.piotr.tictactoe.game.dto.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.GameStatus
+import com.piotr.tictactoe.game.domain.model.Mark
 import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
-import com.piotr.tictactoe.game.dto.GameStatus
-import com.piotr.tictactoe.game.dto.Mark
 import com.piotr.tictactoe.game.dto.PlayerMoveDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component

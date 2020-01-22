@@ -1,14 +1,14 @@
 package com.piotr.tictactoe.game.domain.util
 
+import com.piotr.tictactoe.game.domain.model.DifficultyLevel.EASY
+import com.piotr.tictactoe.game.domain.model.DifficultyLevel.HARD
+import com.piotr.tictactoe.game.domain.model.DifficultyLevel.MEDIUM
+import com.piotr.tictactoe.game.domain.model.GameStatus
+import com.piotr.tictactoe.game.domain.model.Mark
 import com.piotr.tictactoe.game.domain.util.GameEndChecker.checkWin
 import com.piotr.tictactoe.game.domain.util.GameEndChecker.isDraw
-import com.piotr.tictactoe.game.dto.DifficultyLevel.EASY
-import com.piotr.tictactoe.game.dto.DifficultyLevel.HARD
-import com.piotr.tictactoe.game.dto.DifficultyLevel.MEDIUM
 import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
-import com.piotr.tictactoe.game.dto.GameStatus
-import com.piotr.tictactoe.game.dto.Mark
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
