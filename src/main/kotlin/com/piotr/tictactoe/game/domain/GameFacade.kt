@@ -15,8 +15,7 @@ class GameFacade {
   private lateinit var gameSaver: GameSaver
 
   fun createGame(): GameDto {
-    val game = gameComponent.createGame(
-        DifficultyLevel.MEDIUM)
+    val game = gameComponent.createGame(DifficultyLevel.MEDIUM, System.currentTimeMillis())
     gameSaver.saveGame(game)
     return game
   }

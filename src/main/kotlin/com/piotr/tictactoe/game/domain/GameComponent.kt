@@ -16,47 +16,42 @@ class GameComponent {
   @Autowired
   private lateinit var aiMoveComponent: AiMoveComponent
 
-  fun createGame(
-    difficultyLevel: DifficultyLevel,
-    gameId: Long
-  ): GameDto {
-
+  fun createGame(difficultyLevel: DifficultyLevel, gameId: Long): GameDto {
     val playerMark = getPlayerMark()
     val aiMark = if (playerMark == Mark.X) Mark.O else Mark.X
-    val gameDto =
-        GameDto(gameId, difficultyLevel,
-            createEmptyBoard(), playerMark, aiMark, GameStatus.IN_GAME,
-            0, 0, 0)
-
+    val gameDto = GameDto(
+        gameId = gameId,
+        difficultyLevel = difficultyLevel,
+        board = createEmptyBoard(),
+        playerMark = playerMark,
+        aiMark = aiMark,
+        status = GameStatus.IN_GAME,
+        playerWins = 0,
+        draws = 0,
+        playerDefeats = 0
+    )
     return setupInitiallyBoard(gameDto)
   }
 
-  fun resetBoard(
-    game: GameDto
-  ): GameDto {
+  fun resetBoard(game: GameDto): GameDto {
     val newGame = game.copy(board = createEmptyBoard(), status = GameStatus.IN_GAME)
     return setupInitiallyBoard(newGame)
   }
 
-  private fun setupInitiallyBoard(
-    gameDto: GameDto
-  ): GameDto = if (gameDto.playerMark == STARTING_PLAYER) {
-    gameDto
-  } else {
-    aiMoveComponent.setFieldByAi(gameDto)
-  }
+  private fun setupInitiallyBoard(gameDto: GameDto): GameDto =
+      if (gameDto.playerMark == STARTING_PLAYER) {
+        gameDto
+      } else {
+        aiMoveComponent.setFieldByAi(gameDto)
+      }
 
-  fun setField(
-    game: GameDto,
-    playerMove: PlayerMoveDto
-  ): GameDto {
+  fun setField(game: GameDto, playerMove: PlayerMoveDto): GameDto {
     val (index, mark) = playerMove.field
     game.board[index].mark = mark
     return aiMoveComponent.setFieldByAi(game)
   }
 
-  private fun getPlayerMark(): Mark =
-      if (Random().nextBoolean()) Mark.X else Mark.O
+  private fun getPlayerMark(): Mark = if (Random().nextBoolean()) Mark.X else Mark.O
 
   private fun createEmptyBoard(): List<FieldDto> =
       MutableList(9) { index ->
