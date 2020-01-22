@@ -9,7 +9,9 @@ import com.piotr.tictactoe.game.dto.PlayerMoveDto
 import com.piotr.tictactoe.game.dto.ResetBoardDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
+@Configuration
 class GameFacade {
 
   @Autowired

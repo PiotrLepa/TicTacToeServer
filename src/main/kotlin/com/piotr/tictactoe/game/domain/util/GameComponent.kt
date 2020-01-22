@@ -46,8 +46,8 @@ class GameComponent {
       }
 
   fun setField(game: Game, playerMove: PlayerMove): Game {
-    val (index, mark) = playerMove.field
-    game.board[index].mark = mark
+    val field = playerMove.field
+    game.board[field.index].mark = field.mark
     return aiMoveComponent.setFieldByAi(game)
   }
 
@@ -55,7 +55,7 @@ class GameComponent {
 
   private fun createEmptyBoard(): List<Field> =
       MutableList(9) { index ->
-        Field(index, Mark.EMPTY)
+        Field(null, index, Mark.EMPTY)
       }
 
   companion object {

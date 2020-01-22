@@ -34,7 +34,7 @@ class AiMoveComponent {
     }
 
     if (aiMove.index != -1) {
-      setAiMoveToBoard(game, Field(aiMove.index, aiMark))
+      setAiMoveToBoard(game, Field(null, aiMove.index, aiMark))
     } else {
       checkGameEnd(game)
     }

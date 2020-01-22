@@ -1,10 +1,16 @@
 package com.piotr.tictactoe.game.domain.model
 
 import com.piotr.tictactoe.game.dto.GameDto
+import javax.persistence.ElementCollection
+import javax.persistence.Entity
+import javax.persistence.Id
 
+@Entity
 data class Game(
-  val gameId: Long,
+  @Id
+  val gameId: Long?,
   val difficultyLevel: DifficultyLevel,
+  @ElementCollection(targetClass = Field::class)
   val board: List<Field>,
   val playerMark: Mark,
   val aiMark: Mark,

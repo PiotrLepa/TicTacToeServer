@@ -5,7 +5,7 @@ import com.piotr.tictactoe.game.domain.model.GameStatus
 import com.piotr.tictactoe.game.domain.model.Mark
 
 data class GameDto(
-  val gameId: Long,
+  val gameId: Long?,
   val difficultyLevel: DifficultyLevel,
   val board: List<FieldDto>,
   val playerMark: Mark,
