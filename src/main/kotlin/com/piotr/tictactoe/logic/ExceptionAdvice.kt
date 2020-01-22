@@ -1,6 +1,6 @@
-package com.piotr.tictactoe.domain.exeptions.handlers
+package com.piotr.tictactoe.logic
 
-import com.piotr.tictactoe.domain.exeptions.GameEndedException
+import com.piotr.tictactoe.game.exception.GameEndedException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -13,5 +13,6 @@ class GameEndedExceptionHandlerAdvice {
   fun handleException(gameEndedException: GameEndedException) =
       ResponseEntity
           .status(HttpStatus.BAD_REQUEST)
-          .body(ErrorDetails(HttpStatus.BAD_REQUEST.value(), "Game has ended"))
+          .body(ErrorResponse(
+              HttpStatus.BAD_REQUEST.value(), "Game has ended"))
 }

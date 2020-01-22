@@ -1,13 +1,12 @@
-package com.piotr.tictactoe.domain.component.impl
+package com.piotr.tictactoe.game.domain
 
-import com.piotr.tictactoe.domain.component.AiMoveComponent
-import com.piotr.tictactoe.domain.dto.DifficultyLevel.EASY
-import com.piotr.tictactoe.domain.dto.DifficultyLevel.HARD
-import com.piotr.tictactoe.domain.dto.DifficultyLevel.MEDIUM
-import com.piotr.tictactoe.domain.dto.FieldDto
-import com.piotr.tictactoe.domain.dto.GameDto
-import com.piotr.tictactoe.domain.dto.GameStatus
-import com.piotr.tictactoe.domain.dto.Mark
+import com.piotr.tictactoe.game.dto.DifficultyLevel.EASY
+import com.piotr.tictactoe.game.dto.DifficultyLevel.HARD
+import com.piotr.tictactoe.game.dto.DifficultyLevel.MEDIUM
+import com.piotr.tictactoe.game.dto.FieldDto
+import com.piotr.tictactoe.game.dto.GameDto
+import com.piotr.tictactoe.game.dto.GameStatus
+import com.piotr.tictactoe.game.dto.Mark
 import com.piotr.tictactoe.utils.GameUtils.checkWin
 import com.piotr.tictactoe.utils.GameUtils.getAvailableSpotsIndexes
 import com.piotr.tictactoe.utils.GameUtils.isDraw
@@ -17,12 +16,12 @@ import java.util.ArrayList
 import java.util.Random
 
 @Component
-class AiMoveComponentImpl : AiMoveComponent {
+class AiMoveComponent {
 
   private lateinit var humanMark: Mark
   private lateinit var aiMark: Mark
 
-  override fun setFieldByAi(gameDto: GameDto): GameDto {
+  fun setFieldByAi(gameDto: GameDto): GameDto {
     humanMark = gameDto.playerMark
     aiMark = gameDto.aiMark
 

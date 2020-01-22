@@ -1,9 +1,9 @@
-package com.piotr.tictactoe.rest
+package com.piotr.tictactoe.game
 
-import com.piotr.tictactoe.domain.dto.GameDto
-import com.piotr.tictactoe.domain.dto.PlayerMoveDto
-import com.piotr.tictactoe.domain.dto.ResetBoardDto
-import com.piotr.tictactoe.service.GameService
+import com.piotr.tictactoe.game.domain.GameFacade
+import com.piotr.tictactoe.game.dto.GameDto
+import com.piotr.tictactoe.game.dto.PlayerMoveDto
+import com.piotr.tictactoe.game.dto.ResetBoardDto
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 class GameController {
 
   @Autowired
-  private lateinit var gameService: GameService
+  private lateinit var gameFacade: GameFacade
 
   @PostMapping("queue")
   fun joinToQueue() {
@@ -34,23 +34,24 @@ class GameController {
 
   @PostMapping("create")
   fun createGame(): ResponseEntity<GameDto> {
-    val game = gameService.createGame()
+    val game = gameFacade.createGame()
     return ResponseEntity(game, HttpStatus.CREATED)
   }
 
   @PutMapping("field")
   fun setField(@RequestBody playerMove: PlayerMoveDto): ResponseEntity<GameDto> {
-    val game = gameService.setField(playerMove)
+    val game = gameFacade.setField(playerMove)
     return ResponseEntity(game, HttpStatus.OK)
   }
 
   @PostMapping("resetBoard")
   fun resetBoard(@RequestBody resetBoard: ResetBoardDto): ResponseEntity<GameDto> {
-    val game = gameService.resetBoard(resetBoard)
+    val game = gameFacade.resetBoard(resetBoard)
     return ResponseEntity(game, HttpStatus.OK)
   }
 
   companion object {
-    private val LOGGER = LoggerFactory.getLogger(GameController::class.java)
+    private val LOGGER = LoggerFactory.getLogger(
+        GameController::class.java)
   }
 }

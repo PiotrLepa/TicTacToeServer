@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.domain.dto
+package com.piotr.tictactoe.game.dto
 
 data class PlayerMoveDto(
   val gameId: Long,
