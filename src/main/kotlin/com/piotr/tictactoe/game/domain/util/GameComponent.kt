@@ -1,11 +1,11 @@
 package com.piotr.tictactoe.game.domain.util
 
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.Field
+import com.piotr.tictactoe.game.domain.model.Game
 import com.piotr.tictactoe.game.domain.model.GameStatus
 import com.piotr.tictactoe.game.domain.model.Mark
-import com.piotr.tictactoe.game.dto.FieldDto
-import com.piotr.tictactoe.game.dto.GameDto
-import com.piotr.tictactoe.game.dto.PlayerMoveDto
+import com.piotr.tictactoe.game.domain.model.PlayerMove
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.util.Random
@@ -16,10 +16,10 @@ class GameComponent {
   @Autowired
   private lateinit var aiMoveComponent: AiMoveComponent
 
-  fun createGame(difficultyLevel: DifficultyLevel, gameId: Long): GameDto {
+  fun createGame(difficultyLevel: DifficultyLevel, gameId: Long): Game {
     val playerMark = getPlayerMark()
     val aiMark = if (playerMark == Mark.X) Mark.O else Mark.X
-    val gameDto = GameDto(
+    val gameDto = Game(
         gameId = gameId,
         difficultyLevel = difficultyLevel,
         board = createEmptyBoard(),
@@ -33,19 +33,19 @@ class GameComponent {
     return setupInitiallyBoard(gameDto)
   }
 
-  fun resetBoard(game: GameDto): GameDto {
+  fun resetBoard(game: Game): Game {
     val newGame = game.copy(board = createEmptyBoard(), status = GameStatus.IN_GAME)
     return setupInitiallyBoard(newGame)
   }
 
-  private fun setupInitiallyBoard(gameDto: GameDto): GameDto =
-      if (gameDto.playerMark == STARTING_PLAYER) {
-        gameDto
+  private fun setupInitiallyBoard(game: Game): Game =
+      if (game.playerMark == STARTING_PLAYER) {
+        game
       } else {
-        aiMoveComponent.setFieldByAi(gameDto)
+        aiMoveComponent.setFieldByAi(game)
       }
 
-  fun setField(game: GameDto, playerMove: PlayerMoveDto): GameDto {
+  fun setField(game: Game, playerMove: PlayerMove): Game {
     val (index, mark) = playerMove.field
     game.board[index].mark = mark
     return aiMoveComponent.setFieldByAi(game)
@@ -53,9 +53,9 @@ class GameComponent {
 
   private fun getPlayerMark(): Mark = if (Random().nextBoolean()) Mark.X else Mark.O
 
-  private fun createEmptyBoard(): List<FieldDto> =
+  private fun createEmptyBoard(): List<Field> =
       MutableList(9) { index ->
-        FieldDto(index, Mark.EMPTY)
+        Field(index, Mark.EMPTY)
       }
 
   companion object {

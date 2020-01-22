@@ -1,8 +1,8 @@
 package com.piotr.tictactoe.game.domain.util
 
+import com.piotr.tictactoe.game.domain.model.Field
+import com.piotr.tictactoe.game.domain.model.Game
 import com.piotr.tictactoe.game.domain.model.Mark
-import com.piotr.tictactoe.game.dto.FieldDto
-import com.piotr.tictactoe.game.dto.GameDto
 
 object GameEndChecker {
 
@@ -17,10 +17,10 @@ object GameEndChecker {
       intArrayOf(2, 4, 6)
   )
 
-  fun isDraw(gameDto: GameDto) =
-      gameDto.board.none { it.mark == Mark.EMPTY }
+  fun isDraw(game: Game) =
+      game.board.none { it.mark == Mark.EMPTY }
 
-  fun checkWin(board: List<FieldDto>, mark: Mark): Boolean {
+  fun checkWin(board: List<Field>, mark: Mark): Boolean {
     for (combination in WINNING_COMBINATIONS) {
       if (board[combination[0]].mark == mark
           && board[combination[1]].mark == mark

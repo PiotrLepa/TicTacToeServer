@@ -1,6 +1,5 @@
 package com.piotr.tictactoe.game.domain.model
 
-import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
 
 data class Game(
@@ -15,22 +14,29 @@ data class Game(
   var draws: Int
 ) {
 
+  fun toDto() = GameDto(
+      gameId = gameId,
+      difficultyLevel = difficultyLevel,
+      board = board.map(Field::toDto),
+      playerMark = playerMark,
+      aiMark = aiMark,
+      status = status,
+      playerWins = playerWins,
+      playerDefeats = playerDefeats,
+      draws = draws
+  )
+
   companion object {
     fun fromDto(dto: GameDto) = Game(
         gameId = dto.gameId,
         difficultyLevel = dto.difficultyLevel,
-        board = dto.board.map(::mapField),
+        board = dto.board.map(Field.Companion::fromDto),
         playerMark = dto.playerMark,
         aiMark = dto.aiMark,
         status = dto.status,
         playerWins = dto.playerWins,
         playerDefeats = dto.playerDefeats,
         draws = dto.draws
-    )
-
-    private fun mapField(dto: FieldDto) = Field(
-        index = dto.index,
-        mark = dto.mark
     )
   }
 }

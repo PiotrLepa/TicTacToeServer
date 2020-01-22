@@ -3,12 +3,12 @@ package com.piotr.tictactoe.game.domain.util
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.EASY
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.HARD
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.MEDIUM
+import com.piotr.tictactoe.game.domain.model.Field
+import com.piotr.tictactoe.game.domain.model.Game
 import com.piotr.tictactoe.game.domain.model.GameStatus
 import com.piotr.tictactoe.game.domain.model.Mark
 import com.piotr.tictactoe.game.domain.util.GameEndChecker.checkWin
 import com.piotr.tictactoe.game.domain.util.GameEndChecker.isDraw
-import com.piotr.tictactoe.game.dto.FieldDto
-import com.piotr.tictactoe.game.dto.GameDto
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
@@ -19,34 +19,34 @@ class AiMoveComponent {
   private lateinit var humanMark: Mark
   private lateinit var aiMark: Mark
 
-  fun setFieldByAi(gameDto: GameDto): GameDto {
-    humanMark = gameDto.playerMark
-    aiMark = gameDto.aiMark
+  fun setFieldByAi(game: Game): Game {
+    humanMark = game.playerMark
+    aiMark = game.aiMark
 
-    if (checkGameEnd(gameDto)) {
-      return gameDto
+    if (checkGameEnd(game)) {
+      return game
     }
 
-    val aiMove = when (gameDto.difficultyLevel) {
-      EASY -> minMax(gameDto.board, gameDto.aiMark, 2)
-      MEDIUM -> minMax(gameDto.board, gameDto.aiMark, 3)
-      HARD -> minMax(gameDto.board, gameDto.aiMark, Int.MAX_VALUE)
+    val aiMove = when (game.difficultyLevel) {
+      EASY -> minMax(game.board, game.aiMark, 2)
+      MEDIUM -> minMax(game.board, game.aiMark, 3)
+      HARD -> minMax(game.board, game.aiMark, Int.MAX_VALUE)
     }
 
     if (aiMove.index != -1) {
-      setAiMoveToBoard(gameDto, FieldDto(aiMove.index, aiMark))
+      setAiMoveToBoard(game, Field(aiMove.index, aiMark))
     } else {
-      checkGameEnd(gameDto)
+      checkGameEnd(game)
     }
 
-    checkGameEnd(gameDto)
+    checkGameEnd(game)
 
-    return gameDto
+    return game
   }
 
-  private fun checkGameEnd(gameDto: GameDto): Boolean = gameDto.let {
+  private fun checkGameEnd(game: Game): Boolean = game.let {
     when {
-      isDraw(gameDto) -> {
+      isDraw(game) -> {
         it.draws++
         it.status = GameStatus.DRAW
         true
@@ -65,7 +65,7 @@ class AiMoveComponent {
     }
   }
 
-  private fun minMax(board: List<FieldDto>, playerMark: Mark, maxCalls: Int): Move {
+  private fun minMax(board: List<Field>, playerMark: Mark, maxCalls: Int): Move {
     if (maxCalls == 0) {
       return Move(0, -1)
     }
@@ -107,11 +107,11 @@ class AiMoveComponent {
     }
   }
 
-  private fun getAvailableSpotsIndexes(board: List<FieldDto>): List<Int> =
+  private fun getAvailableSpotsIndexes(board: List<Field>): List<Int> =
       board.filter { it.mark == Mark.EMPTY }.map { it.index }
 
-  private fun setAiMoveToBoard(gameDto: GameDto, fieldDto: FieldDto) {
-    gameDto.board[fieldDto.index].mark = fieldDto.mark
+  private fun setAiMoveToBoard(game: Game, field: Field) {
+    game.board[field.index].mark = field.mark
   }
 
   private inner class Move(
