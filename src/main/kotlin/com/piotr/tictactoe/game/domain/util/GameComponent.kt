@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.game.domain
+package com.piotr.tictactoe.game.domain.util
 
 import com.piotr.tictactoe.game.dto.DifficultyLevel
 import com.piotr.tictactoe.game.dto.FieldDto

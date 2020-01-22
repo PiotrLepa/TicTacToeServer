@@ -1,5 +1,7 @@
-package com.piotr.tictactoe.game.domain
+package com.piotr.tictactoe.game.domain.util
 
+import com.piotr.tictactoe.game.domain.util.GameEndChecker.checkWin
+import com.piotr.tictactoe.game.domain.util.GameEndChecker.isDraw
 import com.piotr.tictactoe.game.dto.DifficultyLevel.EASY
 import com.piotr.tictactoe.game.dto.DifficultyLevel.HARD
 import com.piotr.tictactoe.game.dto.DifficultyLevel.MEDIUM
@@ -7,10 +9,6 @@ import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
 import com.piotr.tictactoe.game.dto.GameStatus
 import com.piotr.tictactoe.game.dto.Mark
-import com.piotr.tictactoe.utils.GameUtils.checkWin
-import com.piotr.tictactoe.utils.GameUtils.getAvailableSpotsIndexes
-import com.piotr.tictactoe.utils.GameUtils.isDraw
-import com.piotr.tictactoe.utils.GameUtils.setAiMoveToBoard
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.Random
@@ -107,6 +105,13 @@ class AiMoveComponent {
     } else {
       moves.minBy { it.score }!!
     }
+  }
+
+  private fun getAvailableSpotsIndexes(board: List<FieldDto>): List<Int> =
+      board.filter { it.mark == Mark.EMPTY }.map { it.index }
+
+  private fun setAiMoveToBoard(gameDto: GameDto, fieldDto: FieldDto) {
+    gameDto.board[fieldDto.index].mark = fieldDto.mark
   }
 
   private inner class Move(

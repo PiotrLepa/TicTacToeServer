@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(GameEndedException::class)
-  fun handleException(gameEndedException: GameEndedException) =
+  fun handleException(exception: GameEndedException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
+  private fun createErrorResponse(status: HttpStatus, exception: Exception): ResponseEntity<ErrorResponse> =
       ResponseEntity
-          .status(HttpStatus.BAD_REQUEST)
-          .body(ErrorResponse(
-              HttpStatus.BAD_REQUEST.value(), "Game has ended"))
+          .status(status)
+          .body(ErrorResponse(status.value(), exception))
 }

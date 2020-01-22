@@ -1,5 +1,7 @@
 package com.piotr.tictactoe.game.domain
 
+import com.piotr.tictactoe.game.domain.util.GameComponent
+import com.piotr.tictactoe.game.domain.util.GameSaver
 import com.piotr.tictactoe.game.dto.DifficultyLevel
 import com.piotr.tictactoe.game.dto.GameDto
 import com.piotr.tictactoe.game.dto.PlayerMoveDto

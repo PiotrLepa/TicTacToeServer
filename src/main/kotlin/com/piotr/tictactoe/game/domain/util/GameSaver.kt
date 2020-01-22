@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.game.domain
+package com.piotr.tictactoe.game.domain.util
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

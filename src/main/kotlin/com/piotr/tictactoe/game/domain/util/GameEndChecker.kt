@@ -1,10 +1,10 @@
-package com.piotr.tictactoe.utils
+package com.piotr.tictactoe.game.domain.util
 
 import com.piotr.tictactoe.game.dto.FieldDto
 import com.piotr.tictactoe.game.dto.GameDto
 import com.piotr.tictactoe.game.dto.Mark
 
-object GameUtils {
+object GameEndChecker {
 
   private val WINNING_COMBINATIONS = arrayOf(
       intArrayOf(0, 1, 2),
@@ -29,12 +29,5 @@ object GameUtils {
       }
     }
     return false
-  }
-
-  fun getAvailableSpotsIndexes(board: List<FieldDto>): List<Int> =
-      board.filter { it.mark == Mark.EMPTY }.map { it.index }
-
-  fun setAiMoveToBoard(gameDto: GameDto, fieldDto: FieldDto) {
-    gameDto.board[fieldDto.index].mark = fieldDto.mark
   }
 }
