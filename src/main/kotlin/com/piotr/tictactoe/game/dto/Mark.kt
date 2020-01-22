@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.domain.dto
+package com.piotr.tictactoe.game.dto
 
 enum class Mark(val text: String) {
   X("X"),
