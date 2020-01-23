@@ -19,41 +19,44 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+
   @Autowired
-  private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint? = null
+  private lateinit var jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+
   @Autowired
   private lateinit var jwtUserDetailsService: UserDetailsService
 
   @Autowired
   private lateinit var jwtRequestFilter: JwtRequestFilter
 
-  @Autowired @Throws(Exception::class)
-  fun configureGlobal(auth: AuthenticationManagerBuilder) { // configure AuthenticationManager so that it knows from where to load
-// user for matching credentials
-// Use BCryptPasswordEncoder
+  @Autowired
+  fun configureGlobal(auth: AuthenticationManagerBuilder) {
+    // configure AuthenticationManager so that it knows from where to load
+    // user for matching credentials
+    // Use BCryptPasswordEncoder
     auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder())
   }
 
-  @Bean fun passwordEncoder(): PasswordEncoder {
+  @Bean
+  fun passwordEncoder(): PasswordEncoder {
     return BCryptPasswordEncoder()
   }
 
-  @Bean @Throws(Exception::class) override fun authenticationManagerBean(): AuthenticationManager {
+  @Bean
+  override fun authenticationManagerBean(): AuthenticationManager {
     return super.authenticationManagerBean()
   }
 
-  @Throws(Exception::class)
   override fun configure(httpSecurity: HttpSecurity) {
-// We don't need CSRF for this example
+    // We don't need CSRF for this example
     httpSecurity.csrf().disable() // dont authenticate this particular request
-        .authorizeRequests().antMatchers("/authenticate").permitAll()
+        .authorizeRequests().antMatchers("/authenticate", "/register").permitAll()
         // all other requests need to be authenticated
         .anyRequest().authenticated().and()
         // make sure we use stateless session; session won't be used to
-// store user's state.
+        // store user's state.
         .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-// Add a filter to validate the tokens with every request
     // Add a filter to validate the tokens with every request
     httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
   }

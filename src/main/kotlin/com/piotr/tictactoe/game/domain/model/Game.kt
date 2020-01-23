@@ -7,8 +7,6 @@ import javax.persistence.Enumerated
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
 
 @Entity
 data class Game(
@@ -19,13 +17,13 @@ data class Game(
 
   val sessionId: Long,
 
-  @ManyToOne
-  @JoinColumn(name = "first_player_id", nullable = false)
-  val firstPlayer: Player,
-
-  @ManyToOne
-  @JoinColumn(name = "second_player_id", nullable = true)
-  val secondPlayer: Player?,
+//  @ManyToOne
+//  @JoinColumn(name = "first_player_id", nullable = false)
+//  val firstPlayer: Player,
+//
+//  @ManyToOne
+//  @JoinColumn(name = "second_player_id", nullable = true)
+//  val secondPlayer: Player?,
 
   @Enumerated(EnumType.STRING)
   val difficultyLevel: DifficultyLevel,

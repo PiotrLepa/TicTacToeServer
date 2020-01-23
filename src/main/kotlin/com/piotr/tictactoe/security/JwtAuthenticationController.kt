@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.security;
 
+import com.piotr.tictactoe.user.UserDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,8 +19,10 @@ class JwtAuthenticationController {
 
   @Autowired
   private lateinit var authenticationManager: AuthenticationManager
+
   @Autowired
   private lateinit var jwtTokenUtil: JwtTokenUtil
+
   @Autowired
   private lateinit var userDetailsService: JwtUserDetailsService
 
@@ -32,7 +35,12 @@ class JwtAuthenticationController {
     return ResponseEntity.ok(JwtResponse(token))
   }
 
-  @Throws(Exception::class) private fun authenticate(username: String, password: String) {
+  @PostMapping("/register")
+  fun saveUser(@RequestBody user: UserDto): ResponseEntity<*>? {
+    return ResponseEntity.ok(userDetailsService.save(user))
+  }
+
+  private fun authenticate(username: String, password: String) {
     try {
       authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
     } catch (e: DisabledException) {

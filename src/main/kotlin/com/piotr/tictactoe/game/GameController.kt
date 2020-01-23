@@ -1,6 +1,5 @@
 package com.piotr.tictactoe.game
 
-import com.piotr.tictactoe.game.domain.GameFacade
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
