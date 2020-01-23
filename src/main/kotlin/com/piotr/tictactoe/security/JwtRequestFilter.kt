@@ -7,9 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
 import javax.servlet.FilterChain
-import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -22,8 +20,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
   @Autowired
   private lateinit var jwtTokenUtil: JwtTokenUtil
 
-  @Throws(ServletException::class,
-      IOException::class) override fun doFilterInternal(
+  override fun doFilterInternal(
     request: HttpServletRequest,
     response: HttpServletResponse,
     chain: FilterChain
@@ -32,7 +29,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
     var username: String? = null
     var jwtToken: String? = null
     // JWT Token is in the form "Bearer token". Remove Bearer word and get
-// only the Token
+    // only the Token
     if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
       jwtToken = requestTokenHeader.substring(7)
       try {
@@ -49,14 +46,14 @@ class JwtRequestFilter : OncePerRequestFilter() {
     if (username != null && SecurityContextHolder.getContext().authentication == null) {
       val userDetails: UserDetails = jwtUserDetailsService.loadUserByUsername(username)
       // if token is valid configure Spring Security to manually set
-// authentication
+      // authentication
       if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
         val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
             userDetails, null, userDetails.authorities)
         usernamePasswordAuthenticationToken.details = WebAuthenticationDetailsSource().buildDetails(request)
         // After setting the Authentication in the context, we specify
-// that the current user is authenticated. So it passes the
-// Spring Security Configurations successfully.
+        // that the current user is authenticated. So it passes the
+        // Spring Security Configurations successfully.
         SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
       }
     }
