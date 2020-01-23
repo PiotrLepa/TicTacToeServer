@@ -1,48 +1,65 @@
 package com.piotr.tictactoe.game.domain.model
 
-import com.piotr.tictactoe.game.dto.GameDto
-import javax.persistence.ElementCollection
+import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 
 @Entity
 data class Game(
   @Id
-  val gameId: Long?,
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(nullable = false)
+  val id: Long?,
+
+  val sessionId: Long,
+
+  @ManyToOne
+  @JoinColumn(name = "first_player_id", nullable = false)
+  val firstPlayer: Player,
+
+  @ManyToOne
+  @JoinColumn(name = "second_player_id", nullable = true)
+  val secondPlayer: Player?,
+
+  @Enumerated(EnumType.STRING)
   val difficultyLevel: DifficultyLevel,
-  @ElementCollection(targetClass = Field::class)
-  val board: List<Field>,
-  val playerMark: Mark,
-  val aiMark: Mark,
+
+  @Enumerated(EnumType.STRING)
   var status: GameStatus,
-  var playerWins: Int,
-  var playerDefeats: Int,
-  var draws: Int
+
+  val created: Long
+//  val currentTurn
 ) {
 
-  fun toDto() = GameDto(
-      gameId = gameId,
-      difficultyLevel = difficultyLevel,
-      board = board.map(Field::toDto),
-      playerMark = playerMark,
-      aiMark = aiMark,
-      status = status,
-      playerWins = playerWins,
-      playerDefeats = playerDefeats,
-      draws = draws
-  )
-
-  companion object {
-    fun fromDto(dto: GameDto) = Game(
-        gameId = dto.gameId,
-        difficultyLevel = dto.difficultyLevel,
-        board = dto.board.map(Field.Companion::fromDto),
-        playerMark = dto.playerMark,
-        aiMark = dto.aiMark,
-        status = dto.status,
-        playerWins = dto.playerWins,
-        playerDefeats = dto.playerDefeats,
-        draws = dto.draws
-    )
-  }
+//  fun toDto() = GameDto(
+//      gameId = gameId,
+//      difficultyLevel = difficultyLevel,
+//      board = board.map(Field::toDto),
+//      playerMark = playerMark,
+//      aiMark = aiMark,
+//      status = status,
+//      playerWins = playerWins,
+//      playerDefeats = playerDefeats,
+//      draws = draws
+//  )
+//
+//  companion object {
+//    fun fromDto(dto: GameDto) = Game(
+//        gameId = dto.gameId,
+//        difficultyLevel = dto.difficultyLevel,
+//        board = dto.board.map(Field.Companion::fromDto),
+//        playerMark = dto.playerMark,
+//        aiMark = dto.aiMark,
+//        status = dto.status,
+//        playerWins = dto.playerWins,
+//        playerDefeats = dto.playerDefeats,
+//        draws = dto.draws
+//    )
+//  }
 }
