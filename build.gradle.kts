@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+  implementation("oio.jsonwebtoken:jjw:0.9.1")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mustache")
   implementation("org.springframework.boot:spring-boot-starter-web")
@@ -25,7 +28,7 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
-	// Fixed version as a workaround for https://github.com/h2database/h2database/issues/1841
+  // Fixed version as a workaround for https://github.com/h2database/h2database/issues/1841
   runtimeOnly("com.h2database:h2:1.4.197")
   runtimeOnly("org.springframework.boot:spring-boot-devtools")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
