@@ -6,9 +6,7 @@ plugins {
   val kotlinVersion = "1.3.61"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
-  kotlin("kapt") version kotlinVersion
-
-//  kotlin("plugin.jpa") version kotlinVersion // TODO NEEDED?
+  kotlin("plugin.jpa") version kotlinVersion // TODO NEEDED?
 }
 
 group = "com.piotr.tictactoe"
@@ -34,14 +32,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mustache")
   implementation("org.springframework.boot:spring-boot-starter-web")
-  implementation("mysql:mysql-connector-java:8.0.18")
   implementation("io.jsonwebtoken:jjwt:0.2")
   implementation("org.springframework.boot:spring-boot-starter-security")
-  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-}
-
-kapt {
-  annotationProcessor("org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor")
+  runtimeOnly("com.h2database:h2:1.4.197")
 }
 
 tasks.withType<Test> {

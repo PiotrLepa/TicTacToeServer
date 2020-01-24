@@ -32,8 +32,12 @@ class JwtAuthenticationController {
   fun createAuthenticationToken(@RequestBody authenticationRequest: JwtRequest): ResponseEntity<*> {
     authenticate(authenticationRequest.username, authenticationRequest.password)
     val userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username)
-    val token = jwtTokenUtil.generateToken(userDetails)
-    return ResponseEntity.ok(JwtResponse(token))
+    if (userDetails != null) {
+      val token = jwtTokenUtil.generateToken(userDetails)
+      return ResponseEntity.ok(JwtResponse(token))
+    } else {
+      return ResponseEntity.badRequest().body("User not found")
+    }
   }
 
   @PostMapping("/register")

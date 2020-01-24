@@ -3,7 +3,7 @@ package com.piotr.tictactoe.security
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.io.Serializable
@@ -12,14 +12,14 @@ import java.util.Date
 @Component
 class JwtTokenUtil : Serializable {
 
-  @Value("\${jwt.secret}")
-  private val secret: String? = null
+  @Autowired
+  private lateinit var jwtTokenProperties: JwtTokenProperties
 
   fun getUsernameFromToken(token: String): String? =
       getClaimFromToken(token, Claims::getSubject)
 
-  fun getExpirationDateFromToken(token: String): Date? =
-      getClaimFromToken(token, Claims::getExpiration)
+  fun validateToken(token: String, userDetails: UserDetails): Boolean =
+      getUsernameFromToken(token) == userDetails.username && !isTokenExpired(token)
 
   // while creating the token -
   // 1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
@@ -31,28 +31,27 @@ class JwtTokenUtil : Serializable {
           .setSubject(userDetails.username)
           .setIssuedAt(Date(System.currentTimeMillis()))
           .setExpiration(Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-          .signWith(SignatureAlgorithm.HS512, secret)
+          .signWith(SignatureAlgorithm.HS512, jwtTokenProperties.secretKey)
           .compact()
 
   private fun <T> getClaimFromToken(token: String, claimsResolver: (Claims) -> T): T? =
       getAllClaimsFromToken(token)?.let { claimsResolver(it) }
 
+  private fun getExpirationDateFromToken(token: String): Date? =
+      getClaimFromToken(token, Claims::getExpiration)
+
+  private fun isTokenExpired(token: String): Boolean =
+      getExpirationDateFromToken(token)?.before(Date()) ?: false
+
   private fun getAllClaimsFromToken(token: String): Claims? =
       try {
         Jwts.parser()
-            .setSigningKey(secret)
+            .setSigningKey(jwtTokenProperties.secretKey)
             .parseClaimsJws(token)
             .body
       } catch (e: Exception) {
         null
       }
-
-  private fun isTokenExpired(token: String): Boolean =
-      getExpirationDateFromToken(token)?.before(Date()) ?: false
-
-  //validate token
-  fun validateToken(token: String, userDetails: UserDetails): Boolean =
-      getUsernameFromToken(token) == userDetails.username && !isTokenExpired(token)
 
   companion object {
     const val JWT_TOKEN_VALIDITY = 5 * 60 * 60.toLong()

@@ -36,7 +36,11 @@ class JwtRequestFilter : OncePerRequestFilter() {
       return chain.doFilter(request, response)
     }
 
-    val userDetails = jwtUserDetailsService.loadUserByUsername(username)
+    val userDetails = jwtUserDetailsService.loadUserByUsername(username) ?: run {
+      logger.warn("User not found")
+      return chain.doFilter(request, response)
+    }
+
     if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
       SecurityContextHolder.getContext().authentication =
           UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
