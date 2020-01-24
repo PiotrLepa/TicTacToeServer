@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.security.auth;
 
-import com.piotr.tictactoe.security.JwtTokenUtil
+import com.piotr.tictactoe.security.config.JwtTokenUtil
 import com.piotr.tictactoe.user.UserDao
 import com.piotr.tictactoe.user.UserDto
 import org.springframework.beans.factory.annotation.Autowired

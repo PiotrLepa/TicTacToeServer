@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.security.config
 
 import com.piotr.tictactoe.security.auth.JwtUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +19,9 @@ class JwtRequestFilter : OncePerRequestFilter() {
 
   @Autowired
   private lateinit var jwtTokenUtil: JwtTokenUtil
+
+  @Autowired
+  private lateinit var jwtProperties: JwtProperties
 
   override fun doFilterInternal(
     request: HttpServletRequest,
@@ -53,8 +56,8 @@ class JwtRequestFilter : OncePerRequestFilter() {
 
   private fun getToken(request: HttpServletRequest): String? =
       request.getHeader(AUTHORIZATION_HEADER)?.let { header ->
-        if (header.startsWith(AUTHORIZATION_HEADER_PREFIX)) {
-          header.removePrefix(AUTHORIZATION_HEADER_PREFIX).trim()
+        if (header.startsWith(jwtProperties.tokenPrefix)) {
+          header.removePrefix(jwtProperties.tokenPrefix).trim()
         } else {
           null
         }
@@ -62,6 +65,5 @@ class JwtRequestFilter : OncePerRequestFilter() {
 
   companion object {
     private const val AUTHORIZATION_HEADER = "Authorization"
-    private const val AUTHORIZATION_HEADER_PREFIX = "Bearer"
   }
 }
