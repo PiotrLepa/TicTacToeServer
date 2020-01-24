@@ -1,19 +1,19 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.security.config
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.io.Serializable
-import java.util.Date
 
 @Component
 class JwtTokenUtil : Serializable {
 
   @Autowired
-  private lateinit var jwtTokenProperties: JwtTokenProperties
+  private lateinit var jwtProperties: JwtProperties
 
   fun getUsernameFromToken(token: String): String? =
       getClaimFromToken(token, Claims::getSubject)
@@ -29,31 +29,27 @@ class JwtTokenUtil : Serializable {
   fun generateToken(userDetails: UserDetails): String =
       Jwts.builder()
           .setSubject(userDetails.username)
-          .setIssuedAt(Date(System.currentTimeMillis()))
-          .setExpiration(Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-          .signWith(SignatureAlgorithm.HS512, jwtTokenProperties.secretKey)
+          .setIssuedAt(DateTime.now().toDate())
+          .setExpiration(DateTime.now().plusMinutes(jwtProperties.tokenExpirationMinutes).toDate())
+          .signWith(SignatureAlgorithm.HS512, jwtProperties.secretKey)
           .compact()
 
   private fun <T> getClaimFromToken(token: String, claimsResolver: (Claims) -> T): T? =
       getAllClaimsFromToken(token)?.let { claimsResolver(it) }
 
-  private fun getExpirationDateFromToken(token: String): Date? =
-      getClaimFromToken(token, Claims::getExpiration)
+  private fun getExpirationDateFromToken(token: String): DateTime? =
+      DateTime(getClaimFromToken(token, Claims::getExpiration))
 
   private fun isTokenExpired(token: String): Boolean =
-      getExpirationDateFromToken(token)?.before(Date()) ?: false
+      getExpirationDateFromToken(token)?.isBeforeNow ?: false
 
   private fun getAllClaimsFromToken(token: String): Claims? =
       try {
         Jwts.parser()
-            .setSigningKey(jwtTokenProperties.secretKey)
+            .setSigningKey(jwtProperties.secretKey)
             .parseClaimsJws(token)
             .body
       } catch (e: Exception) {
         null
       }
-
-  companion object {
-    const val JWT_TOKEN_VALIDITY = 5 * 60 * 60.toLong()
-  }
 }
