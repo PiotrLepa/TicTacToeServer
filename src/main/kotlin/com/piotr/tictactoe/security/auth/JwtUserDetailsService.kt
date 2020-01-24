@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.security.auth
 
 import com.piotr.tictactoe.user.UserDao
 import com.piotr.tictactoe.user.UserDto

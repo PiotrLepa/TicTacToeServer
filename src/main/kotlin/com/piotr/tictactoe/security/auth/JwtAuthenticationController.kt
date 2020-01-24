@@ -1,5 +1,6 @@
-package com.piotr.tictactoe.security;
+package com.piotr.tictactoe.security.auth;
 
+import com.piotr.tictactoe.security.JwtTokenUtil
 import com.piotr.tictactoe.user.UserDao
 import com.piotr.tictactoe.user.UserDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -31,8 +31,7 @@ class JwtAuthenticationController {
   @PostMapping("/authenticate")
   fun createAuthenticationToken(@RequestBody authenticationRequest: JwtRequest): ResponseEntity<*> {
     authenticate(authenticationRequest.username, authenticationRequest.password)
-    val userDetails: UserDetails = userDetailsService
-        .loadUserByUsername(authenticationRequest.username)
+    val userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username)
     val token = jwtTokenUtil.generateToken(userDetails)
     return ResponseEntity.ok(JwtResponse(token))
   }
