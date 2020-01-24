@@ -1,11 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("plugin.jpa") version "1.2.71"
-  id("org.springframework.boot") version "2.1.5.RELEASE"
-  id("io.spring.dependency-management") version "1.0.7.RELEASE"
-  kotlin("jvm") version "1.2.71"
-  kotlin("plugin.spring") version "1.2.71"
+  id("org.springframework.boot") version "2.3.0.BUILD-SNAPSHOT"
+  id("io.spring.dependency-management") version "1.0.9.RELEASE"
+  val kotlinVersion = "1.3.61"
+  kotlin("jvm") version kotlinVersion
+  kotlin("plugin.spring") version kotlinVersion
+  kotlin("kapt") version kotlinVersion
+
+//  kotlin("plugin.jpa") version kotlinVersion // TODO NEEDED?
 }
 
 group = "com.piotr.tictactoe"
@@ -14,25 +17,35 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
   mavenCentral()
+  maven { url = uri("https://repo.spring.io/milestone") }
+  maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
-  implementation("io.jsonwebtoken:jjwt:0.2")
-  implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("mysql:mysql-connector-java:8.0.18")
+  implementation("org.springframework.boot:spring-boot-starter")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+  }
 
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-mustache")
   implementation("org.springframework.boot:spring-boot-starter-web")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-  implementation("org.jetbrains.kotlin:kotlin-reflect")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("mysql:mysql-connector-java:8.0.18")
+  implementation("io.jsonwebtoken:jjwt:0.2")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+}
 
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
-  // Fixed version as a workaround for https://github.com/h2database/h2database/issues/1841
-  runtimeOnly("com.h2database:h2:1.4.197")
-  runtimeOnly("org.springframework.boot:spring-boot-devtools")
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
+kapt {
+  annotationProcessor("org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor")
+}
+
+tasks.withType<Test> {
+  useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
