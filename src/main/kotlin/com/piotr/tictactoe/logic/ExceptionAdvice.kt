@@ -3,6 +3,7 @@ package com.piotr.tictactoe.logic
 import com.piotr.tictactoe.game.exception.GameEndedException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
+import com.piotr.tictactoe.user.exception.UserNotExistsException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -17,6 +18,10 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(PasswordsAreDifferentException::class)
   fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
+  @ExceptionHandler(UserNotExistsException::class)
+  fun handleUserNotExistsException(exception: UserNotExistsException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(GameEndedException::class)

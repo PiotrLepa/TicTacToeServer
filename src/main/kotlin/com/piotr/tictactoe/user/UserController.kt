@@ -1,18 +1,22 @@
 package com.piotr.tictactoe.user;
 
 import com.piotr.tictactoe.user.domain.UserFacade
+import com.piotr.tictactoe.user.dto.LoginRequestDto
+import com.piotr.tictactoe.user.dto.LoginResponseDto
 import com.piotr.tictactoe.user.dto.RegisterRequestDto
 import com.piotr.tictactoe.user.dto.RegisterResponseDto
+import com.piotr.tictactoe.user.dto.UserDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@CrossOrigin
+@RequestMapping("user/")
 class UserController {
 
   @Autowired
@@ -22,16 +26,12 @@ class UserController {
   fun register(@RequestBody dto: RegisterRequestDto): ResponseEntity<RegisterResponseDto> =
       ResponseEntity(userFacade.register(dto), HttpStatus.CREATED)
 
-//  @PostMapping("/login")
-//  fun login(@RequestBody loginRequestDto: LoginRequestDto): ResponseEntity<LoginResponseDto> {
-//    authenticate(authenticationDto.login, authenticationDto.password)
-//    val userDetails = userDetailsService.loadUserByUsername(authenticationDto.login)
-//    return if (userDetails != null) {
-//      val token = jwtTokenUtil.generateToken(userDetails)
-//      ResponseEntity.ok(UserDto(token))
-//    } else {
-//      ResponseEntity.badRequest().body("User not found")
-//    }
-//    userFacade.login(reg)
-//  }
+  @PostMapping("/login")
+  fun login(@RequestBody dto: LoginRequestDto): ResponseEntity<LoginResponseDto> =
+      ResponseEntity.ok(userFacade.login(dto))
+
+  @GetMapping("/test")
+  fun login(): ResponseEntity<UserDto> {
+    return ResponseEntity.ok(userFacade.getLoggedUser())
+  }
 }
