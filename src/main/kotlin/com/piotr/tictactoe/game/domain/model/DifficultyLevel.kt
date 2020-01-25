@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.game.dto
+package com.piotr.tictactoe.game.domain.model
 
 enum class DifficultyLevel {
   EASY,
