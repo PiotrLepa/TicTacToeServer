@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.user.dto
 
-data class LoginDto(
-  val login: String,
+data class LoginRequestDto(
+  val email: String,
   val password: String
 )

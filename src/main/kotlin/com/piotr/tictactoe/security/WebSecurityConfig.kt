@@ -45,7 +45,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   override fun configure(httpSecurity: HttpSecurity) {
     httpSecurity.csrf().disable()
         .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
-        .authorizeRequests().antMatchers("/authenticate", "/register").permitAll() // don't authenticate this particular request
+        .authorizeRequests().antMatchers("/register", "/login").permitAll() // don't authenticate this particular request
         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // TODO needed?
         .anyRequest().authenticated()// all other requests need to be authenticated
         .and()

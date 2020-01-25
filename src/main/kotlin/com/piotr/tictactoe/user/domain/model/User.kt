@@ -5,12 +5,12 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Register(
+class User(
   var email: String,
-  var login: String,
+  var username: String,
   var password: String,
-  var repeatedPassword: String,
   @Id @GeneratedValue var id: Long? = null
 ) {
-  constructor() : this("", "", "", "")
+
+  constructor() : this("", "", "")
 }

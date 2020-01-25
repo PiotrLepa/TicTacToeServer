@@ -1,8 +1,8 @@
 package com.piotr.tictactoe.user.dto
 
-data class RegisterDto(
+data class RegisterRequestDto(
   val email: String,
-  val login: String,
+  val username: String,
   val password: String,
   val repeatedPassword: String
 )
