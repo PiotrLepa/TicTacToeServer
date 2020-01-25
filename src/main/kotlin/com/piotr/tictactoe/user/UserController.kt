@@ -1,8 +1,9 @@
-package com.piotr.tictactoe.security.auth;
+package com.piotr.tictactoe.user;
 
-import com.piotr.tictactoe.security.config.JwtTokenUtil
-import com.piotr.tictactoe.user.UserDao
-import com.piotr.tictactoe.user.UserDto
+import com.piotr.tictactoe.security.AuthUserDetailsService
+import com.piotr.tictactoe.security.JwtTokenUtil
+import com.piotr.tictactoe.user.dto.RegisterDto
+import com.piotr.tictactoe.user.dto.UserDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @CrossOrigin
-class JwtAuthenticationController {
+class UserController {
 
   @Autowired
   private lateinit var authenticationManager: AuthenticationManager
@@ -26,17 +27,17 @@ class JwtAuthenticationController {
   private lateinit var jwtTokenUtil: JwtTokenUtil
 
   @Autowired
-  private lateinit var userDetailsService: JwtUserDetailsService
+  private lateinit var userDetailsService: AuthUserDetailsService
 
   @PostMapping("/authenticate")
-  fun createAuthenticationToken(@RequestBody authenticationRequest: JwtRequest): ResponseEntity<*> {
-    authenticate(authenticationRequest.username, authenticationRequest.password)
-    val userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username)
-    if (userDetails != null) {
+  fun createAuthenticationToken(@RequestBody authenticationDto: RegisterDto): ResponseEntity<*> {
+    authenticate(authenticationDto.login, authenticationDto.password)
+    val userDetails = userDetailsService.loadUserByUsername(authenticationDto.login)
+    return if (userDetails != null) {
       val token = jwtTokenUtil.generateToken(userDetails)
-      return ResponseEntity.ok(JwtResponse(token))
+      ResponseEntity.ok(UserDto(token))
     } else {
-      return ResponseEntity.badRequest().body("User not found")
+      ResponseEntity.badRequest().body("User not found")
     }
   }
 

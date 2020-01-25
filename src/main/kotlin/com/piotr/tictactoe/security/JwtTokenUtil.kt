@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts

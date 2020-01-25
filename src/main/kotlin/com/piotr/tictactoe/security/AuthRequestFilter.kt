@@ -1,6 +1,5 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.security
 
-import com.piotr.tictactoe.security.auth.JwtUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,10 +11,10 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtRequestFilter : OncePerRequestFilter() {
+class AuthRequestFilter : OncePerRequestFilter() {
 
   @Autowired
-  private lateinit var jwtUserDetailsService: JwtUserDetailsService
+  private lateinit var authUserDetailsService: AuthUserDetailsService
 
   @Autowired
   private lateinit var jwtTokenUtil: JwtTokenUtil
@@ -39,7 +38,7 @@ class JwtRequestFilter : OncePerRequestFilter() {
       return chain.doFilter(request, response)
     }
 
-    val userDetails = jwtUserDetailsService.loadUserByUsername(username) ?: run {
+    val userDetails = authUserDetailsService.loadUserByUsername(username) ?: run {
       logger.warn("User not found")
       return chain.doFilter(request, response)
     }
