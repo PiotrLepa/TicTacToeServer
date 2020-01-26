@@ -36,6 +36,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   runtimeOnly("com.h2database:h2:1.4.197")
   implementation("joda-time:joda-time:2.10.5")
+
+  implementation("org.springframework.security.oauth:spring-security-oauth2:2.3.0.BUILD-SNAPSHOT")
 }
 
 tasks.withType<Test> {
