@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.security
 
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtAuthenticationEntryPoint : AuthenticationEntryPoint, Serializable {
+class AuthEntryPoint : AuthenticationEntryPoint, Serializable {
 
   override fun commence(
     request: HttpServletRequest,

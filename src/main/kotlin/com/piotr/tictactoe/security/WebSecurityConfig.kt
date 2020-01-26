@@ -1,9 +1,8 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.security
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -21,22 +20,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Autowired
-  private lateinit var jwtUserDetailsService: UserDetailsService
+  private lateinit var authUserDetailsService: UserDetailsService
 
   @Autowired
-  private lateinit var jwtRequestFilter: JwtRequestFilter
+  private lateinit var authRequestFilter: AuthRequestFilter
 
   @Autowired
   private lateinit var passwordEncoder: PasswordEncoder
 
   @Autowired
-  private lateinit var jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+  private lateinit var authEntryPoint: AuthEntryPoint
 
   @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder) {
-    // configure AuthenticationManager so that it knows from where
-    // to load user for matching credentials
-    auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder)
+    auth.userDetailsService(authUserDetailsService).passwordEncoder(passwordEncoder)
   }
 
   @Bean
@@ -44,12 +41,12 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
   override fun configure(httpSecurity: HttpSecurity) {
     httpSecurity.csrf().disable()
-        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
-        .authorizeRequests().antMatchers("/authenticate", "/register").permitAll() // don't authenticate this particular request
-        .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // TODO needed?
+        .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+        .authorizeRequests()
+        .antMatchers("/user/register", "/user/login").permitAll() // don't authenticate this particular request
         .anyRequest().authenticated()// all other requests need to be authenticated
         .and()
-        .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
+        .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session won't be used to store user's state.
   }
 }
