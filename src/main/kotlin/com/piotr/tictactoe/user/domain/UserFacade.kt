@@ -1,7 +1,6 @@
 package com.piotr.tictactoe.user.domain
 
 import com.piotr.tictactoe.mapper.RegisterMapper
-import com.piotr.tictactoe.security.JwtTokenUtil
 import com.piotr.tictactoe.security.UserContext
 import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.LoginRequestDto
@@ -21,15 +20,6 @@ class UserFacade {
   @Autowired
   private lateinit var userRepository: UserRepository
 
-//  @Autowired
-//  private lateinit var authenticationManager: AuthenticationManager
-//
-//  @Autowired
-//  private lateinit var userDetailsService: AuthUserDetailsService
-
-  @Autowired
-  private lateinit var jwtTokenUtil: JwtTokenUtil
-
   @Autowired
   private lateinit var registerMapper: RegisterMapper
 
@@ -43,7 +33,7 @@ class UserFacade {
   fun login(dto: LoginRequestDto): LoginResponseDto {
     val user = finsUserByEmail(dto.email)
     return LoginResponseDto(
-        token = jwtTokenUtil.generateToken(user.email)
+        token = "fsdg" // TODO
     )
   }
 

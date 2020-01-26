@@ -18,12 +18,7 @@ class AuthUserDetailsService : UserDetailsService {
   private lateinit var passwordEncoder: PasswordEncoder
 
   override fun loadUserByUsername(email: String): UserDetails? {
-//    return User.withDefaultPasswordEncoder()
-//        .username("piotr43a@gmail.com")
-//        .password("pass")
-//        .authorities(listOf())
-//        .build()
-    return User("piotr43a@gmail.com", passwordEncoder.encode("pass"), listOf())
+    return User("piotr43a@gmail.com", passwordEncoder.encode("pass"), listOf()) // TODO get user from repository
     val user = userRepository.findUserByEmail(email) ?: return null
     return User(user.email, user.password, listOf())
   }

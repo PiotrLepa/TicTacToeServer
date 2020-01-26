@@ -26,6 +26,9 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
   @Autowired
   private lateinit var oathProperties: OathProperties
 
+  @Bean
+  fun tokenStore(): TokenStore = InMemoryTokenStore()
+
   override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
     endpoints.tokenStore(tokenStore())
         .authenticationManager(authenticationManager)
@@ -43,15 +46,11 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
         .authorizedGrantTypes("client_credentials", "password")
 //        .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
         .scopes("read", "write", "trust")
-//        .resourceIds("oauth2-resource")
         .accessTokenValiditySeconds(5000)
-//        .refreshTokenValiditySeconds(999999999)
+        .refreshTokenValiditySeconds(999999999)
   }
 
   override fun configure(security: AuthorizationServerSecurityConfigurer) {
     security.checkTokenAccess("isAuthenticated()") // TODO needed?
   }
-
-  @Bean
-  fun tokenStore(): TokenStore = InMemoryTokenStore()
 }

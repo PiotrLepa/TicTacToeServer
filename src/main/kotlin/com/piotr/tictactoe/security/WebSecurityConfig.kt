@@ -21,18 +21,11 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   private lateinit var authUserDetailsService: UserDetailsService
 
   @Autowired
-  private lateinit var authRequestFilter: AuthRequestFilter
-
-  @Autowired
   private lateinit var passwordEncoder: PasswordEncoder
 
   @Autowired
-  private lateinit var authEntryPoint: AuthEntryPoint
-
-  @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder) {
-    auth
-        .userDetailsService(authUserDetailsService)
+    auth.userDetailsService(authUserDetailsService)
         .passwordEncoder(passwordEncoder)
   }
 
@@ -49,23 +42,4 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
   @Bean
   override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
-
-//  @Autowired
-//  fun configureGlobal(auth: AuthenticationManagerBuilder) {
-//    auth.userDetailsService(authUserDetailsService).passwordEncoder(passwordEncoder)
-//  }
-//
-//  @Bean
-//  override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
-//
-//  override fun configure(httpSecurity: HttpSecurity) {
-//    httpSecurity.csrf().disable()
-//        .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
-//        .authorizeRequests()
-//        .antMatchers("/user/register", "/user/login").permitAll() // don't authenticate this particular request
-//        .anyRequest().authenticated()// all other requests need to be authenticated
-//        .and()
-//        .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
-//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session won't be used to store user's state.
-//  }
 }

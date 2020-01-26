@@ -28,8 +28,8 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
   override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
         .authorizeRequests()
-        .antMatchers("/", "/home", "/user/register", "/user/login").permitAll()
-        .antMatchers("/private/**").authenticated()
+        .antMatchers("/user/register", "/user/login").permitAll()
+        .anyRequest().authenticated()
         .and()
         .exceptionHandling().accessDeniedHandler(OAuth2AccessDeniedHandler())
   }
