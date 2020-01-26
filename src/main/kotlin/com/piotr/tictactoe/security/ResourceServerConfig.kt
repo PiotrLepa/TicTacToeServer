@@ -25,7 +25,7 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
 //        .antMatchers("/private/**").authenticated()
 //  }
 
-  @Throws(Exception::class) override fun configure(http: HttpSecurity) {
+  override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
         .authorizeRequests()
         .antMatchers("/", "/home", "/user/register", "/user/login").permitAll()

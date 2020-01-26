@@ -6,12 +6,9 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class OathProperties {
 
-  @Value("\${jwt.secret_key}")
-  lateinit var secretKey: String
+  @Value("\${oauth2.client_id}")
+  lateinit var clientId: String
 
-  @Value("\${jwt.token_prefix}")
-  lateinit var tokenPrefix: String
-
-  @Value("\${jwt.token_expiration_minutes}")
-  var tokenExpirationMinutes: Int = 0
+  @Value("\${oauth2.client_secret}")
+  lateinit var clientSecret: String
 }

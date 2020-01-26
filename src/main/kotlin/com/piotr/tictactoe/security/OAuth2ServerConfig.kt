@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore
 
@@ -30,28 +31,26 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
         .authenticationManager(authenticationManager)
   }
 
+//  override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
+//    endpoints.authenticationManager(authenticationManager)
+//  }
+
   override fun configure(clients: ClientDetailsServiceConfigurer) {
     clients
         .inMemory()
-        .withClient("my-trusted-client")
-        .secret(passwordEncoder.encode("secret"))
-        .authorizedGrantTypes("client_credentials", "password", "refresh_token")
+        .withClient(oathProperties.clientId)
+        .secret(passwordEncoder.encode(oathProperties.clientSecret))
+        .authorizedGrantTypes("client_credentials", "password")
 //        .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
-        .scopes("read", "write")
+        .scopes("read", "write", "trust")
 //        .resourceIds("oauth2-resource")
         .accessTokenValiditySeconds(5000)
-        .refreshTokenValiditySeconds(999999999)
+//        .refreshTokenValiditySeconds(999999999)
   }
 
-//  /**
-//   * We here defines the security constraints on the token endpoint.
-//   * We set it up to isAuthenticated, which returns true if the user is not anonymous
-//   * @param security the AuthorizationServerSecurityConfigurer.
-//   * @throws Exception
-//   */
-//  override fun configure(security: AuthorizationServerSecurityConfigurer) {
-//    security.checkTokenAccess("isAuthenticated()")
-//  }
+  override fun configure(security: AuthorizationServerSecurityConfigurer) {
+    security.checkTokenAccess("isAuthenticated()") // TODO needed?
+  }
 
   @Bean
   fun tokenStore(): TokenStore = InMemoryTokenStore()
