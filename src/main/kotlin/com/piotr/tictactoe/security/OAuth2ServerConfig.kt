@@ -43,14 +43,25 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
         .inMemory()
         .withClient(oathProperties.clientId)
         .secret(passwordEncoder.encode(oathProperties.clientSecret))
-        .authorizedGrantTypes("client_credentials", "password")
-//        .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
-        .scopes("read", "write", "trust")
-        .accessTokenValiditySeconds(5000)
-        .refreshTokenValiditySeconds(999999999)
+        .authorizedGrantTypes(GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD, GRANT_TYPE_REFRESH_TOKEN)
+        .scopes(SCOPE_READ, SCOPE_WRITE)
+        .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS)
+        .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY_SECONDS)
   }
 
   override fun configure(security: AuthorizationServerSecurityConfigurer) {
     security.checkTokenAccess("isAuthenticated()") // TODO needed?
+  }
+
+  companion object {
+    private const val GRANT_TYPE_PASSWORD = "password"
+    private const val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
+    private const val GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
+
+    private const val SCOPE_READ = "read"
+    private const val SCOPE_WRITE = "write"
+
+    private const val ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 // 1 hour
+    private const val REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 // 1 day
   }
 }
