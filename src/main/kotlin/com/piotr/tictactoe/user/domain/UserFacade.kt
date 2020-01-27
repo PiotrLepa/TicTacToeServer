@@ -1,7 +1,6 @@
 package com.piotr.tictactoe.user.domain
 
 import com.piotr.tictactoe.mapper.RegisterMapper
-import com.piotr.tictactoe.security.UserContext
 import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.LoginRequestDto
 import com.piotr.tictactoe.user.dto.LoginResponseDto
@@ -13,6 +12,7 @@ import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UserNotExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.core.context.SecurityContextHolder
 
 @Configuration
 class UserFacade {
@@ -38,7 +38,7 @@ class UserFacade {
   }
 
   fun getLoggedUser(): UserDto {
-    val email = UserContext.getAuthenticatedUserEmail()
+    val email = getAuthenticatedUserEmail()
     return finsUserByEmail(email).let(::mapUserToDto)
   }
 
@@ -63,9 +63,7 @@ class UserFacade {
       username = user.username
   )
 
-//  private fun authenticate(username: String, password: String) {
-//    authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
-//  }
+  private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
 
   fun create() = UserFacade()
 }

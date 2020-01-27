@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.security.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 
@@ -31,13 +32,16 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
   override fun configure(http: HttpSecurity) {
     http
+        .sessionManagement() // TODO needed?
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .csrf().disable()
         .authorizeRequests()
         .antMatchers("/oauth/token").permitAll()
+        .antMatchers("/register").permitAll()
         .anyRequest().authenticated()
         .and()
         .httpBasic()
-        .and()
-        .csrf().disable()
   }
 
   @Bean

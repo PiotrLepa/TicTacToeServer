@@ -12,11 +12,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("user/")
 class UserController {
 
   @Autowired
@@ -30,7 +28,7 @@ class UserController {
   fun login(@RequestBody dto: LoginRequestDto): ResponseEntity<LoginResponseDto> =
       ResponseEntity.ok(userFacade.login(dto))
 
-  @GetMapping("/test")
+  @GetMapping("/api/test")
   fun login(): ResponseEntity<UserDto> {
     return ResponseEntity.ok(userFacade.getLoggedUser())
   }
