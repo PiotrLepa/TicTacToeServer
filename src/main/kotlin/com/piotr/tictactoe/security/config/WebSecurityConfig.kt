@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.security.config
 
+import com.piotr.tictactoe.security.error.OAuthExceptionEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -25,6 +26,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   private lateinit var passwordEncoder: PasswordEncoder
 
   @Autowired
+  private lateinit var oAuthExceptionEntryPoint: OAuthExceptionEntryPoint
+
+  @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder) {
     auth.userDetailsService(authUserDetailsService)
         .passwordEncoder(passwordEncoder)
@@ -42,6 +46,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         .anyRequest().authenticated()
         .and()
         .httpBasic()
+        .and()
+        .exceptionHandling().authenticationEntryPoint(oAuthExceptionEntryPoint)
   }
 
   @Bean
