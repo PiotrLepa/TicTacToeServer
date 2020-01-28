@@ -1,8 +1,6 @@
 package com.piotr.tictactoe.user.domain
 
 import com.piotr.tictactoe.mapper.RegisterMapper
-import com.piotr.tictactoe.security.JwtTokenUtil
-import com.piotr.tictactoe.security.UserContext
 import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.LoginRequestDto
 import com.piotr.tictactoe.user.dto.LoginResponseDto
@@ -14,21 +12,13 @@ import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UserNotExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.core.context.SecurityContextHolder
 
 @Configuration
 class UserFacade {
 
   @Autowired
   private lateinit var userRepository: UserRepository
-
-//  @Autowired
-//  private lateinit var authenticationManager: AuthenticationManager
-//
-//  @Autowired
-//  private lateinit var userDetailsService: AuthUserDetailsService
-
-  @Autowired
-  private lateinit var jwtTokenUtil: JwtTokenUtil
 
   @Autowired
   private lateinit var registerMapper: RegisterMapper
@@ -43,12 +33,12 @@ class UserFacade {
   fun login(dto: LoginRequestDto): LoginResponseDto {
     val user = finsUserByEmail(dto.email)
     return LoginResponseDto(
-        token = jwtTokenUtil.generateToken(user.email)
+        token = "fsdg" // TODO
     )
   }
 
   fun getLoggedUser(): UserDto {
-    val email = UserContext.getAuthenticatedUserEmail()
+    val email = getAuthenticatedUserEmail()
     return finsUserByEmail(email).let(::mapUserToDto)
   }
 
@@ -73,9 +63,7 @@ class UserFacade {
       username = user.username
   )
 
-//  private fun authenticate(username: String, password: String) {
-//    authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
-//  }
+  private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
 
   fun create() = UserFacade()
 }

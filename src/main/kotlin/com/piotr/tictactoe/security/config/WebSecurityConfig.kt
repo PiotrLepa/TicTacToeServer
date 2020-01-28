@@ -1,5 +1,6 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.security.config
 
+import com.piotr.tictactoe.security.error.OAuth2ExceptionEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -12,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -23,30 +23,33 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   private lateinit var authUserDetailsService: UserDetailsService
 
   @Autowired
-  private lateinit var authRequestFilter: AuthRequestFilter
-
-  @Autowired
   private lateinit var passwordEncoder: PasswordEncoder
 
   @Autowired
-  private lateinit var authEntryPoint: AuthEntryPoint
+  private lateinit var oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
 
   @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder) {
-    auth.userDetailsService(authUserDetailsService).passwordEncoder(passwordEncoder)
+    auth.userDetailsService(authUserDetailsService)
+        .passwordEncoder(passwordEncoder)
+  }
+
+  override fun configure(http: HttpSecurity) {
+    http
+        .sessionManagement() // TODO needed?
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/oauth/token").permitAll()
+        .antMatchers("/register").permitAll()
+        .anyRequest().authenticated()
+        .and()
+        .httpBasic()
+        .and()
+        .exceptionHandling().authenticationEntryPoint(oAuth2ExceptionEntryPoint)
   }
 
   @Bean
   override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
-
-  override fun configure(httpSecurity: HttpSecurity) {
-    httpSecurity.csrf().disable()
-        .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
-        .authorizeRequests()
-        .antMatchers("/user/register", "/user/login").permitAll() // don't authenticate this particular request
-        .anyRequest().authenticated()// all other requests need to be authenticated
-        .and()
-        .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // session won't be used to store user's state.
-  }
 }
