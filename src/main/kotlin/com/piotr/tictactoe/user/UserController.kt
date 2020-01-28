@@ -28,7 +28,7 @@ class UserController {
   fun login(@RequestBody dto: LoginRequestDto): ResponseEntity<LoginResponseDto> =
       ResponseEntity.ok(userFacade.login(dto))
 
-  @GetMapping("/api/test")
+  @GetMapping("/securetest")
   fun login(): ResponseEntity<UserDto> {
     return ResponseEntity.ok(userFacade.getLoggedUser())
   }

@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class OAuthErrorCreator {
+class OAuth2ErrorCreator {
 
   @Bean
-  fun createOauthExceptionTranslator() = OAuthResponseExceptionTranslator()
+  fun createOauthExceptionTranslator() = OAuth2ResponseExceptionTranslator()
 
   @Bean
-  fun createOauthExceptionEntryPoint() = OAuthExceptionEntryPoint()
+  fun createOauthExceptionEntryPoint() = OAuth2ExceptionEntryPoint()
 }

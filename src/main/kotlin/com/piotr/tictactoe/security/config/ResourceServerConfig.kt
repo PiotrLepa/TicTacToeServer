@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.security.config
 
-import com.piotr.tictactoe.security.error.OAuthExceptionEntryPoint
-import com.piotr.tictactoe.security.error.OAuthResponseExceptionTranslator
+import com.piotr.tictactoe.security.error.OAuth2ExceptionEntryPoint
+import com.piotr.tictactoe.security.error.OAuth2ResponseExceptionTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -16,28 +16,28 @@ import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEn
 class ResourceServerConfig : ResourceServerConfigurerAdapter() {
 
   @Autowired
-  private lateinit var oAuthResponseExceptionTranslator: OAuthResponseExceptionTranslator
+  private lateinit var oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator
 
   @Autowired
-  private lateinit var oAuthExceptionEntryPoint: OAuthExceptionEntryPoint
+  private lateinit var oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
 
   override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
         .requestMatchers()
-        .antMatchers("/api/**")
+        .antMatchers("/securetest")
         .and()
         .authorizeRequests()
         .anyRequest().authenticated()
         .and()
-        .exceptionHandling().authenticationEntryPoint(oAuthExceptionEntryPoint)
+        .exceptionHandling().authenticationEntryPoint(oAuth2ExceptionEntryPoint)
   }
 
   override fun configure(resources: ResourceServerSecurityConfigurer) {
     val auth2AccessDeniedHandler = OAuth2AccessDeniedHandler().apply {
-      setExceptionTranslator(oAuthResponseExceptionTranslator)
+      setExceptionTranslator(oAuth2ResponseExceptionTranslator)
     }
     val authenticationEntryPoint = OAuth2AuthenticationEntryPoint().apply {
-      setExceptionTranslator(oAuthResponseExceptionTranslator)
+      setExceptionTranslator(oAuth2ResponseExceptionTranslator)
     }
     resources.accessDeniedHandler(auth2AccessDeniedHandler)
         .authenticationEntryPoint(authenticationEntryPoint)

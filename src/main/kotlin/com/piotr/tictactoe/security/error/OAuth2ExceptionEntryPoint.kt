@@ -7,7 +7,7 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class OAuthExceptionEntryPoint : AuthenticationEntryPoint {
+class OAuth2ExceptionEntryPoint : AuthenticationEntryPoint {
 
   override fun commence(
     request: HttpServletRequest,
