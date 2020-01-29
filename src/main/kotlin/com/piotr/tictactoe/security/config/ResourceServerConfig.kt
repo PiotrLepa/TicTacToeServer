@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
+import org.springframework.security.oauth2.provider.token.TokenStore
 
 @Configuration
 @EnableResourceServer
@@ -20,6 +21,9 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
 
   @Autowired
   private lateinit var oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
+
+  @Autowired
+  private lateinit var tokenStore: TokenStore
 
   override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
@@ -41,5 +45,6 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
     }
     resources.accessDeniedHandler(auth2AccessDeniedHandler)
         .authenticationEntryPoint(authenticationEntryPoint)
+        .tokenStore(tokenStore)
   }
 }

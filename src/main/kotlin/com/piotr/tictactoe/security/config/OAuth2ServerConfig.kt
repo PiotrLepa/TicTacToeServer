@@ -12,7 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.provider.token.TokenStore
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore
+import javax.sql.DataSource
 
 @Configuration
 @EnableAuthorizationServer
@@ -30,8 +31,11 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
   @Autowired
   private lateinit var oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator
 
+  @Autowired
+  private lateinit var dataSource: DataSource
+
   @Bean
-  fun tokenStore(): TokenStore = InMemoryTokenStore()
+  fun tokenStore(): TokenStore = JdbcTokenStore(dataSource)
 
   override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
     endpoints.tokenStore(tokenStore())
