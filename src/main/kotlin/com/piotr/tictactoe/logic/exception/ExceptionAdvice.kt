@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.logic
+package com.piotr.tictactoe.logic.exception
 
 import com.piotr.tictactoe.game.domain.GameEndedException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
@@ -31,5 +31,6 @@ class GameEndedExceptionHandlerAdvice {
   private fun createErrorResponse(status: HttpStatus, exception: Exception): ResponseEntity<ErrorResponse> =
       ResponseEntity
           .status(status)
-          .body(ErrorResponse(status.value(), exception::class.simpleName.toString(), exception.message))
+          .body(ErrorResponse(status.value(), exception::class.simpleName.toString(),
+              exception.message))
 }

@@ -26,9 +26,6 @@ data class GameWithComputer(
   @Enumerated(EnumType.STRING)
   var difficultyLevel: DifficultyLevel,
 
-  @Column(name = "current_turn")
-  var currentTurn: GameTurn,
-
   @Column(name = "player_mark")
   var playerMark: FieldMark,
 
@@ -47,8 +44,7 @@ data class GameWithComputer(
 ) {
 
   constructor() : this(-1, GameStatus.IN_PROGRESS, DifficultyLevel.EASY,
-      GameTurn.COMPUTER, FieldMark.X, FieldMark.O,
-      DateTime.now().millis, DateTime.now().millis
+      FieldMark.X, FieldMark.O, DateTime.now().millis, DateTime.now().millis
   )
 
   fun toDto() = GameWithComputerDto(
@@ -56,7 +52,6 @@ data class GameWithComputer(
       playerId = playerId,
       status = status,
       difficultyLevel = difficultyLevel,
-      currentTurn = currentTurn,
       playerMark = playerMark,
       computerMark = computerMark
   )
