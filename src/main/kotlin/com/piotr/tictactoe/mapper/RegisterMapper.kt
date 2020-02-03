@@ -27,5 +27,5 @@ class RegisterMapper(
 
   @Bean
   @Autowired
-  fun create(passwordEncoder: PasswordEncoder) = RegisterMapper(passwordEncoder)
+  fun createRegisterMapper(passwordEncoder: PasswordEncoder) = RegisterMapper(passwordEncoder)
 }

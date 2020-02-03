@@ -65,5 +65,5 @@ class UserFacade {
 
   private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
 
-  fun create() = UserFacade()
+  fun createUserFacade() = UserFacade()
 }

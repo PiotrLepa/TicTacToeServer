@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.logic
 
-import com.piotr.tictactoe.game.exception.GameEndedException
+import com.piotr.tictactoe.game.domain.GameEndedException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UserNotExistsException
