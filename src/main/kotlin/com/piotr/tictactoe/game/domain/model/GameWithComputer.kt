@@ -56,6 +56,8 @@ data class GameWithComputer(
       playerId = playerId,
       status = status,
       difficultyLevel = difficultyLevel,
-      currentTurn = currentTurn
+      currentTurn = currentTurn,
+      playerMark = playerMark,
+      computerMark = computerMark
   )
 }
