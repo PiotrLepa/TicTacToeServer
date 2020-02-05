@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface GameRepository : JpaRepository<GameWithComputer, Long>
+interface GameRepository : JpaRepository<GameWithComputer, Long> {
+
+  fun findGameById(id: Long): GameWithComputer
+}

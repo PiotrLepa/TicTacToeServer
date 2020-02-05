@@ -6,7 +6,9 @@ import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -24,15 +26,12 @@ class GameController {
     return ResponseEntity(game, HttpStatus.CREATED)
   }
 
-//  @PutMapping("/field")
-//  fun setField(@RequestBody playerMove: PlayerMoveDto): ResponseEntity<GameDto> {
-//    val game = gameFacade.setField(playerMove)
-//    return ResponseEntity(game, HttpStatus.OK)
-//  }
-//
-//  @PostMapping("/resetBoard")
-//  fun resetBoard(@RequestBody resetBoard: ResetBoardDto): ResponseEntity<GameDto> {
-//    val game = gameFacade.resetBoard(resetBoard)
-//    return ResponseEntity(game, HttpStatus.OK)
-//  }
+  @PutMapping("/{gameId}/move/{fieldIndex}")
+  fun createGame(
+    @PathVariable("gameId") gameId: Long,
+    @PathVariable("fieldIndex") fieldIndex: Int
+  ): ResponseEntity<GameWithComputerDto> {
+    val move = gameFacade.setPlayerMove(gameId, fieldIndex)
+    return ResponseEntity(move, HttpStatus.OK)
+  }
 }

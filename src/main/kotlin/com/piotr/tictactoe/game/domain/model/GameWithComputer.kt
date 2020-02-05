@@ -2,6 +2,7 @@ package com.piotr.tictactoe.game.domain.model
 
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
+import com.piotr.tictactoe.move.dto.MoveDto
 import org.joda.time.DateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -47,12 +48,13 @@ data class GameWithComputer(
       FieldMark.X, FieldMark.O, DateTime.now().millis, DateTime.now().millis
   )
 
-  fun toDto() = GameWithComputerDto(
+  fun toDto(moves: List<MoveDto>) = GameWithComputerDto(
       id = id!!,
       playerId = playerId,
       status = status,
       difficultyLevel = difficultyLevel,
       playerMark = playerMark,
-      computerMark = computerMark
+      computerMark = computerMark,
+      moves = moves
   )
 }
