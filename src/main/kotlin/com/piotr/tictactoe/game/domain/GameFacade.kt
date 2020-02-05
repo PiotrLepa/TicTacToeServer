@@ -1,9 +1,14 @@
 package com.piotr.tictactoe.game.domain
 
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.GameStatus.COMPUTER_WON
+import com.piotr.tictactoe.game.domain.model.GameStatus.DRAW
+import com.piotr.tictactoe.game.domain.model.GameStatus.IN_PROGRESS
+import com.piotr.tictactoe.game.domain.model.GameStatus.PLAYER_WON
 import com.piotr.tictactoe.game.domain.model.GameTurn
-import com.piotr.tictactoe.game.domain.util.ComputerMoveComponent
 import com.piotr.tictactoe.game.domain.util.GameComponent
+import com.piotr.tictactoe.game.domain.util.GameConstant.FIELD_MAX_INDEX
+import com.piotr.tictactoe.game.domain.util.computermove.ComputerMoveGetter
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.MoveFacade
 import com.piotr.tictactoe.user.domain.UserFacade
@@ -24,7 +29,7 @@ class GameFacade {
   private lateinit var gameComponent: GameComponent
 
   @Autowired
-  private lateinit var computerMoveComponent: ComputerMoveComponent
+  private lateinit var computerMoveGetter: ComputerMoveGetter
 
   @Autowired
   private lateinit var gameRepository: GameRepository
@@ -37,7 +42,7 @@ class GameFacade {
         .toDto(listOf())
         .also { gameDto ->
           if (gameComponent.getStartingPlayer() == GameTurn.COMPUTER) {
-            setComputerInitialMove(gameDto)
+            setComputeMove(gameDto)
           }
         }
         .let {
@@ -47,15 +52,27 @@ class GameFacade {
   }
 
   fun setPlayerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
-    val game = gameRepository.findGameById(gameId)
-    val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val allMoves = moveFacade.getAllMoves(gameId)
-    return gameRepository.findGameById(gameId)
-        .toDto(allMoves)
+    val game = gameRepository.findGameById(gameId).toDto(allMoves)
+    val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
+    return if (move.fieldIndex != FIELD_MAX_INDEX) {
+      setComputeMove(game)
+    } else {
+      game
+    }
   }
 
-  private fun setComputerInitialMove(gameDto: GameWithComputerDto) {
-    moveFacade.setMove(gameDto.id, computerMoveComponent.getComputerMove(gameDto, listOf()), gameDto.computerMark)
+  private fun setComputeMove(gameDto: GameWithComputerDto): GameWithComputerDto {
+    val computerMove = computerMoveGetter.getComputerMove(gameDto)
+    return when (computerMove.status) {
+      IN_PROGRESS -> {
+        val move = moveFacade.setMove(gameDto.id, computerMove.fieldIndex, gameDto.computerMark)
+        gameDto.copy(moves = gameDto.moves + listOf(move))
+      }
+      PLAYER_WON -> gameDto.copy(status = PLAYER_WON)
+      COMPUTER_WON -> gameDto.copy(status = PLAYER_WON)
+      DRAW -> gameDto.copy(status = DRAW)
+    }
   }
 
   @Bean

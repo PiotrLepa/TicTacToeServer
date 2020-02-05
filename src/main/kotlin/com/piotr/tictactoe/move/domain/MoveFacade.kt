@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.move.domain
 
+import com.piotr.tictactoe.game.domain.util.GameConstant.VALID_FIELDS_INDEXES
 import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.domain.model.Move
 import com.piotr.tictactoe.move.dto.MoveDto
@@ -28,8 +29,8 @@ class MoveFacade {
   fun getAllMoves(gameId: Long): List<MoveDto> = moveRepository.findMovesByGameId(gameId).map(Move::toDto)
 
   private fun checkFieldIndex(fieldIndex: Int) {
-    if (fieldIndex !in validFieldsIndexes) {
-      throw InvalidFieldIndexRangeException("Field index should be in range $validFieldsIndexes")
+    if (fieldIndex !in VALID_FIELDS_INDEXES) {
+      throw InvalidFieldIndexRangeException("Field index should be in range $VALID_FIELDS_INDEXES")
     }
   }
 
@@ -39,10 +40,4 @@ class MoveFacade {
   }
 
   fun createMoveFacade() = MoveFacade()
-
-  companion object {
-    val FIELD_MIN_INDEX = 0
-    val FIELD_MAX_INDEX = 8
-    private val validFieldsIndexes = (FIELD_MIN_INDEX..FIELD_MAX_INDEX)
-  }
 }
