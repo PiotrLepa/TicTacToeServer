@@ -27,11 +27,9 @@ class ResourceServerConfig : ResourceServerConfigurerAdapter() {
 
   override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
-        .requestMatchers()
-        .antMatchers("/securetest")
+        .requestMatchers().antMatchers("/game/**")
         .and()
-        .authorizeRequests()
-        .anyRequest().authenticated()
+        .authorizeRequests().anyRequest().authenticated()
         .and()
         .exceptionHandling().authenticationEntryPoint(oAuth2ExceptionEntryPoint)
   }

@@ -34,7 +34,6 @@ dependencies {
   }
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.2")
-  implementation("io.jsonwebtoken:jjwt:0.2")
   implementation("joda-time:joda-time:2.10.5")
   implementation("org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE")
   implementation("org.postgresql:postgresql:42.2.9")
