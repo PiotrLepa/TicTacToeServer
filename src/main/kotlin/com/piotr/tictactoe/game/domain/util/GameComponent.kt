@@ -19,7 +19,7 @@ class GameComponent {
     }
     return GameWithComputer(
         playerId = playerId,
-        status = GameStatus.IN_PROGRESS,
+        status = GameStatus.ON_GOING,
         difficultyLevel = difficultyLevel,
         playerMark = playerMark,
         computerMark = computerMark,

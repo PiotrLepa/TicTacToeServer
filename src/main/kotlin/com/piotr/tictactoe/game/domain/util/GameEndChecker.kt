@@ -14,7 +14,7 @@ class GameEndChecker {
         checkWin(game.moves, game.playerMark) -> GameStatus.PLAYER_WON
         checkWin(game.moves, game.computerMark) -> GameStatus.COMPUTER_WON
         checkDraw(game.moves) -> GameStatus.DRAW
-        else -> GameStatus.IN_PROGRESS
+        else -> GameStatus.ON_GOING
       }
 
   fun checkWin(moves: List<MoveDto>, mark: FieldMark): Boolean {

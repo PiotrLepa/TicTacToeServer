@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.game.domain.model
 
 enum class GameStatus {
-  IN_PROGRESS,
+  ON_GOING,
   PLAYER_WON,
   COMPUTER_WON,
   DRAW

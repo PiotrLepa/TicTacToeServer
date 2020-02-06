@@ -3,14 +3,17 @@ package com.piotr.tictactoe.game.domain
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
 import com.piotr.tictactoe.game.domain.model.GameStatus.COMPUTER_WON
 import com.piotr.tictactoe.game.domain.model.GameStatus.DRAW
-import com.piotr.tictactoe.game.domain.model.GameStatus.IN_PROGRESS
+import com.piotr.tictactoe.game.domain.model.GameStatus.ON_GOING
 import com.piotr.tictactoe.game.domain.model.GameStatus.PLAYER_WON
 import com.piotr.tictactoe.game.domain.model.GameTurn
+import com.piotr.tictactoe.game.domain.model.GameWithComputer
 import com.piotr.tictactoe.game.domain.util.GameComponent
 import com.piotr.tictactoe.game.domain.util.GameConstant.FIELD_MAX_INDEX
+import com.piotr.tictactoe.game.domain.util.GameEndChecker
 import com.piotr.tictactoe.game.domain.util.computermove.ComputerMoveGetter
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.MoveFacade
+import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -32,6 +35,9 @@ class GameFacade {
   private lateinit var computerMoveGetter: ComputerMoveGetter
 
   @Autowired
+  private lateinit var gameEndChecker: GameEndChecker
+
+  @Autowired
   private lateinit var gameRepository: GameRepository
 
   fun createGameWithComputer(difficultyLevel: DifficultyLevel): GameWithComputerDto {
@@ -40,38 +46,49 @@ class GameFacade {
     return gameComponent.createGameWithComputer(player.id, difficultyLevel, startingPlayer)
         .let(gameRepository::save)
         .toDto(listOf())
-        .also { gameDto ->
+        .let { gameDto ->
           if (gameComponent.getStartingPlayer() == GameTurn.COMPUTER) {
             setComputeMove(gameDto)
+          } else {
+            gameDto
           }
-        }
-        .let {
-          val moves = moveFacade.getAllMoves(it.id)
-          it.copy(moves = moves)
         }
   }
 
-  fun setPlayerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
+  fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
+    val game = gameRepository.findGameById(gameId)
+    checkIfGameIsOnGoing(game)
     val allMoves = moveFacade.getAllMoves(gameId)
-    val game = gameRepository.findGameById(gameId).toDto(allMoves)
-    val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
-    return if (move.fieldIndex != FIELD_MAX_INDEX) {
-      setComputeMove(game)
+    val gameDto = game.toDto(allMoves)
+    val move = moveFacade.setMove(gameId, fieldIndex, gameDto.playerMark)
+    return if (canDoNextMove(move)) {
+      setComputeMove(gameDto)
     } else {
-      game
+      updateGameState(gameDto)
     }
   }
 
   private fun setComputeMove(gameDto: GameWithComputerDto): GameWithComputerDto {
     val computerMove = computerMoveGetter.getComputerMove(gameDto)
     return when (computerMove.status) {
-      IN_PROGRESS -> {
+      ON_GOING -> {
         val move = moveFacade.setMove(gameDto.id, computerMove.fieldIndex, gameDto.computerMark)
         gameDto.copy(moves = gameDto.moves + listOf(move))
       }
       PLAYER_WON -> gameDto.copy(status = PLAYER_WON)
-      COMPUTER_WON -> gameDto.copy(status = PLAYER_WON)
+      COMPUTER_WON -> gameDto.copy(status = COMPUTER_WON)
       DRAW -> gameDto.copy(status = DRAW)
+    }
+  }
+
+  private fun updateGameState(gameDto: GameWithComputerDto): GameWithComputerDto =
+      gameDto.copy(status = gameEndChecker.checkGameEnd(gameDto))
+
+  private fun canDoNextMove(move: MoveDto) = move.fieldIndex != FIELD_MAX_INDEX
+
+  private fun checkIfGameIsOnGoing(game: GameWithComputer) {
+    if (game.status != ON_GOING) {
+      throw GameEndedException()
     }
   }
 

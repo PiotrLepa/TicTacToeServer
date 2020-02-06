@@ -31,7 +31,7 @@ class GameController {
     @PathVariable("gameId") gameId: Long,
     @PathVariable("fieldIndex") fieldIndex: Int
   ): ResponseEntity<GameWithComputerDto> {
-    val move = gameFacade.setPlayerMove(gameId, fieldIndex)
+    val move = gameFacade.setPlayerMoveAndGetComputerMove(gameId, fieldIndex)
     return ResponseEntity(move, HttpStatus.OK)
   }
 }

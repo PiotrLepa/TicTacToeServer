@@ -44,7 +44,7 @@ data class GameWithComputer(
   var id: Long? = null
 ) {
 
-  constructor() : this(-1, GameStatus.IN_PROGRESS, DifficultyLevel.EASY,
+  constructor() : this(-1, GameStatus.ON_GOING, DifficultyLevel.EASY,
       FieldMark.X, FieldMark.O, DateTime.now().millis, DateTime.now().millis
   )
 
