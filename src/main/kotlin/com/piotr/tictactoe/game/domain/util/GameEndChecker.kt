@@ -19,16 +19,16 @@ class GameEndChecker {
 
   fun checkWin(moves: List<MoveDto>, mark: FieldMark): Boolean {
     for (combination in winningCombinations) {
-      if (moves.getOrNull(combination[0])?.mark == mark
-          && moves.getOrNull(combination[1])?.mark == mark
-          && moves.getOrNull(combination[2])?.mark == mark) {
+      if (moves.find { it.fieldIndex == combination[0] }?.mark == mark
+          && moves.find { it.fieldIndex == combination[1] }?.mark == mark
+          && moves.find { it.fieldIndex == combination[2] }?.mark == mark) {
         return true
       }
     }
     return false
   }
 
-  fun checkDraw(moves: List<MoveDto>): Boolean = moves.size == 9
+  fun checkDraw(moves: List<MoveDto>): Boolean = moves.size == 9 && !checkWin(moves, FieldMark.O) && !checkWin(moves, FieldMark.X)
 
   companion object {
     private val winningCombinations = arrayOf(

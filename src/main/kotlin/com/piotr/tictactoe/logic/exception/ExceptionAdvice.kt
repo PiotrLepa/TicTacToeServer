@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 @ControllerAdvice
 class GameEndedExceptionHandlerAdvice {
 
+  @ExceptionHandler(GameEndedException::class)
+  fun handleGameEndedException(exception: GameEndedException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
   @ExceptionHandler(InvalidFieldIndexRangeException::class)
   fun handleInvalidFieldIndexRange(exception: InvalidFieldIndexRangeException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
@@ -27,10 +31,6 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(UserNotExistsException::class)
   fun handleUserNotExistsException(exception: UserNotExistsException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
-
-  @ExceptionHandler(GameEndedException::class)
-  fun handleGameEndedException(exception: GameEndedException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   private fun createErrorResponse(status: HttpStatus, exception: Exception): ResponseEntity<ErrorResponse> =

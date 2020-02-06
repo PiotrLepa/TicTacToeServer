@@ -1,10 +1,7 @@
 package com.piotr.tictactoe.game.domain
 
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
-import com.piotr.tictactoe.game.domain.model.GameStatus.COMPUTER_WON
-import com.piotr.tictactoe.game.domain.model.GameStatus.DRAW
 import com.piotr.tictactoe.game.domain.model.GameStatus.ON_GOING
-import com.piotr.tictactoe.game.domain.model.GameStatus.PLAYER_WON
 import com.piotr.tictactoe.game.domain.model.GameTurn
 import com.piotr.tictactoe.game.domain.model.GameWithComputer
 import com.piotr.tictactoe.game.domain.util.GameComponent
@@ -58,30 +55,22 @@ class GameFacade {
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
     val game = gameRepository.findGameById(gameId)
     checkIfGameIsOnGoing(game)
-    val allMoves = moveFacade.getAllMoves(gameId)
-    val gameDto = game.toDto(allMoves)
-    val move = moveFacade.setMove(gameId, fieldIndex, gameDto.playerMark)
+    val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
+    val gameDto = game.toDto(moveFacade.getAllMoves(gameId))
     return if (canDoNextMove(move)) {
-      setComputeMove(gameDto)
+      updateGameStatatus(setComputeMove(gameDto))
     } else {
-      updateGameState(gameDto)
+      updateGameStatatus(gameDto)
     }
   }
 
   private fun setComputeMove(gameDto: GameWithComputerDto): GameWithComputerDto {
-    val computerMove = computerMoveGetter.getComputerMove(gameDto)
-    return when (computerMove.status) {
-      ON_GOING -> {
-        val move = moveFacade.setMove(gameDto.id, computerMove.fieldIndex, gameDto.computerMark)
-        gameDto.copy(moves = gameDto.moves + listOf(move))
-      }
-      PLAYER_WON -> gameDto.copy(status = PLAYER_WON)
-      COMPUTER_WON -> gameDto.copy(status = COMPUTER_WON)
-      DRAW -> gameDto.copy(status = DRAW)
-    }
+    val computerMoveFieldIndex = computerMoveGetter.getComputerMove(gameDto)
+    val move = moveFacade.setMove(gameDto.id, computerMoveFieldIndex, gameDto.computerMark)
+    return gameDto.copy(moves = gameDto.moves + listOf(move))
   }
 
-  private fun updateGameState(gameDto: GameWithComputerDto): GameWithComputerDto =
+  private fun updateGameStatatus(gameDto: GameWithComputerDto): GameWithComputerDto =
       gameDto.copy(status = gameEndChecker.checkGameEnd(gameDto))
 
   private fun canDoNextMove(move: MoveDto) = move.fieldIndex != FIELD_MAX_INDEX
