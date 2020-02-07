@@ -1,3 +1,3 @@
 package com.piotr.tictactoe.game.domain
 
-class GameEndedException : Exception()
+class GameEndedException(override val message: String? = null) : Exception(message)

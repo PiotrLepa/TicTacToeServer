@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.user.exception
 
-class EmailAlreadyExistsException() : Exception()
+class EmailAlreadyExistsException(override val message: String? = null) : Exception(message)
 
-class PasswordsAreDifferentException() : Exception()
+class PasswordsAreDifferentException(override val message: String? = null) : Exception(message)
 
-class UserNotExistsException() : Exception()
+class UserNotExistsException(override val message: String? = null) : Exception(message)
