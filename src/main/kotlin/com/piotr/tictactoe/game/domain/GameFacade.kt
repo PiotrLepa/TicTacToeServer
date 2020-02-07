@@ -66,7 +66,7 @@ class GameFacade {
 
   private fun setComputeMove(gameDto: GameWithComputerDto): GameWithComputerDto {
     val computerMoveFieldIndex = computerMoveGetter.getComputerMove(gameDto)
-    val move = moveFacade.setMove(gameDto.id, computerMoveFieldIndex, gameDto.computerMark)
+    val move = moveFacade.setMove(gameDto.gameId, computerMoveFieldIndex, gameDto.computerMark)
     return gameDto.copy(moves = gameDto.moves + listOf(move))
   }
 

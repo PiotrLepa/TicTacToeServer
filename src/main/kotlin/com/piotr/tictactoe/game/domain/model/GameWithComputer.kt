@@ -40,8 +40,8 @@ data class GameWithComputer(
   var modificationDate: Long,
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  var id: Long? = null
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  var gameId: Long? = null
 ) {
 
   constructor() : this(-1, GameStatus.ON_GOING, DifficultyLevel.EASY,
@@ -49,7 +49,7 @@ data class GameWithComputer(
   )
 
   fun toDto(moves: List<MoveDto>) = GameWithComputerDto(
-      id = id!!,
+      gameId = gameId!!,
       playerId = playerId,
       status = status,
       difficultyLevel = difficultyLevel,

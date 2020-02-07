@@ -6,7 +6,7 @@ import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
 
 data class GameWithComputerDto(
-  val id: Long,
+  val gameId: Long,
   val playerId: Long,
   val status: GameStatus,
   val difficultyLevel: DifficultyLevel,

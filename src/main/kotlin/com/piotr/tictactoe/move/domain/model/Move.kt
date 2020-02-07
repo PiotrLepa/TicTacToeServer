@@ -30,14 +30,14 @@ data class Move(
   var creationDate: Long,
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  var id: Long? = null
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  var moveId: Long? = null
 ) {
 
   constructor() : this(-1, -1, -1, FieldMark.X, DateTime.now().millis)
 
   fun toDto() = MoveDto(
-      id = id!!,
+      moveId = moveId!!,
       gameId = gameId,
       fieldIndex = fieldIndex,
       counter = counter,
