@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.game.domain
 
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.GameStatus
 import com.piotr.tictactoe.game.domain.model.GameStatus.ON_GOING
 import com.piotr.tictactoe.game.domain.model.GameTurn
 import com.piotr.tictactoe.game.domain.model.GameWithComputer
@@ -8,17 +9,21 @@ import com.piotr.tictactoe.game.domain.util.GameComponent
 import com.piotr.tictactoe.game.domain.util.GameConstant.FIELD_MAX_INDEX
 import com.piotr.tictactoe.game.domain.util.GameEndChecker
 import com.piotr.tictactoe.game.domain.util.computermove.ComputerMoveGetter
+import com.piotr.tictactoe.game.dto.GameResultDetailsDto
+import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.MoveFacade
 import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Service
 
-@Configuration
+@Service
 class GameFacade {
+
+  @Autowired
+  private lateinit var gameRepository: GameRepository
 
   @Autowired
   private lateinit var userFacade: UserFacade
@@ -35,9 +40,6 @@ class GameFacade {
   @Autowired
   private lateinit var gameEndChecker: GameEndChecker
 
-  @Autowired
-  private lateinit var gameRepository: GameRepository
-
   fun createGameWithComputer(difficultyLevel: DifficultyLevel): GameWithComputerDto {
     val player = userFacade.getLoggedUser()
     val startingPlayer = gameComponent.getStartingPlayer()
@@ -51,7 +53,7 @@ class GameFacade {
   }
 
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
-    val game = gameRepository.findGameById(gameId)
+    val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
     val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val gameDto = game.toDto(moveFacade.getAllMoves(gameId))
@@ -60,6 +62,23 @@ class GameFacade {
     } else {
       gameDto
     }.let { updateGame(game, it) }
+  }
+
+  fun getGameResults(): List<GameResultDto> =
+      gameRepository.findAllByStatusIn(GameStatus.getEndedGameStatus())
+          .map(GameWithComputer::toResultDto)
+
+  fun getGameResultDetails(gameId: Long): GameResultDetailsDto {
+    val game = gameRepository.findGameByGameId(gameId)
+    checkIfGameDidEnd(game)
+    val moves = moveFacade.getAllMoves(gameId)
+    return game.toResultDetailsDto(moves)
+  }
+
+  private fun checkIfGameDidEnd(game: GameWithComputer) {
+    if (game.status !in GameStatus.getEndedGameStatus()) {
+      throw GameIsOnGoingException()
+    }
   }
 
   private fun updateGame(game: GameWithComputer, gameDto: GameWithComputerDto): GameWithComputerDto =
@@ -82,7 +101,4 @@ class GameFacade {
       throw GameEndedException()
     }
   }
-
-  @Bean
-  fun createGameFacade() = GameFacade()
 }

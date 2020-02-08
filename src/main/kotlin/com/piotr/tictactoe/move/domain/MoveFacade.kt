@@ -6,9 +6,9 @@ import com.piotr.tictactoe.move.domain.model.Move
 import com.piotr.tictactoe.move.dto.MoveDto
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Service
 
-@Configuration
+@Service
 class MoveFacade {
 
   @Autowired
@@ -30,7 +30,7 @@ class MoveFacade {
   fun getAllMoves(gameId: Long): List<MoveDto> = moveRepository.findMovesByGameId(gameId).map(Move::toDto)
 
   private fun getNextCounter(gameId: Long): Int {
-    val lastMove = moveRepository.findFirstMoveByGameIdOrderByIdDesc(gameId)
+    val lastMove = moveRepository.findFirstMoveByGameIdOrderByMoveIdDesc(gameId)
     return lastMove?.counter?.plus(1) ?: 0
   }
 
@@ -46,6 +46,4 @@ class MoveFacade {
       throw FieldAlreadyTakenException()
     }
   }
-
-  fun createMoveFacade() = MoveFacade()
 }
