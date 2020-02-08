@@ -4,5 +4,9 @@ enum class GameStatus {
   ON_GOING,
   PLAYER_WON,
   COMPUTER_WON,
-  DRAW
+  DRAW;
+
+  companion object {
+    fun getEndedGameStatus(): List<GameStatus> = listOf(PLAYER_WON, COMPUTER_WON, DRAW)
+  }
 }

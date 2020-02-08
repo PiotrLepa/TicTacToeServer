@@ -2,6 +2,7 @@ package com.piotr.tictactoe.game
 
 import com.piotr.tictactoe.game.domain.GameFacade
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.dto.GameResultDetailsDto
 import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,5 +42,11 @@ class GameController {
   fun getResults(): ResponseEntity<List<GameResultDto>> {
     val results = gameFacade.getGameResults()
     return ResponseEntity(results, HttpStatus.OK)
+  }
+
+  @GetMapping("/results/{gameId}")
+  fun getResultDetails(@PathVariable("gameId") gameId: Long): ResponseEntity<GameResultDetailsDto> {
+    val resultDetails = gameFacade.getGameResultDetails(gameId)
+    return ResponseEntity(resultDetails, HttpStatus.OK)
   }
 }

@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.game.domain.model
 
+import com.piotr.tictactoe.game.dto.GameResultDetailsDto
 import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
@@ -70,5 +71,17 @@ data class GameWithComputer(
       computerMark = computerMark,
       startDate = creationDate,
       endDate = modificationDate
+  )
+
+  fun toResultDetailsDto(moves: List<MoveDto>) = GameResultDetailsDto(
+      gameId = gameId!!,
+      playerId = playerId,
+      status = status,
+      difficultyLevel = difficultyLevel,
+      playerMark = playerMark,
+      computerMark = computerMark,
+      startDate = creationDate,
+      endDate = modificationDate,
+      moves = moves
   )
 }
