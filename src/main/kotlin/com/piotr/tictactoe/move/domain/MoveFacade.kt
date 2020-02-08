@@ -30,7 +30,7 @@ class MoveFacade {
   fun getAllMoves(gameId: Long): List<MoveDto> = moveRepository.findMovesByGameId(gameId).map(Move::toDto)
 
   private fun getNextCounter(gameId: Long): Int {
-    val lastMove = moveRepository.findFirstMoveByGameIdOrderByIdDesc(gameId)
+    val lastMove = moveRepository.findFirstMoveByGameIdOrderByMoveIdDesc(gameId)
     return lastMove?.counter?.plus(1) ?: 0
   }
 

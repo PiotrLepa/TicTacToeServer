@@ -51,7 +51,7 @@ class GameFacade {
   }
 
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
-    val game = gameRepository.findGameById(gameId)
+    val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
     val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val gameDto = game.toDto(moveFacade.getAllMoves(gameId))

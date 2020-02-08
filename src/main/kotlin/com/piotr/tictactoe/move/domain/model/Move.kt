@@ -38,7 +38,6 @@ data class Move(
 
   fun toDto() = MoveDto(
       moveId = moveId!!,
-      gameId = gameId,
       fieldIndex = fieldIndex,
       counter = counter,
       mark = mark

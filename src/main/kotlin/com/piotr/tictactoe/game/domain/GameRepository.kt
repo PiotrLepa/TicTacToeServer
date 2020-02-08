@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface GameRepository : JpaRepository<GameWithComputer, Long> {
 
-  fun findGameById(id: Long): GameWithComputer
+  fun findGameByGameId(id: Long): GameWithComputer
 }

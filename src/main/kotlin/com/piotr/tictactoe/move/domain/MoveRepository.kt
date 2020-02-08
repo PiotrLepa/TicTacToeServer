@@ -9,5 +9,5 @@ interface MoveRepository : JpaRepository<Move, Long> {
 
   fun findMovesByGameId(gameId: Long): List<Move>
 
-  fun findFirstMoveByGameIdOrderByIdDesc(gameId: Long): Move?
+  fun findFirstMoveByGameIdOrderByMoveIdDesc(gameId: Long): Move?
 }
