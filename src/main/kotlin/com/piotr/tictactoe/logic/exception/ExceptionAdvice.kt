@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.logic.exception
 
 import com.piotr.tictactoe.game.domain.GameEndedException
+import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class GameEndedExceptionHandlerAdvice {
+
+  @ExceptionHandler(FieldAlreadyTakenException::class)
+  fun handleFieldAlreadyTakenException(exception: FieldAlreadyTakenException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(GameEndedException::class)
   fun handleGameEndedException(exception: GameEndedException) =

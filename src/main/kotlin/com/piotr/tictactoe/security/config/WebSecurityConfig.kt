@@ -42,7 +42,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         .csrf().disable()
         .authorizeRequests()
         .antMatchers("/oauth/token").permitAll()
-        .antMatchers("/register").permitAll()
+        .antMatchers("/user/register").permitAll()
         .anyRequest().authenticated()
         .and()
         .httpBasic()

@@ -3,12 +3,12 @@ package com.piotr.tictactoe.game.domain.util.computermove
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.EASY
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.HARD
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.MEDIUM
+import com.piotr.tictactoe.game.domain.util.GameConstant
 import com.piotr.tictactoe.game.domain.util.GameConstant.VALID_FIELDS_INDEXES
 import com.piotr.tictactoe.game.domain.util.GameEndChecker
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -26,9 +26,9 @@ class ComputerMoveGetter {
     computerMark = game.computerMark
 
     val computerMove = when (game.difficultyLevel) {
-      EASY -> minMax(game.moves, game.computerMark, 2)
-      MEDIUM -> minMax(game.moves, game.computerMark, 3)
-      HARD -> minMax(game.moves, game.computerMark, Int.MAX_VALUE)
+      EASY -> minMax(game.moves, game.computerMark, EASY_MODE_CALLS)
+      MEDIUM -> minMax(game.moves, game.computerMark, MEDIUM_MODE_CALLS)
+      HARD -> minMax(game.moves, game.computerMark, HARD_MODE_CALLS)
     }
 
     return computerMove.index
@@ -39,7 +39,7 @@ class ComputerMoveGetter {
     if (maxCalls == 0) {
       return MinMaxMove(0, availableSpots.random())
     }
-    if (availableSpots.size >= 8 && maxCalls < 4) { // TODO hardcoded
+    if (isFirsMove(availableSpots)) {
       return MinMaxMove(0, availableSpots.random())
     }
 
@@ -49,7 +49,7 @@ class ComputerMoveGetter {
       gameEndChecker.checkDraw(moves) -> MinMaxMove(0, ERROR_FIELD_INDEX)
       else -> {
         val minMaxMoves = availableSpots.map { spot ->
-          val newMove = MoveDto(-1, -1, spot, -1, mark)
+          val newMove = MoveDto(-1, spot, -1, mark)
           val newMoves = moves + listOf(newMove)
           val move = minMax(newMoves, getOppositeMark(mark), maxCalls - 1)
           MinMaxMove(move.score, spot)
@@ -64,6 +64,8 @@ class ComputerMoveGetter {
     }
   }
 
+  private fun isFirsMove(availableSpots: List<Int>) = availableSpots.size == GameConstant.FIELD_MAX_INDEX
+
   private fun getOppositeMark(mark: FieldMark) = if (mark == FieldMark.X) FieldMark.O else FieldMark.X
 
   private fun getAvailableSpotsIndexes(moves: List<MoveDto>): List<Int> =
@@ -71,6 +73,8 @@ class ComputerMoveGetter {
 
   companion object {
     private const val ERROR_FIELD_INDEX = -1
-    private val LOGGER = LoggerFactory.getLogger(ComputerMoveGetter::class.java)
+    private const val EASY_MODE_CALLS = 2
+    private const val MEDIUM_MODE_CALLS = 3
+    private const val HARD_MODE_CALLS = Int.MAX_VALUE
   }
 }
