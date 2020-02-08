@@ -17,11 +17,13 @@ import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Service
 
-@Configuration
+@Service
 class GameFacade {
+
+  @Autowired
+  private lateinit var gameRepository: GameRepository
 
   @Autowired
   private lateinit var userFacade: UserFacade
@@ -37,9 +39,6 @@ class GameFacade {
 
   @Autowired
   private lateinit var gameEndChecker: GameEndChecker
-
-  @Autowired
-  private lateinit var gameRepository: GameRepository
 
   fun createGameWithComputer(difficultyLevel: DifficultyLevel): GameWithComputerDto {
     val player = userFacade.getLoggedUser()
@@ -67,7 +66,7 @@ class GameFacade {
 
   fun getGameResults(): List<GameResultDto> =
       gameRepository.findAllByStatusIn(GameStatus.getEndedGameStatus())
-          .map { it.toResultDto() }
+          .map(GameWithComputer::toResultDto)
 
   fun getGameResultDetails(gameId: Long): GameResultDetailsDto {
     val game = gameRepository.findGameByGameId(gameId)
@@ -102,7 +101,4 @@ class GameFacade {
       throw GameEndedException()
     }
   }
-
-  @Bean
-  fun createGameFacade() = GameFacade()
 }

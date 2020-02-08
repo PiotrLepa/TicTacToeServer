@@ -17,14 +17,15 @@ class GameComponent {
       GameTurn.PLAYER -> FieldMark.X to FieldMark.O
       GameTurn.COMPUTER -> FieldMark.O to FieldMark.X
     }
+    val creationDate = DateTime.now().millis
     return GameWithComputer(
         playerId = playerId,
         status = GameStatus.ON_GOING,
         difficultyLevel = difficultyLevel,
         playerMark = playerMark,
         computerMark = computerMark,
-        creationDate = DateTime.now().millis,
-        modificationDate = DateTime.now().millis
+        creationDate = creationDate,
+        modificationDate = creationDate
     )
   }
 

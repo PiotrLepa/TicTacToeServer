@@ -6,9 +6,9 @@ import com.piotr.tictactoe.move.domain.model.Move
 import com.piotr.tictactoe.move.dto.MoveDto
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Service
 
-@Configuration
+@Service
 class MoveFacade {
 
   @Autowired
@@ -46,6 +46,4 @@ class MoveFacade {
       throw FieldAlreadyTakenException()
     }
   }
-
-  fun createMoveFacade() = MoveFacade()
 }
