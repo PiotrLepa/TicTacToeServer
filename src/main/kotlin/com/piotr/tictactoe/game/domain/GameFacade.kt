@@ -1,13 +1,17 @@
 package com.piotr.tictactoe.game.domain
 
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel
+import com.piotr.tictactoe.game.domain.model.GameStatus.COMPUTER_WON
+import com.piotr.tictactoe.game.domain.model.GameStatus.DRAW
 import com.piotr.tictactoe.game.domain.model.GameStatus.ON_GOING
+import com.piotr.tictactoe.game.domain.model.GameStatus.PLAYER_WON
 import com.piotr.tictactoe.game.domain.model.GameTurn
 import com.piotr.tictactoe.game.domain.model.GameWithComputer
 import com.piotr.tictactoe.game.domain.util.GameComponent
 import com.piotr.tictactoe.game.domain.util.GameConstant.FIELD_MAX_INDEX
 import com.piotr.tictactoe.game.domain.util.GameEndChecker
 import com.piotr.tictactoe.game.domain.util.computermove.ComputerMoveGetter
+import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.MoveFacade
 import com.piotr.tictactoe.move.dto.MoveDto
@@ -61,6 +65,10 @@ class GameFacade {
       gameDto
     }.let { updateGame(game, it) }
   }
+
+  fun getGameResults(): List<GameResultDto> =
+      gameRepository.findAllByStatusIn(listOf(COMPUTER_WON, PLAYER_WON, DRAW))
+          .map { it.toResultDto(moveFacade.getAllMoves(it.gameId!!)) }
 
   private fun updateGame(game: GameWithComputer, gameDto: GameWithComputerDto): GameWithComputerDto =
       game.apply {

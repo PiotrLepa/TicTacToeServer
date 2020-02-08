@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.game.domain.model
 
+import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
@@ -28,9 +29,11 @@ data class GameWithComputer(
   var difficultyLevel: DifficultyLevel,
 
   @Column(name = "player_mark")
+  @Enumerated(EnumType.STRING)
   var playerMark: FieldMark,
 
   @Column(name = "computer_mark")
+  @Enumerated(EnumType.STRING)
   var computerMark: FieldMark,
 
   @Column(name = "creation_date")
@@ -56,5 +59,16 @@ data class GameWithComputer(
       playerMark = playerMark,
       computerMark = computerMark,
       moves = moves
+  )
+
+  fun toResultDto() = GameResultDto(
+      gameId = gameId!!,
+      playerId = playerId,
+      status = status,
+      difficultyLevel = difficultyLevel,
+      playerMark = playerMark,
+      computerMark = computerMark,
+      startDate = creationDate,
+      endDate = modificationDate
   )
 }
