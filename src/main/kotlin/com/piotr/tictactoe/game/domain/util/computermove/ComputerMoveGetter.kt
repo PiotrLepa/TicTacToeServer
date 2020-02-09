@@ -37,7 +37,7 @@ class ComputerMoveGetter {
   private fun minMax(moves: List<MoveDto>, mark: FieldMark, maxCalls: Int): MinMaxMove {
     val availableSpots = getAvailableSpotsIndexes(moves)
     if (maxCalls == 0) {
-      return MinMaxMove(0, availableSpots.random())
+      return MinMaxMove(0, getRandomSpotOrError(availableSpots))
     }
     if (isFirsMove(availableSpots)) {
       return MinMaxMove(0, availableSpots.random())
@@ -62,6 +62,12 @@ class ComputerMoveGetter {
         }
       }
     }
+  }
+
+  private fun getRandomSpotOrError(availableSpots: List<Int>) = if (availableSpots.isNotEmpty()) {
+    availableSpots.random()
+  } else {
+    ERROR_FIELD_INDEX
   }
 
   private fun isFirsMove(availableSpots: List<Int>) = availableSpots.size == GameConstant.FIELD_MAX_INDEX + 1
