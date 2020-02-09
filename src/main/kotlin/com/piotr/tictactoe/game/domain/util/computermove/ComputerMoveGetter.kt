@@ -1,12 +1,12 @@
 package com.piotr.tictactoe.game.domain.util.computermove
 
+import com.piotr.tictactoe.game.domain.model.DifficultyLevel
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.EASY
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.HARD
 import com.piotr.tictactoe.game.domain.model.DifficultyLevel.MEDIUM
 import com.piotr.tictactoe.game.domain.util.GameConstant
 import com.piotr.tictactoe.game.domain.util.GameConstant.VALID_FIELDS_INDEXES
 import com.piotr.tictactoe.game.domain.util.GameEndChecker
-import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,14 +21,14 @@ class ComputerMoveGetter {
   private lateinit var playerMark: FieldMark
   private lateinit var computerMark: FieldMark
 
-  fun getComputerMove(game: GameWithComputerDto): Int {
-    playerMark = game.playerMark
-    computerMark = game.computerMark
+  fun getComputerMove(difficultyLevel: DifficultyLevel, computerMark: FieldMark, moves: List<MoveDto>): Int {
+    this.computerMark = computerMark
+    this.playerMark = getOppositeMark(computerMark)
 
-    val computerMove = when (game.difficultyLevel) {
-      EASY -> minMax(game.moves, game.computerMark, EASY_MODE_CALLS)
-      MEDIUM -> minMax(game.moves, game.computerMark, MEDIUM_MODE_CALLS)
-      HARD -> minMax(game.moves, game.computerMark, HARD_MODE_CALLS)
+    val computerMove = when (difficultyLevel) {
+      EASY -> minMax(moves, computerMark, EASY_MODE_CALLS)
+      MEDIUM -> minMax(moves, computerMark, MEDIUM_MODE_CALLS)
+      HARD -> minMax(moves, computerMark, HARD_MODE_CALLS)
     }
 
     return computerMove.index
@@ -64,7 +64,7 @@ class ComputerMoveGetter {
     }
   }
 
-  private fun isFirsMove(availableSpots: List<Int>) = availableSpots.size == GameConstant.FIELD_MAX_INDEX
+  private fun isFirsMove(availableSpots: List<Int>) = availableSpots.size == GameConstant.FIELD_MAX_INDEX + 1
 
   private fun getOppositeMark(mark: FieldMark) = if (mark == FieldMark.X) FieldMark.O else FieldMark.X
 
