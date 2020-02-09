@@ -1,7 +1,6 @@
 package com.piotr.tictactoe.game.domain.util
 
 import com.piotr.tictactoe.game.domain.model.GameStatus
-import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
 import org.springframework.stereotype.Component
@@ -9,11 +8,11 @@ import org.springframework.stereotype.Component
 @Component
 class GameEndChecker {
 
-  fun checkGameEnd(game: GameWithComputerDto): GameStatus =
+  fun checkGameEnd(moves: List<MoveDto>, playerMark: FieldMark, computerMark: FieldMark): GameStatus =
       when {
-        checkWin(game.moves, game.playerMark) -> GameStatus.PLAYER_WON
-        checkWin(game.moves, game.computerMark) -> GameStatus.COMPUTER_WON
-        checkDraw(game.moves) -> GameStatus.DRAW
+        checkWin(moves, playerMark) -> GameStatus.PLAYER_WON
+        checkWin(moves, computerMark) -> GameStatus.COMPUTER_WON
+        checkDraw(moves) -> GameStatus.DRAW
         else -> GameStatus.ON_GOING
       }
 

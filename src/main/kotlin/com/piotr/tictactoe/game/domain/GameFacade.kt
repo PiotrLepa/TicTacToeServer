@@ -13,6 +13,7 @@ import com.piotr.tictactoe.game.dto.GameResultDetailsDto
 import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import com.piotr.tictactoe.move.domain.MoveFacade
+import com.piotr.tictactoe.move.domain.model.FieldMark
 import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.joda.time.DateTime
@@ -45,23 +46,27 @@ class GameFacade {
     val startingPlayer = gameComponent.getStartingPlayer()
     val game = gameComponent.createGameWithComputer(player.id, difficultyLevel, startingPlayer)
         .let(gameRepository::save)
-    var gameDto = game.toDto(listOf())
-    if (startingPlayer == GameTurn.COMPUTER) {
-      gameDto = setComputeMove(gameDto)
+    val moves = if (startingPlayer == GameTurn.COMPUTER) {
+      val computerMove = setComputeMove(game.gameId!!, game.difficultyLevel, game.computerMark, listOf())
+      listOf(computerMove)
+    } else {
+      listOf()
     }
-    return updateGame(game, gameDto)
+    return updateGame(game, moves, game.playerMark, game.computerMark)
   }
 
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
     val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
     val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
-    val gameDto = game.toDto(moveFacade.getAllMoves(gameId))
-    return if (canDoNextMove(move)) {
-      setComputeMove(gameDto)
+    val allMoves = moveFacade.getAllMoves(gameId)
+    val updatedMoves = if (canDoNextMove(move)) {
+      val computerMove = setComputeMove(gameId, game.difficultyLevel, game.computerMark, allMoves)
+      allMoves + listOf(computerMove)
     } else {
-      gameDto
-    }.let { updateGame(game, it) }
+      allMoves
+    }
+    return updateGame(game, updatedMoves, game.playerMark, game.computerMark)
   }
 
   fun getGameResults(): List<GameResultDto> =
@@ -75,26 +80,35 @@ class GameFacade {
     return game.toResultDetailsDto(moves)
   }
 
+  private fun updateGame(
+    game: GameWithComputer,
+    moves: List<MoveDto>,
+    playerMark: FieldMark,
+    computerMark: FieldMark
+  ): GameWithComputerDto =
+      game.apply {
+        status = gameEndChecker.checkGameEnd(moves, playerMark, computerMark)
+        modificationDate = DateTime.now().millis
+      }.let(gameRepository::save)
+          .toDto(moves)
+
+  private fun setComputeMove(
+    gameId: Long,
+    difficultyLevel: DifficultyLevel,
+    computerMark: FieldMark,
+    moves: List<MoveDto>
+  ): MoveDto {
+    val computerMoveFieldIndex = computerMoveGetter.getComputerMove(difficultyLevel, computerMark, moves)
+    return moveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
+  }
+
+  private fun canDoNextMove(move: MoveDto) = move.counter != FIELD_MAX_INDEX
+
   private fun checkIfGameDidEnd(game: GameWithComputer) {
     if (game.status !in GameStatus.getEndedGameStatus()) {
       throw GameIsOnGoingException()
     }
   }
-
-  private fun updateGame(game: GameWithComputer, gameDto: GameWithComputerDto): GameWithComputerDto =
-      game.apply {
-        status = gameEndChecker.checkGameEnd(gameDto)
-        modificationDate = DateTime.now().millis
-      }.let(gameRepository::save)
-          .toDto(gameDto.moves)
-
-  private fun setComputeMove(gameDto: GameWithComputerDto): GameWithComputerDto {
-    val computerMoveFieldIndex = computerMoveGetter.getComputerMove(gameDto)
-    val move = moveFacade.setMove(gameDto.gameId, computerMoveFieldIndex, gameDto.computerMark)
-    return gameDto.copy(moves = gameDto.moves + listOf(move))
-  }
-
-  private fun canDoNextMove(move: MoveDto) = move.fieldIndex != FIELD_MAX_INDEX
 
   private fun checkIfGameIsOnGoing(game: GameWithComputer) {
     if (game.status != ON_GOING) {
