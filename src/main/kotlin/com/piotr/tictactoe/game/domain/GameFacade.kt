@@ -6,7 +6,6 @@ import com.piotr.tictactoe.game.domain.model.GameStatus.ON_GOING
 import com.piotr.tictactoe.game.domain.model.GameTurn
 import com.piotr.tictactoe.game.domain.model.GameWithComputer
 import com.piotr.tictactoe.game.domain.util.GameComponent
-import com.piotr.tictactoe.game.domain.util.GameConstant.FIELD_MAX_INDEX
 import com.piotr.tictactoe.game.domain.util.GameEndChecker
 import com.piotr.tictactoe.game.domain.util.computermove.ComputerMoveGetter
 import com.piotr.tictactoe.game.dto.GameResultDetailsDto
@@ -58,9 +57,9 @@ class GameFacade {
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
     val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
-    val move = moveFacade.setMove(gameId, fieldIndex, game.playerMark)
+    moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val allMoves = moveFacade.getAllMoves(gameId)
-    val updatedMoves = if (canDoNextMove(move)) {
+    val updatedMoves = if (canDoNextMove(allMoves, game.playerMark, game.computerMark)) {
       val computerMove = setComputeMove(gameId, game.difficultyLevel, game.computerMark, allMoves)
       allMoves + listOf(computerMove)
     } else {
@@ -102,7 +101,8 @@ class GameFacade {
     return moveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
   }
 
-  private fun canDoNextMove(move: MoveDto) = move.counter != FIELD_MAX_INDEX
+  private fun canDoNextMove(moves: List<MoveDto>, playerMark: FieldMark, computerMark: FieldMark) =
+      gameEndChecker.checkGameEnd(moves, playerMark, computerMark) == ON_GOING
 
   private fun checkIfGameDidEnd(game: GameWithComputer) {
     if (game.status !in GameStatus.getEndedGameStatus()) {
