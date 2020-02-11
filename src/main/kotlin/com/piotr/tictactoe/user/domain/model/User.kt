@@ -3,6 +3,7 @@ package com.piotr.tictactoe.user.domain.model
 import com.piotr.tictactoe.user.dto.UserDto
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.Table
 
@@ -10,9 +11,14 @@ import javax.persistence.Table
 @Table(name = "users")
 class User(
   var email: String,
+
   var username: String,
+
   var password: String,
-  @Id @GeneratedValue var id: Long? = null
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  var id: Long? = null
 ) {
 
   constructor() : this("", "", "")
