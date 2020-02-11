@@ -1,0 +1,19 @@
+oauth2:
+  client_id: tictactoe
+  client_secret: tictactoeSecret
+
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    generate-ddl: true
+  datasource:
+    platform: postgres
+    initialization-mode: always
+    url: jdbc:postgresql://localhost:5432/tictactoedb
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
