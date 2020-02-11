@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -34,16 +35,17 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         .passwordEncoder(passwordEncoder)
   }
 
+  override fun configure(web: WebSecurity) {
+    web.ignoring()
+        .antMatchers("/user/register")
+  }
+
   override fun configure(http: HttpSecurity) {
     http
-        .sessionManagement() // TODO needed?
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)// TODO needed?
         .and()
         .csrf().disable()
-        .authorizeRequests()
-        .antMatchers("/oauth/token").permitAll()
-        .antMatchers("/user/register").permitAll()
-        .anyRequest().authenticated()
+        .authorizeRequests().anyRequest().authenticated()
         .and()
         .httpBasic()
         .and()
