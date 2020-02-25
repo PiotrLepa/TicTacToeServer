@@ -1,7 +1,7 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.core.security.config
 
-import com.piotr.tictactoe.security.OathProperties
-import com.piotr.tictactoe.security.error.OAuth2ResponseExceptionTranslator
+import com.piotr.tictactoe.core.security.OathProperties
+import com.piotr.tictactoe.core.security.error.OAuth2ResponseExceptionTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -52,9 +52,12 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
             GRANT_TYPE_CLIENT_CREDENTIALS, // TODO needed?
             GRANT_TYPE_PASSWORD,
             GRANT_TYPE_REFRESH_TOKEN)
-        .scopes(SCOPE_READ, SCOPE_WRITE)
-        .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS)
-        .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY_SECONDS)
+        .scopes(SCOPE_READ,
+            SCOPE_WRITE)
+        .accessTokenValiditySeconds(
+            ACCESS_TOKEN_VALIDITY_SECONDS)
+        .refreshTokenValiditySeconds(
+            REFRESH_TOKEN_VALIDITY_SECONDS)
   }
 
 //  override fun configure(security: AuthorizationServerSecurityConfigurer) {

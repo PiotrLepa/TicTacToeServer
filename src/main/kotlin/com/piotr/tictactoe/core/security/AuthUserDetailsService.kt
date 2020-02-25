@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.core.security
 
 import com.piotr.tictactoe.user.domain.UserRepository
 import com.piotr.tictactoe.user.exception.UserNotExistsException

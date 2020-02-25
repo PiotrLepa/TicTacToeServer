@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.core.security
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration

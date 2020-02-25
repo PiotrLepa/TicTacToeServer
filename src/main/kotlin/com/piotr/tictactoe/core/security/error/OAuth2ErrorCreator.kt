@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security.error
+package com.piotr.tictactoe.core.security.error
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

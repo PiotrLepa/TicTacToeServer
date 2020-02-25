@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security.error
+package com.piotr.tictactoe.core.security.error
 
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception
