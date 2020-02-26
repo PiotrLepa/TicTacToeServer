@@ -5,7 +5,6 @@ import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
-import com.piotr.tictactoe.user.exception.UserNotExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
@@ -32,7 +31,7 @@ class UserFacade {
   }
 
   private fun findUserByEmail(email: String): UserDto =
-      userRepository.findUserByEmail(email)?.toDto() ?: throw UserNotExistsException()
+      userRepository.findUserByEmail(email)!!.toDto()
 
   private fun checkIfEmailIsAlreadyRegistered(dto: RegisterDto) {
     if (userRepository.findUserByEmail(dto.email) != null) {
@@ -53,6 +52,4 @@ class UserFacade {
       username = dto.username,
       password = passwordEncoder.encode(dto.password)
   )
-
-  fun createUserFacade() = UserFacade()
 }

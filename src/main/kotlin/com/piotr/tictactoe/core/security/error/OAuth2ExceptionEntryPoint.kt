@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.security.error
+package com.piotr.tictactoe.core.security.error
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.piotr.tictactoe.logic.exception.ErrorResponse

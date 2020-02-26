@@ -1,10 +1,10 @@
-package com.piotr.tictactoe.security
+package com.piotr.tictactoe.core.security
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class OathProperties {
+class Oath2Properties {
 
   @Value("\${oauth2.client_id}")
   lateinit var clientId: String

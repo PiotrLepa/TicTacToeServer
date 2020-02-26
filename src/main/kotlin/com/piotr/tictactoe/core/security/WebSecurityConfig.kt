@@ -1,6 +1,6 @@
-package com.piotr.tictactoe.security.config
+package com.piotr.tictactoe.core.security
 
-import com.piotr.tictactoe.security.error.OAuth2ExceptionEntryPoint
+import com.piotr.tictactoe.core.security.error.OAuth2ExceptionEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

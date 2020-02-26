@@ -6,7 +6,7 @@ plugins {
   val kotlinVersion = "1.3.61"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
-  kotlin("plugin.jpa") version kotlinVersion // TODO NEEDED?
+  kotlin("plugin.jpa") version kotlinVersion
 }
 
 group = "com.piotr.tictactoe"
@@ -29,6 +29,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-mustache:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-web:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-security:$springBootStarter")
+  implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootStarter")
   testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootStarter") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
