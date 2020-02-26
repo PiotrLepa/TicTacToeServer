@@ -6,7 +6,6 @@ import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
-import com.piotr.tictactoe.user.exception.UserNotExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -39,15 +38,11 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(EmailAlreadyExistsException::class)
   fun handleEmailAlreadyExists(exception: EmailAlreadyExistsException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.emailAlreadyExists"))
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.email_already_exists"))
 
   @ExceptionHandler(PasswordsAreDifferentException::class)
   fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.passwordsAreDifferent"))
-
-  @ExceptionHandler(UserNotExistsException::class)
-  fun handleUserNotExistsException(exception: UserNotExistsException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.userNotExists"))
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.passwords_are_different"))
 
   private fun createErrorResponse(
     status: HttpStatus,

@@ -6,7 +6,7 @@ plugins {
   val kotlinVersion = "1.3.61"
   kotlin("jvm") version kotlinVersion
   kotlin("plugin.spring") version kotlinVersion
-  kotlin("plugin.jpa") version kotlinVersion // TODO NEEDED?
+  kotlin("plugin.jpa") version kotlinVersion
 }
 
 group = "com.piotr.tictactoe"

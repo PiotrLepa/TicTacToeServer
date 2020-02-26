@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.core.security.config
 
-import com.piotr.tictactoe.core.security.OathProperties
+import com.piotr.tictactoe.core.security.Oath2Properties
 import com.piotr.tictactoe.core.security.error.OAuth2ResponseExceptionTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -26,7 +26,7 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
   private lateinit var passwordEncoder: PasswordEncoder
 
   @Autowired
-  private lateinit var oathProperties: OathProperties
+  private lateinit var oath2Properties: Oath2Properties
 
   @Autowired
   private lateinit var oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator
@@ -46,8 +46,8 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
   override fun configure(clients: ClientDetailsServiceConfigurer) {
     clients
         .inMemory()
-        .withClient(oathProperties.clientId)
-        .secret(passwordEncoder.encode(oathProperties.clientSecret))
+        .withClient(oath2Properties.clientId)
+        .secret(passwordEncoder.encode(oath2Properties.clientSecret))
         .authorizedGrantTypes(
             GRANT_TYPE_CLIENT_CREDENTIALS, // TODO needed?
             GRANT_TYPE_PASSWORD,
@@ -59,10 +59,6 @@ class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
         .refreshTokenValiditySeconds(
             REFRESH_TOKEN_VALIDITY_SECONDS)
   }
-
-//  override fun configure(security: AuthorizationServerSecurityConfigurer) {
-//    security.checkTokenAccess("isAuthenticated()") // TODO needed?
-//  }
 
   companion object {
     private const val GRANT_TYPE_PASSWORD = "password"
