@@ -43,11 +43,11 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(PasswordsAreDifferentException::class)
   fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.passwordsAreDifferent"))
 
   @ExceptionHandler(UserNotExistsException::class)
   fun handleUserNotExistsException(exception: UserNotExistsException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.userNotExists"))
 
   private fun createErrorResponse(
     status: HttpStatus,
