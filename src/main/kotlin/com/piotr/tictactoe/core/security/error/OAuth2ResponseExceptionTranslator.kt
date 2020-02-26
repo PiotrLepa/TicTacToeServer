@@ -10,7 +10,6 @@ class OAuth2ResponseExceptionTranslator : DefaultWebResponseExceptionTranslator(
     val responseEntity = super.translate(exception)
     val customException = responseEntity.body?.apply {
       addAdditionalInformation("code", httpErrorCode.toString())
-      addAdditionalInformation("message", message)
       addAdditionalInformation("exception", this::class.simpleName.toString())
     } ?: return responseEntity
     return ResponseEntity.status(customException.httpErrorCode)

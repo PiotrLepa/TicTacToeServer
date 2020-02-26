@@ -39,7 +39,7 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(EmailAlreadyExistsException::class)
   fun handleEmailAlreadyExists(exception: EmailAlreadyExistsException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.emailAlreadyExists"))
 
   @ExceptionHandler(PasswordsAreDifferentException::class)
   fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
@@ -49,9 +49,19 @@ class GameEndedExceptionHandlerAdvice {
   fun handleUserNotExistsException(exception: UserNotExistsException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
-  private fun createErrorResponse(status: HttpStatus, exception: Exception): ResponseEntity<ErrorResponse> =
+  private fun createErrorResponse(
+    status: HttpStatus,
+    exception: Exception,
+    printableMessage: String? = null
+  ): ResponseEntity<ErrorResponse> =
       ResponseEntity
           .status(status)
-          .body(ErrorResponse(status.value(), exception::class.simpleName.toString(),
-              messageSource.getMessage("user.error.emailAlreadyExists", null, LocaleContextHolder.getLocale()))) // TODO harcoded
+          .body(ErrorResponse(
+              code = status.value(),
+              exception = exception,
+              printableMessage = printableMessage
+          ))
+
+  private fun getMessage(code: String, args: Array<Any>? = null): String =
+      messageSource.getMessage(code, args, LocaleContextHolder.getLocale())
 }

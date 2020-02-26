@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.core.locale
 
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.support.ResourceBundleMessageSource
@@ -24,9 +25,10 @@ class LocaleCreator {
       }
 
   @Bean(name = ["messageSource"])
-  fun bundleMessageSource(): ResourceBundleMessageSource = ResourceBundleMessageSource()
+  fun bundleMessageSource(): MessageSource = ResourceBundleMessageSource()
       .apply {
-        setBasename("messages")
+        setBasename("locale/messages")
+        setDefaultEncoding("UTF-8")
       }
 
   companion object {
