@@ -59,6 +59,7 @@ class GameFacade {
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
     val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
+    checkIfPlayerMatch(game)
     moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val allMoves = moveFacade.getAllMoves(gameId)
     val updatedMoves = if (canDoNextMove(allMoves, game.playerMark, game.computerMark)) {
@@ -115,6 +116,13 @@ class GameFacade {
   private fun checkIfGameDidEnd(game: GameWithComputer) {
     if (game.status !in GameStatus.getEndedGameStatus()) {
       throw GameIsOnGoingException()
+    }
+  }
+
+  private fun checkIfPlayerMatch(game: GameWithComputer) {
+    val player = userFacade.getLoggedUser()
+    if (player.id != game.playerId) {
+      throw WrongPlayerException()
     }
   }
 

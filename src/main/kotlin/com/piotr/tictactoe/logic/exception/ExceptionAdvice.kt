@@ -2,6 +2,7 @@ package com.piotr.tictactoe.logic.exception
 
 import com.piotr.tictactoe.game.domain.GameEndedException
 import com.piotr.tictactoe.game.domain.GameIsOnGoingException
+import com.piotr.tictactoe.game.domain.WrongPlayerException
 import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
@@ -30,6 +31,10 @@ class GameEndedExceptionHandlerAdvice {
 
   @ExceptionHandler(GameEndedException::class)
   fun handleGameEndedException(exception: GameEndedException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
+  @ExceptionHandler(WrongPlayerException::class)
+  fun handleWrongPlayerException(exception: WrongPlayerException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(InvalidFieldIndexRangeException::class)
