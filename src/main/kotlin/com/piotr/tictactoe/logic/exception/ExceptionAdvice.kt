@@ -6,6 +6,7 @@ import com.piotr.tictactoe.game.domain.WrongPlayerException
 import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
+import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
@@ -38,15 +39,19 @@ class GameEndedExceptionHandlerAdvice {
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(InvalidFieldIndexRangeException::class)
-  fun handleInvalidFieldIndexRange(exception: InvalidFieldIndexRangeException) =
+  fun handleInvalidFieldIndexRangeException(exception: InvalidFieldIndexRangeException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(EmailAlreadyExistsException::class)
-  fun handleEmailAlreadyExists(exception: EmailAlreadyExistsException) =
+  fun handleEmailAlreadyExistsException(exception: EmailAlreadyExistsException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.email_already_exists"))
 
+  @ExceptionHandler(PasswordTooShortException::class)
+  fun handlePasswordTooShortException(exception: PasswordTooShortException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.password_too_short"))
+
   @ExceptionHandler(PasswordsAreDifferentException::class)
-  fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
+  fun handlePasswordsAreDifferentException(exception: PasswordsAreDifferentException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.passwords_are_different"))
 
   private fun createErrorResponse(

@@ -4,6 +4,7 @@ import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
+import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -21,6 +22,7 @@ class UserFacade {
 
   fun register(dto: RegisterDto): UserDto {
     checkIfEmailIsAlreadyRegistered(dto)
+    checkPasswordLength(dto)
     checkIfPasswordsAreTheSame(dto)
     return userRepository.save(mapUserFromRegisterDto(dto)).toDto()
   }
@@ -39,6 +41,12 @@ class UserFacade {
     }
   }
 
+  private fun checkPasswordLength(dto: RegisterDto) {
+    if (dto.password.length < PASSWORD_MIN_LENGTH) {
+      throw PasswordTooShortException()
+    }
+  }
+
   private fun checkIfPasswordsAreTheSame(dto: RegisterDto) {
     if (dto.password != dto.repeatedPassword) {
       throw PasswordsAreDifferentException()
@@ -52,4 +60,8 @@ class UserFacade {
       username = dto.username,
       password = passwordEncoder.encode(dto.password)
   )
+
+  companion object {
+    private val PASSWORD_MIN_LENGTH = 6
+  }
 }
