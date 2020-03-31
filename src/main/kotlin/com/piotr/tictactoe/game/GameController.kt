@@ -40,9 +40,15 @@ class GameController {
     return ResponseEntity(move, HttpStatus.OK)
   }
 
-  @GetMapping("/results")
-  fun getResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
-    val pagedResults = gameFacade.getGameResults(pageable)
+  @GetMapping("/user-results")
+  fun getUserResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
+    val pagedResults = gameFacade.getUserGameResults(pageable)
+    return ResponseEntity(pagedResults, HttpStatus.OK)
+  }
+
+  @GetMapping("/all-results")
+  fun getAllResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
+    val pagedResults = gameFacade.getAllGameResults(pageable)
     return ResponseEntity(pagedResults, HttpStatus.OK)
   }
 

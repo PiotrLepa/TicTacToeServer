@@ -12,5 +12,7 @@ interface GameRepository : JpaRepository<GameWithComputer, Long> {
 
   fun findGameByGameId(id: Long): GameWithComputer
 
-  fun findAllByStatusIn(status: List<GameStatus>, pageable: Pageable): Page<GameWithComputer>
+  fun findAllByStatusIn(pageable: Pageable, status: List<GameStatus>): Page<GameWithComputer>
+
+  fun findAllByStatusInAndPlayerId(pageable: Pageable, status: List<GameStatus>, playerId: Long): Page<GameWithComputer>
 }
