@@ -6,6 +6,7 @@ import com.piotr.tictactoe.user.dto.UserDto
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
+import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,7 +22,8 @@ class UserFacade {
   private lateinit var passwordEncoder: PasswordEncoder
 
   fun register(dto: RegisterDto): UserDto {
-    checkIfEmailIsAlreadyRegistered(dto)
+    checkIfEmailIsUnique(dto)
+    checkIfUsernameIsUnique(dto)
     checkPasswordLength(dto)
     checkIfPasswordsAreTheSame(dto)
     return userRepository.save(mapUserFromRegisterDto(dto)).toDto()
@@ -35,9 +37,15 @@ class UserFacade {
   private fun findUserByEmail(email: String): UserDto? =
       userRepository.findUserByEmail(email)?.toDto()
 
-  private fun checkIfEmailIsAlreadyRegistered(dto: RegisterDto) {
+  private fun checkIfEmailIsUnique(dto: RegisterDto) {
     if (userRepository.findUserByEmail(dto.email) != null) {
       throw EmailAlreadyExistsException()
+    }
+  }
+
+  private fun checkIfUsernameIsUnique(dto: RegisterDto) {
+    if (userRepository.findUserByUsername(dto.username) != null) {
+      throw UsernameAlreadyExistsException()
     }
   }
 
