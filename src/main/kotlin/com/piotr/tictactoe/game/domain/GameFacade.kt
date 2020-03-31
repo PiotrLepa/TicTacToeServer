@@ -17,6 +17,8 @@ import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -68,8 +70,8 @@ class GameFacade {
     return updateGame(game, updatedMoves, game.playerMark, game.computerMark)
   }
 
-  fun getGameResults(): List<GameResultDto> =
-      gameRepository.findAllByStatusIn(GameStatus.getEndedGameStatus())
+  fun getGameResults(pageable: Pageable): Page<GameResultDto> =
+      gameRepository.findAllByStatusIn(GameStatus.getEndedGameStatus(), pageable)
           .map(GameWithComputer::toResultDto)
 
   fun getGameResultDetails(gameId: Long): GameResultDetailsDto {

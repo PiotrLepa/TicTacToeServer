@@ -27,11 +27,11 @@ class UserFacade {
 
   fun getLoggedUser(): UserDto {
     val email = getAuthenticatedUserEmail()
-    return findUserByEmail(email)
+    return findUserByEmail(email)!!
   }
 
-  private fun findUserByEmail(email: String): UserDto =
-      userRepository.findUserByEmail(email)!!.toDto()
+  private fun findUserByEmail(email: String): UserDto? =
+      userRepository.findUserByEmail(email)?.toDto()
 
   private fun checkIfEmailIsAlreadyRegistered(dto: RegisterDto) {
     if (userRepository.findUserByEmail(dto.email) != null) {

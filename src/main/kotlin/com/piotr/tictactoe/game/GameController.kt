@@ -6,6 +6,8 @@ import com.piotr.tictactoe.game.dto.GameResultDetailsDto
 import com.piotr.tictactoe.game.dto.GameResultDto
 import com.piotr.tictactoe.game.dto.GameWithComputerDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -39,9 +41,9 @@ class GameController {
   }
 
   @GetMapping("/results")
-  fun getResults(): ResponseEntity<List<GameResultDto>> {
-    val results = gameFacade.getGameResults()
-    return ResponseEntity(results, HttpStatus.OK)
+  fun getResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
+    val pagedResults = gameFacade.getGameResults(pageable)
+    return ResponseEntity(pagedResults, HttpStatus.OK)
   }
 
   @GetMapping("/results/{gameId}")
