@@ -15,20 +15,26 @@ class OAuth2ResponseExceptionTranslator : DefaultWebResponseExceptionTranslator(
 
   override fun translate(exception: Exception): ResponseEntity<OAuth2Exception> {
     val responseEntity = super.translate(exception)
-    val customException = responseEntity.body?.apply {
+    val customException = responseEntity.body
+        ?.apply { addCustomProperties(this) }
+        ?: return responseEntity
+    return ResponseEntity.status(customException.httpErrorCode)
+        .body(customException)
+  }
+
+  private fun addCustomProperties(oAuth2Exception: OAuth2Exception) {
+    with(oAuth2Exception) {
       addAdditionalInformation("code", httpErrorCode.toString())
       addAdditionalInformation("developerMessage", this::class.simpleName.toString())
       getMessageCodeForException(this)?.let {
         addAdditionalInformation("printableMessage",
             messageSource.getMessage(it, null, LocaleContextHolder.getLocale()))
       }
-    } ?: return responseEntity
-    return ResponseEntity.status(customException.httpErrorCode)
-        .body(customException)
+    }
   }
 
   private fun getMessageCodeForException(exception: OAuth2Exception): String? =
-      if (exception is SecurityUserNotExistsException) {
+      if (exception is SecurityUserNotExistsException || exception.message == "Bad credentials") {
         "security.error.user_not_exists"
       } else {
         null
