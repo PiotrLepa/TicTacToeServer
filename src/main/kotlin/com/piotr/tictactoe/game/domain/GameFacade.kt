@@ -17,6 +17,8 @@ import com.piotr.tictactoe.move.dto.MoveDto
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -57,6 +59,7 @@ class GameFacade {
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): GameWithComputerDto {
     val game = gameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
+    checkIfPlayerMatch(game)
     moveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val allMoves = moveFacade.getAllMoves(gameId)
     val updatedMoves = if (canDoNextMove(allMoves, game.playerMark, game.computerMark)) {
@@ -68,8 +71,14 @@ class GameFacade {
     return updateGame(game, updatedMoves, game.playerMark, game.computerMark)
   }
 
-  fun getGameResults(): List<GameResultDto> =
-      gameRepository.findAllByStatusIn(GameStatus.getEndedGameStatus())
+  fun getUserGameResults(pageable: Pageable): Page<GameResultDto> {
+    val player = userFacade.getLoggedUser()
+    return gameRepository.findAllByStatusInAndPlayerId(pageable, GameStatus.getEndedGameStatus(), player.id)
+        .map(GameWithComputer::toResultDto)
+  }
+
+  fun getAllGameResults(pageable: Pageable): Page<GameResultDto> =
+      gameRepository.findAllByStatusIn(pageable, GameStatus.getEndedGameStatus())
           .map(GameWithComputer::toResultDto)
 
   fun getGameResultDetails(gameId: Long): GameResultDetailsDto {
@@ -107,6 +116,13 @@ class GameFacade {
   private fun checkIfGameDidEnd(game: GameWithComputer) {
     if (game.status !in GameStatus.getEndedGameStatus()) {
       throw GameIsOnGoingException()
+    }
+  }
+
+  private fun checkIfPlayerMatch(game: GameWithComputer) {
+    val player = userFacade.getLoggedUser()
+    if (player.id != game.playerId) {
+      throw WrongPlayerException()
     }
   }
 

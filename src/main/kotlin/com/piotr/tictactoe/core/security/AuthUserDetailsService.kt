@@ -15,7 +15,7 @@ class AuthUserDetailsService : UserDetailsService {
   private lateinit var userRepository: UserRepository
 
   override fun loadUserByUsername(email: String): UserDetails {
-    val user = userRepository.findUserByEmail(email) ?: throw SecurityUserNotExistsException(null)
+    val user = userRepository.findUserByEmail(email) ?: throw SecurityUserNotExistsException()
     return User(user.email, user.password, listOf())
   }
 }
