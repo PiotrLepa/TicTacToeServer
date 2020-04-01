@@ -7,6 +7,7 @@ import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
+import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
@@ -22,10 +23,11 @@ class UserFacade {
   private lateinit var passwordEncoder: PasswordEncoder
 
   fun register(dto: RegisterDto): UserDto {
-    checkIfEmailIsUnique(dto)
-    checkIfUsernameIsUnique(dto)
+    checkUsernameLength(dto)
     checkPasswordLength(dto)
     checkIfPasswordsAreTheSame(dto)
+    checkIfEmailIsUnique(dto)
+    checkIfUsernameIsUnique(dto)
     return userRepository.save(mapUserFromRegisterDto(dto)).toDto()
   }
 
@@ -37,15 +39,11 @@ class UserFacade {
   private fun findUserByEmail(email: String): UserDto? =
       userRepository.findUserByEmail(email)?.toDto()
 
-  private fun checkIfEmailIsUnique(dto: RegisterDto) {
-    if (userRepository.findUserByEmail(dto.email) != null) {
-      throw EmailAlreadyExistsException()
-    }
-  }
+  private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
 
-  private fun checkIfUsernameIsUnique(dto: RegisterDto) {
-    if (userRepository.findUserByUsername(dto.username) != null) {
-      throw UsernameAlreadyExistsException()
+  private fun checkUsernameLength(dto: RegisterDto) {
+    if (dto.username.length < USERNAME_MIN_LENGTH) {
+      throw UsernameTooShortException()
     }
   }
 
@@ -61,7 +59,17 @@ class UserFacade {
     }
   }
 
-  private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
+  private fun checkIfEmailIsUnique(dto: RegisterDto) {
+    if (userRepository.findUserByEmail(dto.email) != null) {
+      throw EmailAlreadyExistsException()
+    }
+  }
+
+  private fun checkIfUsernameIsUnique(dto: RegisterDto) {
+    if (userRepository.findUserByUsername(dto.username) != null) {
+      throw UsernameAlreadyExistsException()
+    }
+  }
 
   private fun mapUserFromRegisterDto(dto: RegisterDto) = User(
       email = dto.email,
@@ -71,5 +79,6 @@ class UserFacade {
 
   companion object {
     private val PASSWORD_MIN_LENGTH = 6
+    private val USERNAME_MIN_LENGTH = 3
   }
 }

@@ -9,6 +9,7 @@ import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
+import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -54,6 +55,10 @@ class GameEndedExceptionHandlerAdvice {
   @ExceptionHandler(PasswordTooShortException::class)
   fun handlePasswordTooShortException(exception: PasswordTooShortException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.password_too_short"))
+
+  @ExceptionHandler(UsernameTooShortException::class)
+  fun handleUsernameTooShortException(exception: UsernameTooShortException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.username_too_short"))
 
   @ExceptionHandler(PasswordsAreDifferentException::class)
   fun handlePasswordsAreDifferentException(exception: PasswordsAreDifferentException) =
