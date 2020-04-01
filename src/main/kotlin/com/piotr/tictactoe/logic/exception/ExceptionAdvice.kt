@@ -2,10 +2,14 @@ package com.piotr.tictactoe.logic.exception
 
 import com.piotr.tictactoe.game.domain.GameEndedException
 import com.piotr.tictactoe.game.domain.GameIsOnGoingException
+import com.piotr.tictactoe.game.domain.WrongPlayerException
 import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
+import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
+import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
+import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
@@ -32,16 +36,32 @@ class GameEndedExceptionHandlerAdvice {
   fun handleGameEndedException(exception: GameEndedException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
+  @ExceptionHandler(WrongPlayerException::class)
+  fun handleWrongPlayerException(exception: WrongPlayerException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
   @ExceptionHandler(InvalidFieldIndexRangeException::class)
-  fun handleInvalidFieldIndexRange(exception: InvalidFieldIndexRangeException) =
+  fun handleInvalidFieldIndexRangeException(exception: InvalidFieldIndexRangeException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(EmailAlreadyExistsException::class)
-  fun handleEmailAlreadyExists(exception: EmailAlreadyExistsException) =
+  fun handleEmailAlreadyExistsException(exception: EmailAlreadyExistsException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.email_already_exists"))
 
+  @ExceptionHandler(UsernameAlreadyExistsException::class)
+  fun handleUsernameAlreadyExistsException(exception: UsernameAlreadyExistsException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.username_already_exists"))
+
+  @ExceptionHandler(PasswordTooShortException::class)
+  fun handlePasswordTooShortException(exception: PasswordTooShortException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.password_too_short"))
+
+  @ExceptionHandler(UsernameTooShortException::class)
+  fun handleUsernameTooShortException(exception: UsernameTooShortException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.username_too_short"))
+
   @ExceptionHandler(PasswordsAreDifferentException::class)
-  fun handlePasswordsAreDifferent(exception: PasswordsAreDifferentException) =
+  fun handlePasswordsAreDifferentException(exception: PasswordsAreDifferentException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, getMessage("user.error.passwords_are_different"))
 
   private fun createErrorResponse(
