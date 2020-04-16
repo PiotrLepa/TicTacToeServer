@@ -1,15 +1,15 @@
 package com.piotr.tictactoe.singlePlayerGame.domain
 
-import com.piotr.tictactoe.common.game.model.FieldMark
-import com.piotr.tictactoe.common.game.model.GameStatus
-import com.piotr.tictactoe.common.game.model.GameStatus.ON_GOING
 import com.piotr.tictactoe.core.converter.Converter
 import com.piotr.tictactoe.core.converter.Converter1
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGame
+import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
+import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus.ON_GOING
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameTurn
 import com.piotr.tictactoe.singlePlayerGame.domain.utils.SinglePlayerGameHelper
 import com.piotr.tictactoe.singlePlayerGame.domain.utils.computerMoveLogic.ComputerMoveLogic
@@ -85,14 +85,14 @@ class SinglePlayerGameFacade {
   fun getUserGames(pageable: Pageable, playerId: Long): Page<SinglePlayerGameDetailsDto> =
       singlePlayerGameRepository.findAllByStatusInAndPlayerIdOrderByModificationDateDesc(
           pageable,
-          GameStatus.getEndedGameStatus(),
+          SinglePlayerGameStatus.getEndedGameStatus(),
           playerId
       ).map(singlePlayerDetailsDtoMapper::convert)
 
   fun getAllGames(pageable: Pageable): Page<SinglePlayerGameDetailsDto> =
       singlePlayerGameRepository.findAllByStatusInOrderByModificationDateDesc(
           pageable,
-          GameStatus.getEndedGameStatus()
+          SinglePlayerGameStatus.getEndedGameStatus()
       ).map(singlePlayerDetailsDtoMapper::convert)
 
   fun getGameDetails(gameId: Long): SinglePlayerGameDetailsDto =

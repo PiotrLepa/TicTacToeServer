@@ -1,9 +1,9 @@
 package com.piotr.tictactoe.singlePlayerGame.domain.utils
 
-import com.piotr.tictactoe.common.game.model.FieldMark
-import com.piotr.tictactoe.common.game.model.GameStatus
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGame
+import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameTurn
 import org.joda.time.DateTime
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class SinglePlayerGameHelper {
     val creationDate = DateTime.now().millis
     return SinglePlayerGame(
         playerId = playerId,
-        status = GameStatus.ON_GOING,
+        status = SinglePlayerGameStatus.ON_GOING,
         difficultyLevel = difficultyLevel,
         playerMark = playerMark,
         computerMark = computerMark,

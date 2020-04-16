@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.singlePlayerGame.domain.model
+package com.piotr.tictactoe.multiplayerGame.domain.model
 
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import org.joda.time.DateTime
@@ -12,26 +12,28 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "single_player_games")
-data class SinglePlayerGame(
+@Table(name = "multiplayer_games")
+data class MultiplayerGame(
 
-  @Column(name = "player_id")
-  var playerId: Long,
+  @Column(name = "first_player_id")
+  var firstPlayerId: Long,
+
+  @Column(name = "second_player_id")
+  var secondPlayerId: Long,
 
   @Enumerated(EnumType.STRING)
-  var status: SinglePlayerGameStatus,
+  var status: MultiplayerGameStatus,
 
-  @Column(name = "difficulty_level")
   @Enumerated(EnumType.STRING)
-  var difficultyLevel: DifficultyLevel,
+  var currentTurn: MultiplayerGameTurn,
 
-  @Column(name = "player_mark")
+  @Column(name = "first_player_mark")
   @Enumerated(EnumType.STRING)
-  var playerMark: FieldMark,
+  var firstPlayerMark: FieldMark,
 
-  @Column(name = "computer_mark")
+  @Column(name = "second_player_mark")
   @Enumerated(EnumType.STRING)
-  var computerMark: FieldMark,
+  var secondPlayerMark: FieldMark,
 
   @Column(name = "creation_date")
   var creationDate: Long,
@@ -44,7 +46,8 @@ data class SinglePlayerGame(
   var gameId: Long? = null
 ) {
 
-  constructor() : this(-1, SinglePlayerGameStatus.ON_GOING, DifficultyLevel.EASY,
-      FieldMark.X, FieldMark.O, DateTime.now().millis, DateTime.now().millis
+  constructor() : this(-1, -1, MultiplayerGameStatus.ON_GOING,
+      MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O,
+      DateTime.now().millis, DateTime.now().millis
   )
 }

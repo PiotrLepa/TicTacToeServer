@@ -1,19 +1,19 @@
 package com.piotr.tictactoe.utils
 
-import com.piotr.tictactoe.common.game.model.FieldMark
-import com.piotr.tictactoe.common.game.model.GameStatus
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
+import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
 import org.springframework.stereotype.Component
 
 @Component
 class GameEndChecker {
 
-  fun checkGameEnd(moves: List<GameMoveDto>, playerMark: FieldMark, computerMark: FieldMark): GameStatus =
+  fun checkGameEnd(moves: List<GameMoveDto>, playerMark: FieldMark, computerMark: FieldMark): SinglePlayerGameStatus =
       when {
-        checkWin(moves, playerMark) -> GameStatus.PLAYER_WON
-        checkWin(moves, computerMark) -> GameStatus.COMPUTER_WON
-        checkDraw(moves) -> GameStatus.DRAW
-        else -> GameStatus.ON_GOING
+        checkWin(moves, playerMark) -> SinglePlayerGameStatus.PLAYER_WON
+        checkWin(moves, computerMark) -> SinglePlayerGameStatus.COMPUTER_WON
+        checkDraw(moves) -> SinglePlayerGameStatus.DRAW
+        else -> SinglePlayerGameStatus.ON_GOING
       }
 
   fun checkWin(moves: List<GameMoveDto>, mark: FieldMark): Boolean {

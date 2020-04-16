@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.gameMove.domain
 
-import com.piotr.tictactoe.common.game.model.FieldMark
 import com.piotr.tictactoe.core.converter.Converter
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.domain.model.GameMove
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto

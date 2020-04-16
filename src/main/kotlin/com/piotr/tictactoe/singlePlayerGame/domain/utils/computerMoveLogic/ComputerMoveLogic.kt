@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.singlePlayerGame.domain.utils.computerMoveLogic
 
-import com.piotr.tictactoe.common.game.model.FieldMark
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel.EASY

@@ -1,6 +1,5 @@
 package com.piotr.tictactoe.gameMove.domain.model
 
-import com.piotr.tictactoe.common.game.model.FieldMark
 import org.joda.time.DateTime
 import javax.persistence.Column
 import javax.persistence.Entity

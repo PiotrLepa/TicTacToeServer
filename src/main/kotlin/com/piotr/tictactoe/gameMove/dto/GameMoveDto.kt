@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.gameMove.dto
 
-import com.piotr.tictactoe.common.game.model.FieldMark
+import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 
 data class GameMoveDto(
   val moveId: Long,
