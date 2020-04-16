@@ -8,6 +8,7 @@ import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.user.exception.UsernameTooShortException
+import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
@@ -22,13 +23,17 @@ class UserFacade {
   @Autowired
   private lateinit var passwordEncoder: PasswordEncoder
 
+  @Autowired
+  private lateinit var playerCodeGenerator: PlayerCodeGenerator
+
   fun register(dto: RegisterDto): UserDto {
     checkUsernameLength(dto)
     checkPasswordLength(dto)
     checkIfPasswordsAreTheSame(dto)
     checkIfEmailIsUnique(dto)
     checkIfUsernameIsUnique(dto)
-    return userRepository.save(mapUserFromRegisterDto(dto)).toDto()
+    val playerCode = getUniquePlayerCode()
+    return userRepository.save(mapUserFromRegisterDto(dto, playerCode)).toDto()
   }
 
   fun getLoggedUser(): UserDto {
@@ -40,6 +45,15 @@ class UserFacade {
       userRepository.findUserByEmail(email)?.toDto()
 
   private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
+
+  private fun getUniquePlayerCode(): String {
+    val playerCode = playerCodeGenerator.generate()
+    return if (userRepository.findUserByPlayerCode(playerCode) == null) {
+      playerCode
+    } else {
+      getUniquePlayerCode()
+    }
+  }
 
   private fun checkUsernameLength(dto: RegisterDto) {
     if (dto.username.length < USERNAME_MIN_LENGTH) {
@@ -71,10 +85,11 @@ class UserFacade {
     }
   }
 
-  private fun mapUserFromRegisterDto(dto: RegisterDto) = User(
+  private fun mapUserFromRegisterDto(dto: RegisterDto, playerCode: String) = User(
       email = dto.email,
       username = dto.username,
-      password = passwordEncoder.encode(dto.password)
+      password = passwordEncoder.encode(dto.password),
+      playerCode = playerCode
   )
 
   companion object {
