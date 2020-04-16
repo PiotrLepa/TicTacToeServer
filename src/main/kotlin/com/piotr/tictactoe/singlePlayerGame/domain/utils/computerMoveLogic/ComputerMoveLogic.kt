@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.singlePlayerGame.domain.utils.computerMoveLogic
 
-import com.piotr.tictactoe.move.domain.model.FieldMark
-import com.piotr.tictactoe.move.dto.MoveDto
+import com.piotr.tictactoe.common.game.model.FieldMark
+import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel.EASY
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel.HARD
@@ -21,7 +21,7 @@ class ComputerMoveLogic {
   private lateinit var playerMark: FieldMark
   private lateinit var computerMark: FieldMark
 
-  fun calculateComputerMove(difficultyLevel: DifficultyLevel, computerMark: FieldMark, moves: List<MoveDto>): Int {
+  fun calculateComputerMove(difficultyLevel: DifficultyLevel, computerMark: FieldMark, moves: List<GameMoveDto>): Int {
     this.computerMark = computerMark
     this.playerMark = getOppositeMark(computerMark)
 
@@ -34,7 +34,7 @@ class ComputerMoveLogic {
     return computerMove.index
   }
 
-  private fun minMax(moves: List<MoveDto>, mark: FieldMark, maxCalls: Int): MinMaxMove {
+  private fun minMax(moves: List<GameMoveDto>, mark: FieldMark, maxCalls: Int): MinMaxMove {
     val availableSpots = getAvailableSpotsIndexes(moves)
     if (maxCalls == 0) {
       return MinMaxMove(0, getRandomSpotOrError(availableSpots))
@@ -49,7 +49,7 @@ class ComputerMoveLogic {
       gameEndChecker.checkDraw(moves) -> MinMaxMove(0, ERROR_FIELD_INDEX)
       else -> {
         val minMaxMoves = availableSpots.map { spot ->
-          val newMove = MoveDto(-1, spot, -1, mark)
+          val newMove = GameMoveDto(-1, spot, -1, mark)
           val newMoves = moves + listOf(newMove)
           val move = minMax(newMoves, getOppositeMark(mark), maxCalls - 1)
           MinMaxMove(move.score, spot)
@@ -74,7 +74,7 @@ class ComputerMoveLogic {
 
   private fun getOppositeMark(mark: FieldMark) = if (mark == FieldMark.X) FieldMark.O else FieldMark.X
 
-  private fun getAvailableSpotsIndexes(moves: List<MoveDto>): List<Int> =
+  private fun getAvailableSpotsIndexes(moves: List<GameMoveDto>): List<Int> =
       VALID_FIELDS_INDEXES.filter { i -> moves.find { it.fieldIndex == i } == null }
 
   companion object {

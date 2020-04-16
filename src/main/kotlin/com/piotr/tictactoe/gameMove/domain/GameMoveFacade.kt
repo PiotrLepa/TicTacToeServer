@@ -1,44 +1,44 @@
-package com.piotr.tictactoe.move.domain
+package com.piotr.tictactoe.gameMove.domain
 
+import com.piotr.tictactoe.common.game.model.FieldMark
 import com.piotr.tictactoe.core.converter.Converter
-import com.piotr.tictactoe.move.domain.model.FieldMark
-import com.piotr.tictactoe.move.domain.model.Move
-import com.piotr.tictactoe.move.dto.AllMovesDto
-import com.piotr.tictactoe.move.dto.MoveDto
+import com.piotr.tictactoe.gameMove.domain.model.GameMove
+import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
+import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.utils.GameConstant.VALID_FIELDS_INDEXES
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class MoveFacade {
+class GameMoveFacade {
 
   @Autowired
-  private lateinit var moveRepository: MoveRepository
+  private lateinit var gameMoveRepository: GameMoveRepository
 
   @Autowired
-  private lateinit var moveDtoConverter: Converter<Move, MoveDto>
+  private lateinit var gameMoveDtoConverter: Converter<GameMove, GameMoveDto>
 
-  fun setMove(gameId: Long, fieldIndex: Int, mark: FieldMark): MoveDto {
+  fun setMove(gameId: Long, fieldIndex: Int, mark: FieldMark): GameMoveDto {
     checkFieldIndexRange(fieldIndex)
     checkIfFieldIndexIsEmpty(gameId, fieldIndex)
-    return Move(
+    return GameMove(
         gameId = gameId,
         fieldIndex = fieldIndex,
         counter = getNextCounter(gameId),
         mark = mark,
         creationDate = DateTime.now().millis
-    ).let(moveRepository::save)
-        .let(moveDtoConverter::convert)
+    ).let(gameMoveRepository::save)
+        .let(gameMoveDtoConverter::convert)
   }
 
-  fun getAllMoves(gameId: Long): AllMovesDto {
-    val movies = moveRepository.findMovesByGameId(gameId).map(moveDtoConverter::convert)
-    return AllMovesDto(moves = movies)
+  fun getAllMoves(gameId: Long): AllGameMovesDto {
+    val movies = gameMoveRepository.findMovesByGameId(gameId).map(gameMoveDtoConverter::convert)
+    return AllGameMovesDto(moves = movies)
   }
 
   private fun getNextCounter(gameId: Long): Int {
-    val lastMove = moveRepository.findFirstMoveByGameIdOrderByMoveIdDesc(gameId)
+    val lastMove = gameMoveRepository.findFirstMoveByGameIdOrderByMoveIdDesc(gameId)
     return lastMove?.counter?.plus(1) ?: 0
   }
 

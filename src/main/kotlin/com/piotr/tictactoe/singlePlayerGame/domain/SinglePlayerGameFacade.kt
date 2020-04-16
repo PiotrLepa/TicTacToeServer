@@ -1,13 +1,13 @@
 package com.piotr.tictactoe.singlePlayerGame.domain
 
+import com.piotr.tictactoe.common.game.model.FieldMark
 import com.piotr.tictactoe.common.game.model.GameStatus
 import com.piotr.tictactoe.common.game.model.GameStatus.ON_GOING
 import com.piotr.tictactoe.core.converter.Converter
 import com.piotr.tictactoe.core.converter.Converter1
-import com.piotr.tictactoe.move.domain.MoveFacade
-import com.piotr.tictactoe.move.domain.model.FieldMark
-import com.piotr.tictactoe.move.dto.AllMovesDto
-import com.piotr.tictactoe.move.dto.MoveDto
+import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
+import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
+import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGame
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameTurn
@@ -35,7 +35,7 @@ class SinglePlayerGameFacade {
   private lateinit var userFacade: UserFacade
 
   @Autowired
-  private lateinit var moveFacade: MoveFacade
+  private lateinit var gameMoveFacade: GameMoveFacade
 
   @Autowired
   private lateinit var singlePlayerGameHelper: SinglePlayerGameHelper
@@ -47,7 +47,7 @@ class SinglePlayerGameFacade {
   private lateinit var gameEndChecker: GameEndChecker
 
   @Autowired
-  private lateinit var singlePlayerDtoMapper: Converter1<SinglePlayerGame, SinglePlayerGameDto, AllMovesDto>
+  private lateinit var singlePlayerDtoMapperGame: Converter1<SinglePlayerGame, SinglePlayerGameDto, AllGameMovesDto>
 
   @Autowired
   private lateinit var singlePlayerDetailsDtoMapper: Converter<SinglePlayerGame, SinglePlayerGameDetailsDto>
@@ -70,8 +70,8 @@ class SinglePlayerGameFacade {
     val game = singlePlayerGameRepository.findGameByGameId(gameId)
     checkIfGameIsOnGoing(game)
     checkIfPlayerMatch(game)
-    moveFacade.setMove(gameId, fieldIndex, game.playerMark)
-    val allMovesDto = moveFacade.getAllMoves(gameId)
+    gameMoveFacade.setMove(gameId, fieldIndex, game.playerMark)
+    val allMovesDto = gameMoveFacade.getAllMoves(gameId)
     val moves = allMovesDto.moves
     val updatedMoves = if (canDoNextMove(moves, game.playerMark, game.computerMark)) {
       val computerMove = setComputeMove(gameId, game.difficultyLevel, game.computerMark, moves)
@@ -100,7 +100,7 @@ class SinglePlayerGameFacade {
 
   private fun updateGame(
     game: SinglePlayerGame,
-    moves: List<MoveDto>,
+    moves: List<GameMoveDto>,
     playerMark: FieldMark,
     computerMark: FieldMark
   ): SinglePlayerGameDto {
@@ -109,20 +109,20 @@ class SinglePlayerGameFacade {
       modificationDate = DateTime.now().millis
     }
     val savedGame = singlePlayerGameRepository.save(gameToSave)
-    return singlePlayerDtoMapper.convert(savedGame, AllMovesDto(moves = moves))
+    return singlePlayerDtoMapperGame.convert(savedGame, AllGameMovesDto(moves = moves))
   }
 
   private fun setComputeMove(
     gameId: Long,
     difficultyLevel: DifficultyLevel,
     computerMark: FieldMark,
-    moves: List<MoveDto>
-  ): MoveDto {
+    moves: List<GameMoveDto>
+  ): GameMoveDto {
     val computerMoveFieldIndex = computerMoveLogic.calculateComputerMove(difficultyLevel, computerMark, moves)
-    return moveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
+    return gameMoveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
   }
 
-  private fun canDoNextMove(moves: List<MoveDto>, playerMark: FieldMark, computerMark: FieldMark) =
+  private fun canDoNextMove(moves: List<GameMoveDto>, playerMark: FieldMark, computerMark: FieldMark) =
       gameEndChecker.checkGameEnd(moves, playerMark, computerMark) == ON_GOING
 
   private fun checkIfPlayerMatch(game: SinglePlayerGame) {

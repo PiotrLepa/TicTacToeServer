@@ -1,8 +1,8 @@
-package com.piotr.tictactoe.logic.exception
+package com.piotr.tictactoe.core.logic.exception
 
+import com.piotr.tictactoe.gameMove.domain.FieldAlreadyTakenException
+import com.piotr.tictactoe.gameMove.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.gameResult.exception.GameIsOnGoingException
-import com.piotr.tictactoe.move.domain.FieldAlreadyTakenException
-import com.piotr.tictactoe.move.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException

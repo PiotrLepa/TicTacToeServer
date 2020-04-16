@@ -1,5 +1,6 @@
-package com.piotr.tictactoe.move.domain.model
+package com.piotr.tictactoe.gameMove.domain.model
 
+import com.piotr.tictactoe.common.game.model.FieldMark
 import org.joda.time.DateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -11,8 +12,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "moves")
-data class Move(
+@Table(name = "game_moves")
+data class GameMove(
 
   @Column(name = "game_id")
   var gameId: Long,

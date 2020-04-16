@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.singlePlayerGame.domain.model
 
+import com.piotr.tictactoe.common.game.model.FieldMark
 import com.piotr.tictactoe.common.game.model.GameStatus
-import com.piotr.tictactoe.move.domain.model.FieldMark
 import org.joda.time.DateTime
 import javax.persistence.Column
 import javax.persistence.Entity

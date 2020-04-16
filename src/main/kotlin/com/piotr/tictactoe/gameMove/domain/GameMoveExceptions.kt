@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.move.domain
+package com.piotr.tictactoe.gameMove.domain
 
 class InvalidFieldIndexRangeException(override val message: String? = null) : Exception(message)
 
