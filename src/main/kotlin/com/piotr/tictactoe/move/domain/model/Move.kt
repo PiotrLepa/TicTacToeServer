@@ -1,6 +1,5 @@
 package com.piotr.tictactoe.move.domain.model
 
-import com.piotr.tictactoe.move.dto.MoveDto
 import org.joda.time.DateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -35,11 +34,4 @@ data class Move(
 ) {
 
   constructor() : this(-1, -1, -1, FieldMark.X, DateTime.now().millis)
-
-  fun toDto() = MoveDto(
-      moveId = moveId!!,
-      fieldIndex = fieldIndex,
-      counter = counter,
-      mark = mark
-  )
 }

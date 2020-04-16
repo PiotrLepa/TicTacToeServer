@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.user.domain
 
+import com.piotr.tictactoe.core.converter.Converter
 import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
@@ -26,6 +27,9 @@ class UserFacade {
   @Autowired
   private lateinit var playerCodeGenerator: PlayerCodeGenerator
 
+  @Autowired
+  private lateinit var userDtoConverter: Converter<User, UserDto>
+
   fun register(dto: RegisterDto): UserDto {
     checkUsernameLength(dto)
     checkPasswordLength(dto)
@@ -33,7 +37,7 @@ class UserFacade {
     checkIfEmailIsUnique(dto)
     checkIfUsernameIsUnique(dto)
     val playerCode = getUniquePlayerCode()
-    return userRepository.save(mapUserFromRegisterDto(dto, playerCode)).toDto()
+    return userRepository.save(mapUserFromRegisterDto(dto, playerCode)).let(userDtoConverter::convert)
   }
 
   fun getLoggedUser(): UserDto {
@@ -42,7 +46,7 @@ class UserFacade {
   }
 
   private fun findUserByEmail(email: String): UserDto? =
-      userRepository.findUserByEmail(email)?.toDto()
+      userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
 
   private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
 
@@ -93,7 +97,7 @@ class UserFacade {
   )
 
   companion object {
-    private val PASSWORD_MIN_LENGTH = 6
-    private val USERNAME_MIN_LENGTH = 3
+    private const val PASSWORD_MIN_LENGTH = 6
+    private const val USERNAME_MIN_LENGTH = 3
   }
 }

@@ -1,6 +1,5 @@
 package com.piotr.tictactoe.user.domain.model
 
-import com.piotr.tictactoe.user.dto.UserDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -26,11 +25,4 @@ class User(
 ) {
 
   constructor() : this("", "", "", "")
-
-  fun toDto() = UserDto(
-      id = id!!,
-      email = email,
-      username = username,
-      playerCode = playerCode
-  )
 }
