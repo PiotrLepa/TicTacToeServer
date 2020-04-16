@@ -12,7 +12,11 @@ interface GameRepository : JpaRepository<GameWithComputer, Long> {
 
   fun findGameByGameId(id: Long): GameWithComputer
 
-  fun findAllByStatusIn(pageable: Pageable, status: List<GameStatus>): Page<GameWithComputer>
+  fun findAllByStatusInOrderByModificationDateDesc(pageable: Pageable, status: List<GameStatus>): Page<GameWithComputer>
 
-  fun findAllByStatusInAndPlayerId(pageable: Pageable, status: List<GameStatus>, playerId: Long): Page<GameWithComputer>
+  fun findAllByStatusInAndPlayerIdOrderByModificationDateDesc(
+    pageable: Pageable,
+    status: List<GameStatus>,
+    playerId: Long
+  ): Page<GameWithComputer>
 }

@@ -73,12 +73,12 @@ class GameFacade {
 
   fun getUserGameResults(pageable: Pageable): Page<GameResultDto> {
     val player = userFacade.getLoggedUser()
-    return gameRepository.findAllByStatusInAndPlayerId(pageable, GameStatus.getEndedGameStatus(), player.id)
+    return gameRepository.findAllByStatusInAndPlayerIdOrderByModificationDateDesc(pageable, GameStatus.getEndedGameStatus(), player.id)
         .map(GameWithComputer::toResultDto)
   }
 
   fun getAllGameResults(pageable: Pageable): Page<GameResultDto> =
-      gameRepository.findAllByStatusIn(pageable, GameStatus.getEndedGameStatus())
+      gameRepository.findAllByStatusInOrderByModificationDateDesc(pageable, GameStatus.getEndedGameStatus())
           .map(GameWithComputer::toResultDto)
 
   fun getGameResultDetails(gameId: Long): GameResultDetailsDto {
