@@ -4,6 +4,7 @@ import com.piotr.tictactoe.gameMove.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.gameMove.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.gameResult.exception.GameIsOnGoingException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
+import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
 import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
@@ -28,6 +29,10 @@ class GameEndedExceptionHandlerAdvice {
   @ExceptionHandler(InvalidOpponentCodeException::class)
   fun handleInvalidOpponentCodeException(exception: InvalidOpponentCodeException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, "multiplayer-game.error.invalid_opponent_code")
+
+  @ExceptionHandler(OpponentMoveException::class)
+  fun handleOpponentMoveException(exception: OpponentMoveException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(GameIsOnGoingException::class)
   fun handleGameIsOnGoingException(exception: GameIsOnGoingException) =

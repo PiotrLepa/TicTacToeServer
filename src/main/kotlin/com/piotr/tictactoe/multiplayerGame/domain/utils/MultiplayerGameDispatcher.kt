@@ -23,6 +23,6 @@ class MultiplayerGameDispatcher {
   }
 
   private fun dispatchUpdate(gameDto: MultiplayerGameDto) {
-    messagingTemplate.convertAndSend("/game-status/12", gameDto) // TODO
+    messagingTemplate.convertAndSend("/game-status/12", gameDto) // TODO dynamic game id
   }
 }
