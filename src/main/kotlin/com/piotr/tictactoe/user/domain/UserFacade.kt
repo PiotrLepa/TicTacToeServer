@@ -45,6 +45,9 @@ class UserFacade {
     return findUserByEmail(email)!!
   }
 
+  fun getUserByPlayerCode(code: String): UserDto? =
+      userRepository.findUserByPlayerCode(code)?.let(userDtoConverter::convert)
+
   private fun findUserByEmail(email: String): UserDto? =
       userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
 

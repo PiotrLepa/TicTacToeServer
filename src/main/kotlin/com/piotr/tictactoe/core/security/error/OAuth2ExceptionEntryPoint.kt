@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.core.security.error
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.piotr.tictactoe.core.logic.exception.ErrorResponse
+import com.piotr.tictactoe.core.exception.ErrorResponse
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import javax.servlet.http.HttpServletRequest

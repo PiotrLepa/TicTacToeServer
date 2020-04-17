@@ -30,6 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-security:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootStarter")
+  implementation("org.springframework.boot:spring-boot-starter-websocket:$springBootStarter")
   testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootStarter") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }

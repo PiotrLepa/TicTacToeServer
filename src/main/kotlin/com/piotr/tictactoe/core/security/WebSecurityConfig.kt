@@ -38,6 +38,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   override fun configure(web: WebSecurity) {
     web.ignoring()
         .antMatchers("/user/register")
+        .antMatchers("/multiplayer-game-socket")
   }
 
   override fun configure(http: HttpSecurity) {

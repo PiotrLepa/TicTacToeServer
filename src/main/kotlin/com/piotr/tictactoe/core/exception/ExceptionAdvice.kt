@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.core.logic.exception
+package com.piotr.tictactoe.core.exception
 
 import com.piotr.tictactoe.gameMove.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.gameMove.domain.InvalidFieldIndexRangeException

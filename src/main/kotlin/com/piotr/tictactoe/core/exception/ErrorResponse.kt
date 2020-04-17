@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.core.logic.exception
+package com.piotr.tictactoe.core.exception
 
 data class ErrorResponse(
   val code: Int,
