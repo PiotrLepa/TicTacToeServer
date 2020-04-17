@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.multiplayerGame
 
 import com.piotr.tictactoe.multiplayerGame.domain.MultiplayerGameFacade
+import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameCreatedDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,9 +18,9 @@ class MultiplayerGameController {
   private lateinit var multiplayerGameFacade: MultiplayerGameFacade
 
   @PostMapping("/create")
-  fun createMultiplayerGame(@RequestParam("opponent_code") opponentCode: String): ResponseEntity<Unit> {
-    multiplayerGameFacade.createMultiplayerGame(opponentCode)
-    return ResponseEntity(HttpStatus.CREATED)
+  fun createMultiplayerGame(@RequestParam("opponent_code") opponentCode: String): ResponseEntity<MultiplayerGameCreatedDto> {
+    val game = multiplayerGameFacade.createMultiplayerGame(opponentCode)
+    return ResponseEntity(game, HttpStatus.CREATED)
   }
 
   @PutMapping("/{gameId}/move/{fieldIndex}")
