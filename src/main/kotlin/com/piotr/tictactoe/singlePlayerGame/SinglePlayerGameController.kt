@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/single-player-game")
-class SinglePlayerGameController {
-
-  @Autowired
-  private lateinit var singlePlayerGameFacade: SinglePlayerGameFacade
+class SinglePlayerGameController @Autowired constructor(
+  private val singlePlayerGameFacade: SinglePlayerGameFacade
+) {
 
   @PostMapping("/create")
   fun createSinglePlayerGame(@RequestParam("difficulty_level") difficultyLevel: DifficultyLevel): ResponseEntity<SinglePlayerGameDto> {

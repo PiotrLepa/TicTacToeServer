@@ -23,10 +23,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class GameEndedExceptionHandlerAdvice {
-
-  @Autowired
-  private lateinit var messageSource: MessageSource
+class GameEndedExceptionHandlerAdvice @Autowired constructor(
+  private val messageSource: MessageSource
+) {
 
   @ExceptionHandler(InvalidOpponentCodeException::class)
   fun handleInvalidOpponentCodeException(exception: InvalidOpponentCodeException) =

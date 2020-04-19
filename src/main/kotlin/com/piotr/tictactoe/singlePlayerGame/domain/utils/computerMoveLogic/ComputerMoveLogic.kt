@@ -13,10 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ComputerMoveLogic {
-
-  @Autowired
-  private lateinit var gameEndChecker: GameEndChecker
+class ComputerMoveLogic @Autowired constructor(
+  private val gameEndChecker: GameEndChecker
+) {
 
   private lateinit var playerMark: FieldMark
   private lateinit var computerMark: FieldMark

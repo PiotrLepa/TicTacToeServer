@@ -13,10 +13,9 @@ import org.springframework.stereotype.Component
 import kotlin.random.Random
 
 @Component
-class MultiplayerGameHelper {
-
-  @Autowired
-  private lateinit var gameEndChecker: GameEndChecker
+class MultiplayerGameHelper @Autowired constructor(
+  private val gameEndChecker: GameEndChecker
+) {
 
   fun createMultiplayerGame(firstPlayer: UserDto, secondPlayer: UserDto): MultiplayerGame {
     val startingPlayer = getStartingPlayer();

@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/user")
-class UserController {
-
-  @Autowired
-  private lateinit var userFacade: UserFacade
+class UserController @Autowired constructor(
+  private val userFacade: UserFacade
+) {
 
   @PostMapping("/register")
   fun register(@RequestBody dto: RegisterDto): ResponseEntity<UserDto> =

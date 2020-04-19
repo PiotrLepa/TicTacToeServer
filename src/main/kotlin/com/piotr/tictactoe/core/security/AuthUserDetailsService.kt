@@ -12,10 +12,9 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 
 @Service
-class AuthUserDetailsService : UserDetailsService {
-
-  @Autowired
-  private lateinit var userRepository: UserRepository
+class AuthUserDetailsService @Autowired constructor(
+  private val userRepository: UserRepository
+) : UserDetailsService {
 
   override fun loadUserByUsername(email: String): UserDetails {
     val user = userRepository.findUserByEmail(email) ?: throw SecurityUserNotExistsException()

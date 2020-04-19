@@ -17,22 +17,13 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class GameResultFacade {
-
-  @Autowired
-  private lateinit var userFacade: UserFacade
-
-  @Autowired
-  private lateinit var singlePlayerGameFacade: SinglePlayerGameFacade
-
-  @Autowired
-  private lateinit var gameMoveFacade: GameMoveFacade
-
-  @Autowired
-  private lateinit var gameResultConverter: Converter<SinglePlayerGameDetailsDto, GameResultDto>
-
-  @Autowired
-  private lateinit var gameResultDetailsConverter: Converter1<SinglePlayerGameDetailsDto, GameResultDetailsDto, AllGameMovesDto>
+class GameResultFacade @Autowired constructor(
+  private val userFacade: UserFacade,
+  private val singlePlayerGameFacade: SinglePlayerGameFacade,
+  private val gameMoveFacade: GameMoveFacade,
+  private val gameResultConverter: Converter<SinglePlayerGameDetailsDto, GameResultDto>,
+  private val gameResultDetailsConverter: Converter1<SinglePlayerGameDetailsDto, GameResultDetailsDto, AllGameMovesDto>
+) {
 
   fun getUserGameResults(pageable: Pageable): Page<GameResultDto> {
     val player = userFacade.getLoggedUser()

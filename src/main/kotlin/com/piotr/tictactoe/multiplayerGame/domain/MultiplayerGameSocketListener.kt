@@ -9,10 +9,9 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class MultiplayerGameSocketListener {
-
-  @Autowired
-  private lateinit var multiplayerGameFacade: MultiplayerGameFacade
+class MultiplayerGameSocketListener @Autowired constructor(
+  private val multiplayerGameFacade: MultiplayerGameFacade
+) {
 
   private val sessionsWithDestinations = ConcurrentHashMap<String, String>()
 

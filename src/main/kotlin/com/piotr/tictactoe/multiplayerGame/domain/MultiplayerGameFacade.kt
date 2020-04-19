@@ -22,34 +22,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class MultiplayerGameFacade {
-
-  @Autowired
-  private lateinit var multiplayerGameRepository: MultiplayerGameRepository
-
-  @Autowired
-  private lateinit var multiplayerGameHelper: MultiplayerGameHelper
-
-  @Autowired
-  private lateinit var userFacade: UserFacade
-
-  @Autowired
-  private lateinit var gameMoveFacade: GameMoveFacade
-
-  @Autowired
-  private lateinit var multiplayerGameDispatcher: MultiplayerGameDispatcher
-
-  @Autowired
-  private lateinit var multiplayerGameChecker: MultiplayerGameChecker
-
-  @Autowired
-  private lateinit var firebasePushService: FirebasePushService
-
-  @Autowired
-  private lateinit var multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>
-
-  @Autowired
-  private lateinit var multiplayerGameCreatedDtoConverter: Converter2<MultiplayerGame, MultiplayerGameCreatedDto, FieldMark, PlayerType>
+class MultiplayerGameFacade @Autowired constructor(
+  private val multiplayerGameRepository: MultiplayerGameRepository,
+  private val multiplayerGameHelper: MultiplayerGameHelper,
+  private val userFacade: UserFacade,
+  private val gameMoveFacade: GameMoveFacade,
+  private val multiplayerGameDispatcher: MultiplayerGameDispatcher,
+  private val multiplayerGameChecker: MultiplayerGameChecker,
+  private val firebasePushService: FirebasePushService,
+  private val multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>,
+  private val multiplayerGameCreatedDtoConverter: Converter2<MultiplayerGame, MultiplayerGameCreatedDto, FieldMark, PlayerType>
+) {
 
   fun createMultiplayerGame(opponentCode: String): MultiplayerGameCreatedDto {
     val firstPlayer = userFacade.getLoggedUser()

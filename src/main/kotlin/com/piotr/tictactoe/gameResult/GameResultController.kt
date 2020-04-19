@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/game-result")
-class GameResultController {
-
-  @Autowired
-  private lateinit var gameResultFacade: GameResultFacade
+class GameResultController @Autowired constructor(
+  private val gameResultFacade: GameResultFacade
+) {
 
   @GetMapping("/user")
   fun getUserResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {

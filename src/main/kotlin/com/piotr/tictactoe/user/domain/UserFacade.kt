@@ -16,19 +16,12 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class UserFacade {
-
-  @Autowired
-  private lateinit var userRepository: UserRepository
-
-  @Autowired
-  private lateinit var passwordEncoder: PasswordEncoder
-
-  @Autowired
-  private lateinit var playerCodeGenerator: PlayerCodeGenerator
-
-  @Autowired
-  private lateinit var userDtoConverter: Converter<User, UserDto>
+class UserFacade @Autowired constructor(
+  private val userRepository: UserRepository,
+  private val passwordEncoder: PasswordEncoder,
+  private val playerCodeGenerator: PlayerCodeGenerator,
+  private val userDtoConverter: Converter<User, UserDto>
+) {
 
   fun register(dto: RegisterDto): UserDto {
     checkUsernameLength(dto)

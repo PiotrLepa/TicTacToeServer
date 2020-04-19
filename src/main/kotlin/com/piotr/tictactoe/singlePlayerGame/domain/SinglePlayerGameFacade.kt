@@ -25,31 +25,16 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class SinglePlayerGameFacade {
-
-  @Autowired
-  private lateinit var singlePlayerGameRepository: SinglePlayerGameRepository
-
-  @Autowired
-  private lateinit var userFacade: UserFacade
-
-  @Autowired
-  private lateinit var gameMoveFacade: GameMoveFacade
-
-  @Autowired
-  private lateinit var singlePlayerGameHelper: SinglePlayerGameHelper
-
-  @Autowired
-  private lateinit var computerMoveLogic: ComputerMoveLogic
-
-  @Autowired
-  private lateinit var gameEndChecker: GameEndChecker
-
-  @Autowired
-  private lateinit var singlePlayerDtoMapperGame: Converter1<SinglePlayerGame, SinglePlayerGameDto, AllGameMovesDto>
-
-  @Autowired
-  private lateinit var singlePlayerDetailsDtoMapper: Converter<SinglePlayerGame, SinglePlayerGameDetailsDto>
+class SinglePlayerGameFacade @Autowired constructor(
+  private val singlePlayerGameRepository: SinglePlayerGameRepository,
+  private val userFacade: UserFacade,
+  private val gameMoveFacade: GameMoveFacade,
+  private val singlePlayerGameHelper: SinglePlayerGameHelper,
+  private val computerMoveLogic: ComputerMoveLogic,
+  private val gameEndChecker: GameEndChecker,
+  private val singlePlayerDtoMapperGame: Converter1<SinglePlayerGame, SinglePlayerGameDto, AllGameMovesDto>,
+  private val singlePlayerDetailsDtoMapper: Converter<SinglePlayerGame, SinglePlayerGameDetailsDto>
+) {
 
   fun createSinglePlayerGame(difficultyLevel: DifficultyLevel): SinglePlayerGameDto {
     val player = userFacade.getLoggedUser()

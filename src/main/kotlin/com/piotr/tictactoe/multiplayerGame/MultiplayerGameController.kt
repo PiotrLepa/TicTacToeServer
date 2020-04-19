@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 @RequestMapping("/multiplayer-game")
-class MultiplayerGameController {
-
-  @Autowired
-  private lateinit var multiplayerGameFacade: MultiplayerGameFacade
+class MultiplayerGameController @Autowired constructor(
+  private val multiplayerGameFacade: MultiplayerGameFacade
+) {
 
   @PostMapping("/create")
   fun createMultiplayerGame(@RequestParam("opponent_code") opponentCode: String): ResponseEntity<MultiplayerGameCreatedDto> {

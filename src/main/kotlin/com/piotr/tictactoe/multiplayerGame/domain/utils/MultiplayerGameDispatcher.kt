@@ -6,10 +6,9 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.stereotype.Component
 
 @Component
-class MultiplayerGameDispatcher {
-
-  @Autowired
-  private lateinit var messagingTemplate: SimpMessageSendingOperations
+class MultiplayerGameDispatcher @Autowired constructor(
+  private val messagingTemplate: SimpMessageSendingOperations
+) {
 
   fun updateGameStatus(gameDto: MultiplayerGameDto) {
     messagingTemplate.convertAndSend(GAME_STATUS_URL + "12", gameDto) // TODO dynamic game id

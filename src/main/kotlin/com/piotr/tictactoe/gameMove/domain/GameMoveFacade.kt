@@ -11,13 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class GameMoveFacade {
-
-  @Autowired
-  private lateinit var gameMoveRepository: GameMoveRepository
-
-  @Autowired
-  private lateinit var gameMoveDtoConverter: Converter<GameMove, GameMoveDto>
+class GameMoveFacade @Autowired constructor(
+  private val gameMoveRepository: GameMoveRepository,
+  private val gameMoveDtoConverter: Converter<GameMove, GameMoveDto>
+) {
 
   fun setMove(gameId: Long, fieldIndex: Int, mark: FieldMark): GameMoveDto {
     checkFieldIndexRange(fieldIndex)
