@@ -9,7 +9,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-class User(
+data class User(
   var email: String,
 
   var username: String,
@@ -19,10 +19,13 @@ class User(
   @Column(name = "game_code")
   var playerCode: String,
 
+  @Column(name = "device_token")
+  var deviceToken: String,
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   var id: Long? = null
 ) {
 
-  constructor() : this("", "", "", "")
+  constructor() : this("", "", "", "", "")
 }

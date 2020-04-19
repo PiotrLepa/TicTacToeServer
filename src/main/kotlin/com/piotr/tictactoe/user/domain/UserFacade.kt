@@ -99,6 +99,7 @@ class UserFacade {
       email = dto.email,
       username = dto.username,
       password = passwordEncoder.encode(dto.password),
+      deviceToken = "",
       playerCode = playerCode
   )
 
