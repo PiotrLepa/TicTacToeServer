@@ -5,13 +5,15 @@ enum class MultiplayerGameStatus {
   ON_GOING,
   FIRST_PLAYER_WON,
   SECOND_PLAYER_WON,
-  DRAW;
+  DRAW,
+  PLAYER_LEFT_GAME;
 
   companion object {
     fun getEndedGameStatus(): List<MultiplayerGameStatus> = listOf(
         FIRST_PLAYER_WON,
         SECOND_PLAYER_WON,
-        DRAW
+        DRAW,
+        PLAYER_LEFT_GAME
     )
   }
 }

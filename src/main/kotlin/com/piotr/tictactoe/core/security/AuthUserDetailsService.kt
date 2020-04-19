@@ -14,10 +14,6 @@ import org.springframework.web.context.request.ServletRequestAttributes
 @Service
 class AuthUserDetailsService : UserDetailsService {
 
-  companion object {
-    private const val DEVICE_TOKEN_KEY = "device_token"
-  }
-
   @Autowired
   private lateinit var userRepository: UserRepository
 
@@ -31,5 +27,9 @@ class AuthUserDetailsService : UserDetailsService {
     val servletRequest = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
     val deviceId = servletRequest.request.getParameter(DEVICE_TOKEN_KEY) ?: throw MissingDeviceToken()
     userRepository.save(user.copy(deviceToken = deviceId))
+  }
+
+  companion object {
+    private const val DEVICE_TOKEN_KEY = "device_token"
   }
 }

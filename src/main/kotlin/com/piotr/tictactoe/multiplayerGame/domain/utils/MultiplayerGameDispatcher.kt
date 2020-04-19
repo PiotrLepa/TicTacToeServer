@@ -12,6 +12,10 @@ class MultiplayerGameDispatcher {
   private lateinit var messagingTemplate: SimpMessageSendingOperations
 
   fun updateGameStatus(gameDto: MultiplayerGameDto) {
-    messagingTemplate.convertAndSend("/game-status/12", gameDto) // TODO dynamic game id
+    messagingTemplate.convertAndSend(GAME_STATUS_URL + "12", gameDto) // TODO dynamic game id
+  }
+
+  companion object {
+    const val GAME_STATUS_URL = "/game-status/"
   }
 }
