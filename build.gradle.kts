@@ -39,6 +39,7 @@ dependencies {
   implementation("joda-time:joda-time:2.10.5")
   implementation("org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE")
   implementation("org.postgresql:postgresql:42.2.9")
+  implementation("com.google.firebase:firebase-admin:6.8.1")
 }
 
 tasks.withType<Test> {

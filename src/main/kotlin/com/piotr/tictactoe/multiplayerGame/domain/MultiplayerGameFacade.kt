@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.multiplayerGame.domain
 
 import com.piotr.tictactoe.core.converter.Converter1
+import com.piotr.tictactoe.core.firebase.FirebaseMessagingService
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
@@ -48,6 +49,9 @@ class MultiplayerGameFacade {
   private lateinit var gameEndChecker: GameEndChecker
 
   @Autowired
+  private lateinit var firebaseMessagingService: FirebaseMessagingService
+
+  @Autowired
   private lateinit var multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>
 
   @Autowired
@@ -59,6 +63,8 @@ class MultiplayerGameFacade {
     val game = multiplayerGameHelper.createMultiplayerGame(firstPlayer, secondPlayer)
         .let(multiplayerGameRepository::save)
 
+    firebaseMessagingService.send(
+        "dYl7WaKyTFCVgCQWxZ_27u:APA91bFZd39c5usaVrveS2OC44zKFGl9flSDFHkqLjsZbDzpFqQ4s1o6ei-r3WrxAg-d2BMC2spIDGTiPyyfmRuMPOk4l6szPn1vV4LS3dXirYzIIvFZpg5wlMO4m4s4wVm3iNqERJYx")
     // TODO send push to second player
     return multiplayerGameCreatedDtoConverter.convert(game, game.firstPlayerMark)
   }
