@@ -9,7 +9,6 @@ import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGame
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
-import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus.ON_GOING
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameTurn
 import com.piotr.tictactoe.singlePlayerGame.domain.utils.SinglePlayerGameHelper
 import com.piotr.tictactoe.singlePlayerGame.domain.utils.computerMoveLogic.ComputerMoveLogic
@@ -63,7 +62,7 @@ class SinglePlayerGameFacade {
     } else {
       listOf()
     }
-    return updateGame(game, moves, game.playerMark, game.computerMark)
+    return updateGame(game, moves, game.playerMark)
   }
 
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): SinglePlayerGameDto {
@@ -73,13 +72,13 @@ class SinglePlayerGameFacade {
     gameMoveFacade.setMove(gameId, fieldIndex, game.playerMark)
     val allMovesDto = gameMoveFacade.getAllMoves(gameId)
     val moves = allMovesDto.moves
-    val updatedMoves = if (canDoNextMove(moves, game.playerMark, game.computerMark)) {
+    val updatedMoves = if (canDoNextMove(moves, game.playerMark)) {
       val computerMove = setComputeMove(gameId, game.difficultyLevel, game.computerMark, moves)
       moves + listOf(computerMove)
     } else {
       moves
     }
-    return updateGame(game, updatedMoves, game.playerMark, game.computerMark)
+    return updateGame(game, updatedMoves, game.playerMark)
   }
 
   fun getUserGames(pageable: Pageable, playerId: Long): Page<SinglePlayerGameDetailsDto> =
@@ -101,11 +100,10 @@ class SinglePlayerGameFacade {
   private fun updateGame(
     game: SinglePlayerGame,
     moves: List<GameMoveDto>,
-    playerMark: FieldMark,
-    computerMark: FieldMark
+    playerMark: FieldMark
   ): SinglePlayerGameDto {
     val gameToSave = game.apply {
-      status = gameEndChecker.checkGameEnd(moves, playerMark, computerMark)
+      status = checkGameStatus(moves, playerMark)
       modificationDate = DateTime.now().millis
     }
     val savedGame = singlePlayerGameRepository.save(gameToSave)
@@ -122,8 +120,18 @@ class SinglePlayerGameFacade {
     return gameMoveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
   }
 
-  private fun canDoNextMove(moves: List<GameMoveDto>, playerMark: FieldMark, computerMark: FieldMark) =
-      gameEndChecker.checkGameEnd(moves, playerMark, computerMark) == ON_GOING
+  private fun checkGameStatus(
+    moves: List<GameMoveDto>,
+    playerMark: FieldMark
+  ): SinglePlayerGameStatus = when (gameEndChecker.checkGameEnd(moves, playerMark)) {
+    GameEndChecker.GameResultType.WON -> SinglePlayerGameStatus.PLAYER_WON
+    GameEndChecker.GameResultType.LOST -> SinglePlayerGameStatus.COMPUTER_WON
+    GameEndChecker.GameResultType.DRAW -> SinglePlayerGameStatus.DRAW
+    GameEndChecker.GameResultType.ON_GOING -> SinglePlayerGameStatus.ON_GOING
+  }
+
+  private fun canDoNextMove(moves: List<GameMoveDto>, playerMark: FieldMark) =
+      gameEndChecker.checkGameEnd(moves, playerMark) == GameEndChecker.GameResultType.ON_GOING
 
   private fun checkIfPlayerMatch(game: SinglePlayerGame) {
     val player = userFacade.getLoggedUser()
@@ -133,7 +141,7 @@ class SinglePlayerGameFacade {
   }
 
   private fun checkIfGameIsOnGoing(game: SinglePlayerGame) {
-    if (game.status != ON_GOING) {
+    if (game.status != SinglePlayerGameStatus.ON_GOING) {
       throw GameEndedException()
     }
   }

@@ -25,6 +25,12 @@ class MultiplayerGameController {
     return ResponseEntity(game, HttpStatus.CREATED)
   }
 
+  @PutMapping("/join")
+  fun joinToGame(@RequestParam("game_id") gameId: Long): ResponseEntity<Unit> {
+    multiplayerGameFacade.joinToGame(gameId)
+    return ResponseEntity(HttpStatus.OK)
+  }
+
   @PutMapping("/{gameId}/move/{fieldIndex}")
   fun setMove(
     @PathVariable("gameId") gameId: Long,

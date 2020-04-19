@@ -3,7 +3,9 @@ package com.piotr.tictactoe.core.exception
 import com.piotr.tictactoe.gameMove.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.gameMove.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.gameResult.exception.GameIsOnGoingException
+import com.piotr.tictactoe.multiplayerGame.exception.GameAlreadyStaredException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
+import com.piotr.tictactoe.multiplayerGame.exception.InvalidPlayerException
 import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
 import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
@@ -29,6 +31,14 @@ class GameEndedExceptionHandlerAdvice {
   @ExceptionHandler(InvalidOpponentCodeException::class)
   fun handleInvalidOpponentCodeException(exception: InvalidOpponentCodeException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception, "multiplayer-game.error.invalid_opponent_code")
+
+  @ExceptionHandler(InvalidPlayerException::class)
+  fun handleInvalidPlayerException(exception: InvalidPlayerException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
+  @ExceptionHandler(GameAlreadyStaredException::class)
+  fun handleGameAlreadyStaredException(exception: GameAlreadyStaredException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(OpponentMoveException::class)
   fun handleOpponentMoveException(exception: OpponentMoveException) =

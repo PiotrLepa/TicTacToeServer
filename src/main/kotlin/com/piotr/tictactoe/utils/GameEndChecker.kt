@@ -2,19 +2,20 @@ package com.piotr.tictactoe.utils
 
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
-import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
 import org.springframework.stereotype.Component
 
 @Component
 class GameEndChecker {
 
-  fun checkGameEnd(moves: List<GameMoveDto>, playerMark: FieldMark, computerMark: FieldMark): SinglePlayerGameStatus =
-      when {
-        checkWin(moves, playerMark) -> SinglePlayerGameStatus.PLAYER_WON
-        checkWin(moves, computerMark) -> SinglePlayerGameStatus.COMPUTER_WON
-        checkDraw(moves) -> SinglePlayerGameStatus.DRAW
-        else -> SinglePlayerGameStatus.ON_GOING
-      }
+  fun checkGameEnd(moves: List<GameMoveDto>, mark: FieldMark): GameResultType {
+    val oppositeMark = if (mark == FieldMark.X) FieldMark.O else FieldMark.X
+    return when {
+      checkWin(moves, mark) -> GameResultType.WON
+      checkWin(moves, oppositeMark) -> GameResultType.LOST
+      checkDraw(moves) -> GameResultType.DRAW
+      else -> GameResultType.ON_GOING
+    }
+  }
 
   fun checkWin(moves: List<GameMoveDto>, mark: FieldMark): Boolean {
     for (combination in winningCombinations) {
@@ -35,5 +36,12 @@ class GameEndChecker {
         intArrayOf(0, 3, 6), intArrayOf(1, 4, 7), intArrayOf(2, 5, 8),
         intArrayOf(0, 4, 8), intArrayOf(2, 4, 6)
     )
+  }
+
+  enum class GameResultType {
+    WON,
+    LOST,
+    DRAW,
+    ON_GOING
   }
 }

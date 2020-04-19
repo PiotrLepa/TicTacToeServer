@@ -22,7 +22,7 @@ class MultiplayerGameHelper {
     return MultiplayerGame(
         firstPlayerId = firstPlayer.id,
         secondPlayerId = secondPlayer.id,
-        status = MultiplayerGameStatus.ON_GOING,
+        status = MultiplayerGameStatus.CREATED,
         currentTurn = startingPlayer,
         creationDate = DateTime.now().millis,
         firstPlayerMark = firstPlayerMark,

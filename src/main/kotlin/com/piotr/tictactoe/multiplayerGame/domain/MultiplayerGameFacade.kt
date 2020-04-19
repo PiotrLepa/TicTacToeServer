@@ -1,11 +1,10 @@
 package com.piotr.tictactoe.multiplayerGame.domain
 
-import com.piotr.tictactoe.core.converter.Converter
 import com.piotr.tictactoe.core.converter.Converter1
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
+import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
-import com.piotr.tictactoe.multiplayerGame.converter.MultiplayerGameDtoConverterParams
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGame
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn.FIRST_PLAYER
@@ -14,7 +13,9 @@ import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameDispatche
 import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameHelper
 import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameCreatedDto
 import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameDto
+import com.piotr.tictactoe.multiplayerGame.exception.GameAlreadyStaredException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
+import com.piotr.tictactoe.multiplayerGame.exception.InvalidPlayerException
 import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
 import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
@@ -47,58 +48,52 @@ class MultiplayerGameFacade {
   private lateinit var gameEndChecker: GameEndChecker
 
   @Autowired
-  private lateinit var multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, MultiplayerGameDtoConverterParams>
+  private lateinit var multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>
 
   @Autowired
-  private lateinit var multiplayerGameCreatedDtoConverter: Converter<MultiplayerGame, MultiplayerGameCreatedDto>
+  private lateinit var multiplayerGameCreatedDtoConverter: Converter1<MultiplayerGame, MultiplayerGameCreatedDto, FieldMark>
 
   fun createMultiplayerGame(opponentCode: String): MultiplayerGameCreatedDto {
     val firstPlayer = userFacade.getLoggedUser()
     val secondPlayer = userFacade.findUserByPlayerCode(opponentCode) ?: throw InvalidOpponentCodeException()
-
     val game = multiplayerGameHelper.createMultiplayerGame(firstPlayer, secondPlayer)
         .let(multiplayerGameRepository::save)
 
-    val gameDto = mapGameDto(firstPlayer, secondPlayer, game, listOf())
-    multiplayerGameDispatcher.initGame(gameDto)
+    // TODO send push to second player
+    return multiplayerGameCreatedDtoConverter.convert(game, game.firstPlayerMark)
+  }
 
-    return multiplayerGameCreatedDtoConverter.convert(game)
+  fun joinToGame(gameId: Long) {
+    val game = multiplayerGameRepository.findGameByGameId(gameId)
+    val player = userFacade.getLoggedUser()
+    checkIfGameHasNotStarted(game)
+    checkIfPlayerIsCorrect(game, player)
+    val updatedGame = multiplayerGameRepository.save(game.copy(
+        status = MultiplayerGameStatus.ON_GOING,
+        modificationDate = DateTime.now().millis
+    ))
+    val gameDto = multiplayerGameDtoConverter.convert(updatedGame, AllGameMovesDto(listOf()))
+    multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 
   fun setPlayerMove(gameId: Long, fieldIndex: Int) {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
     val player = userFacade.getLoggedUser()
+
     checkIfGameIsOnGoing(game)
     checkIfPlayerMatch(game)
     checkGameTurn(game, player)
+
     gameMoveFacade.setMove(gameId, fieldIndex, getMarkForPlayer(game, player))
     val allMovesDto = gameMoveFacade.getAllMoves(gameId)
-    val (firstPlayer, secondPlayer) = if (game.firstPlayerId == player.id) {
-      player to userFacade.findUserById(game.secondPlayerId)
-    } else {
-      userFacade.findUserById(game.firstPlayerId) to player
-    }
+
     val gameToSave = game.copy(
         currentTurn = if (game.currentTurn == FIRST_PLAYER) SECOND_PLAYER else FIRST_PLAYER,
-        status = MultiplayerGameStatus.ON_GOING, // TODO check game end
+        status = checkGameStatus(allMovesDto.moves, game.firstPlayerMark),
         modificationDate = DateTime.now().millis
     )
-    val gameDto = mapGameDto(firstPlayer, secondPlayer, multiplayerGameRepository.save(gameToSave), allMovesDto.moves)
+    val gameDto = multiplayerGameDtoConverter.convert(multiplayerGameRepository.save(gameToSave), allMovesDto)
     multiplayerGameDispatcher.updateGameStatus(gameDto)
-  }
-
-  private fun mapGameDto(
-    firstPlayer: UserDto,
-    secondPlayer: UserDto,
-    game: MultiplayerGame,
-    moves: List<GameMoveDto>
-  ): MultiplayerGameDto {
-    val converterParams = MultiplayerGameDtoConverterParams(
-        firstPlayerCode = firstPlayer.playerCode,
-        secondPlayerCode = secondPlayer.playerCode,
-        moves = moves
-    )
-    return multiplayerGameDtoConverter.convert(game, converterParams)
   }
 
   private fun getMarkForPlayer(game: MultiplayerGame, player: UserDto): FieldMark {
@@ -106,6 +101,26 @@ class MultiplayerGameFacade {
       game.firstPlayerMark
     } else {
       game.secondPlayerMark
+    }
+  }
+
+  private fun checkGameStatus(moves: List<GameMoveDto>, firstPlayer: FieldMark): MultiplayerGameStatus =
+      when (gameEndChecker.checkGameEnd(moves, firstPlayer)) {
+        GameEndChecker.GameResultType.WON -> MultiplayerGameStatus.FIRST_PLAYER_WON
+        GameEndChecker.GameResultType.LOST -> MultiplayerGameStatus.SECOND_PLAYER_WON
+        GameEndChecker.GameResultType.DRAW -> MultiplayerGameStatus.DRAW
+        GameEndChecker.GameResultType.ON_GOING -> MultiplayerGameStatus.ON_GOING
+      }
+
+  private fun checkIfPlayerIsCorrect(game: MultiplayerGame, player: UserDto) {
+    if (game.secondPlayerId != player.id) {
+      throw InvalidPlayerException()
+    }
+  }
+
+  private fun checkIfGameHasNotStarted(game: MultiplayerGame) {
+    if (game.status != MultiplayerGameStatus.CREATED) {
+      throw GameAlreadyStaredException()
     }
   }
 
