@@ -33,7 +33,7 @@ class WebSecurityConfig @Autowired constructor(
   override fun configure(web: WebSecurity) {
     web.ignoring()
         .antMatchers("/user/register")
-        .antMatchers("/multiplayer-game-socket")
+        .antMatchers("/multiplayer-socket")
   }
 
   override fun configure(http: HttpSecurity) {

@@ -11,7 +11,7 @@ class MultiplayerGameDispatcher @Autowired constructor(
 ) {
 
   fun updateGameStatus(gameDto: MultiplayerGameDto) {
-    messagingTemplate.convertAndSend(GAME_STATUS_URL + "12", gameDto) // TODO dynamic game id
+    messagingTemplate.convertAndSend(GAME_STATUS_URL + gameDto.gameId, gameDto)
   }
 
   companion object {

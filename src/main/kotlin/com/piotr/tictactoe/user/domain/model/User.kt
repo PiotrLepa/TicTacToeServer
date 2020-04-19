@@ -1,5 +1,7 @@
 package com.piotr.tictactoe.user.domain.model
 
+import org.hibernate.annotations.CreationTimestamp
+import java.sql.Timestamp
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -10,21 +12,25 @@ import javax.persistence.Table
 @Entity
 @Table(name = "users")
 data class User(
-  var email: String,
+  val email: String,
 
-  var username: String,
+  val username: String,
 
-  var password: String,
+  val password: String,
 
   @Column(name = "game_code")
-  var playerCode: String,
+  val playerCode: String,
 
   @Column(name = "device_token")
-  var deviceToken: String,
+  val deviceToken: String,
+
+  @Column(name = "creation_date")
+  @CreationTimestamp
+  val creationDate: Timestamp = Timestamp(0),
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var id: Long? = null
+  val id: Long? = null
 ) {
 
   constructor() : this("", "", "", "", "")

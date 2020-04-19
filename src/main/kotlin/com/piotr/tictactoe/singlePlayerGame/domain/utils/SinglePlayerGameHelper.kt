@@ -5,7 +5,6 @@ import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGame
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameTurn
-import org.joda.time.DateTime
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
@@ -17,15 +16,12 @@ class SinglePlayerGameHelper {
       SinglePlayerGameTurn.PLAYER -> FieldMark.X to FieldMark.O
       SinglePlayerGameTurn.COMPUTER -> FieldMark.O to FieldMark.X
     }
-    val creationDate = DateTime.now().millis
     return SinglePlayerGame(
         playerId = playerId,
         status = SinglePlayerGameStatus.ON_GOING,
         difficultyLevel = difficultyLevel,
         playerMark = playerMark,
-        computerMark = computerMark,
-        creationDate = creationDate,
-        modificationDate = creationDate
+        computerMark = computerMark
     )
   }
 

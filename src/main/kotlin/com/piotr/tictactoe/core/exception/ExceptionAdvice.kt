@@ -29,7 +29,7 @@ class GameEndedExceptionHandlerAdvice @Autowired constructor(
 
   @ExceptionHandler(InvalidOpponentCodeException::class)
   fun handleInvalidOpponentCodeException(exception: InvalidOpponentCodeException) =
-      createErrorResponse(HttpStatus.BAD_REQUEST, exception, "multiplayer-game.error.invalid_opponent_code")
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception, "multiplayer.error.invalid_opponent_code")
 
   @ExceptionHandler(InvalidPlayerException::class)
   fun handleInvalidPlayerException(exception: InvalidPlayerException) =

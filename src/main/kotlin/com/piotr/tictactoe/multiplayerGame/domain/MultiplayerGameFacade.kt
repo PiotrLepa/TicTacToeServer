@@ -10,6 +10,7 @@ import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGame
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn.FIRST_PLAYER
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn.SECOND_PLAYER
+import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameChecker
 import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameDispatcher
 import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameHelper
 import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameCreatedDto
@@ -17,7 +18,6 @@ import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameDto
 import com.piotr.tictactoe.multiplayerGame.dto.PlayerType
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
 import com.piotr.tictactoe.user.domain.UserFacade
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -54,8 +54,7 @@ class MultiplayerGameFacade @Autowired constructor(
     multiplayerGameChecker.checkIfGameHasNotStarted(game)
 
     val updatedGame = multiplayerGameRepository.save(game.copy(
-        status = MultiplayerGameStatus.ON_GOING,
-        modificationDate = DateTime.now().millis
+        status = MultiplayerGameStatus.ON_GOING
     ))
     val gameDto = multiplayerGameDtoConverter.convert(updatedGame, AllGameMovesDto(listOf()))
     multiplayerGameDispatcher.updateGameStatus(gameDto)
@@ -72,12 +71,11 @@ class MultiplayerGameFacade @Autowired constructor(
     gameMoveFacade.setMove(gameId, fieldIndex, multiplayerGameHelper.getMarkForPlayer(game, player))
     val allMovesDto = gameMoveFacade.getAllMoves(gameId)
 
-    val gameToSave = game.copy(
+    val updatedGame = multiplayerGameRepository.save(game.copy(
         currentTurn = if (game.currentTurn == FIRST_PLAYER) SECOND_PLAYER else FIRST_PLAYER,
-        status = multiplayerGameHelper.getGameResult(allMovesDto.moves, game.firstPlayerMark),
-        modificationDate = DateTime.now().millis
-    )
-    val gameDto = multiplayerGameDtoConverter.convert(multiplayerGameRepository.save(gameToSave), allMovesDto)
+        status = multiplayerGameHelper.getGameResult(allMovesDto.moves, game.firstPlayerMark)
+    ))
+    val gameDto = multiplayerGameDtoConverter.convert(updatedGame, allMovesDto)
     multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 
@@ -86,9 +84,11 @@ class MultiplayerGameFacade @Autowired constructor(
     if (game.status in MultiplayerGameStatus.getEndedGameStatus()) {
       return
     }
-    multiplayerGameRepository.save(game.copy(
-        status = MultiplayerGameStatus.PLAYER_LEFT_GAME,
-        modificationDate = DateTime.now().millis
+    val allMovesDto = gameMoveFacade.getAllMoves(gameId)
+    val updatedGame = multiplayerGameRepository.save(game.copy(
+        status = MultiplayerGameStatus.PLAYER_LEFT_GAME
     ))
+    val gameDto = multiplayerGameDtoConverter.convert(updatedGame, allMovesDto)
+    multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 }

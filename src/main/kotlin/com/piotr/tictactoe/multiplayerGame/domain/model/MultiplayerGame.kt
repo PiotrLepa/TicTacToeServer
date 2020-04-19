@@ -1,7 +1,9 @@
 package com.piotr.tictactoe.multiplayerGame.domain.model
 
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
-import org.joda.time.DateTime
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.sql.Timestamp
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -16,38 +18,39 @@ import javax.persistence.Table
 data class MultiplayerGame(
 
   @Column(name = "first_player_id")
-  var firstPlayerId: Long,
+  val firstPlayerId: Long,
 
   @Column(name = "second_player_id")
-  var secondPlayerId: Long,
+  val secondPlayerId: Long,
 
   @Enumerated(EnumType.STRING)
-  var status: MultiplayerGameStatus,
+  val status: MultiplayerGameStatus,
 
   @Enumerated(EnumType.STRING)
-  var currentTurn: MultiplayerGameTurn,
+  val currentTurn: MultiplayerGameTurn,
 
   @Column(name = "first_player_mark")
   @Enumerated(EnumType.STRING)
-  var firstPlayerMark: FieldMark,
+  val firstPlayerMark: FieldMark,
 
   @Column(name = "second_player_mark")
   @Enumerated(EnumType.STRING)
-  var secondPlayerMark: FieldMark,
+  val secondPlayerMark: FieldMark,
 
   @Column(name = "creation_date")
-  var creationDate: Long,
+  @CreationTimestamp
+  val creationDate: Timestamp = Timestamp(0),
 
   @Column(name = "modification_date")
-  var modificationDate: Long,
+  @UpdateTimestamp
+  val modificationDate: Timestamp = Timestamp(0),
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var gameId: Long? = null
+  val gameId: Long? = null
 ) {
 
   constructor() : this(-1, -1, MultiplayerGameStatus.ON_GOING,
-      MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O,
-      DateTime.now().millis, DateTime.now().millis
+      MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O
   )
 }

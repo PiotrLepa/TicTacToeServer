@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/single-player-game")
+@RequestMapping("/single-player")
 class SinglePlayerGameController @Autowired constructor(
   private val singlePlayerGameFacade: SinglePlayerGameFacade
 ) {

@@ -1,5 +1,6 @@
-package com.piotr.tictactoe.multiplayerGame.domain
+package com.piotr.tictactoe.multiplayerGame.domain.utils
 
+import com.piotr.tictactoe.multiplayerGame.domain.MultiplayerGameFacade
 import com.piotr.tictactoe.multiplayerGame.domain.utils.MultiplayerGameDispatcher.Companion.GAME_STATUS_URL
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.event.EventListener

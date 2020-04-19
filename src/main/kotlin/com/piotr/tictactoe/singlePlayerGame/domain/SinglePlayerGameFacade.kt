@@ -18,7 +18,6 @@ import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
 import com.piotr.tictactoe.user.domain.UserFacade
 import com.piotr.tictactoe.utils.GameEndChecker
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -87,10 +86,9 @@ class SinglePlayerGameFacade @Autowired constructor(
     moves: List<GameMoveDto>,
     playerMark: FieldMark
   ): SinglePlayerGameDto {
-    val gameToSave = game.apply {
-      status = checkGameStatus(moves, playerMark)
-      modificationDate = DateTime.now().millis
-    }
+    val gameToSave = game.copy(
+        status = checkGameStatus(moves, playerMark)
+    )
     val savedGame = singlePlayerGameRepository.save(gameToSave)
     return singlePlayerDtoMapperGame.convert(savedGame, AllGameMovesDto(moves = moves))
   }

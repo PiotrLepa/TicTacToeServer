@@ -6,7 +6,6 @@ import com.piotr.tictactoe.gameMove.domain.model.GameMove
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameMove.dto.GameMoveDto
 import com.piotr.tictactoe.utils.GameConstant.VALID_FIELDS_INDEXES
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -23,8 +22,7 @@ class GameMoveFacade @Autowired constructor(
         gameId = gameId,
         fieldIndex = fieldIndex,
         counter = getNextCounter(gameId),
-        mark = mark,
-        creationDate = DateTime.now().millis
+        mark = mark
     ).let(gameMoveRepository::save)
         .let(gameMoveDtoConverter::convert)
   }

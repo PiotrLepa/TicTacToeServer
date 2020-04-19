@@ -1,6 +1,7 @@
 package com.piotr.tictactoe.gameMove.domain.model
 
-import org.joda.time.DateTime
+import org.hibernate.annotations.CreationTimestamp
+import java.sql.Timestamp
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -15,23 +16,24 @@ import javax.persistence.Table
 data class GameMove(
 
   @Column(name = "game_id")
-  var gameId: Long,
+  val gameId: Long,
 
   @Column(name = "field_index")
-  var fieldIndex: Int,
+  val fieldIndex: Int,
 
-  var counter: Int,
+  val counter: Int,
 
   @Enumerated(EnumType.STRING)
-  var mark: FieldMark,
+  val mark: FieldMark,
 
   @Column(name = "creation_date")
-  var creationDate: Long,
+  @CreationTimestamp
+  val creationDate: Timestamp = Timestamp(0),
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var moveId: Long? = null
+  val moveId: Long? = null
 ) {
 
-  constructor() : this(-1, -1, -1, FieldMark.X, DateTime.now().millis)
+  constructor() : this(-1, -1, -1, FieldMark.X)
 }

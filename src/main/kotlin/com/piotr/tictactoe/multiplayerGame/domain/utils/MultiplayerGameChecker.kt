@@ -1,4 +1,4 @@
-package com.piotr.tictactoe.multiplayerGame.domain
+package com.piotr.tictactoe.multiplayerGame.domain.utils
 
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGame
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus

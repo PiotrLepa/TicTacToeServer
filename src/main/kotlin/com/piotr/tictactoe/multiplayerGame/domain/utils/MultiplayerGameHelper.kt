@@ -7,7 +7,6 @@ import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn
 import com.piotr.tictactoe.user.dto.UserDto
 import com.piotr.tictactoe.utils.GameEndChecker
-import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import kotlin.random.Random
@@ -29,10 +28,8 @@ class MultiplayerGameHelper @Autowired constructor(
         secondPlayerId = secondPlayer.id,
         status = MultiplayerGameStatus.CREATED,
         currentTurn = startingPlayer,
-        creationDate = DateTime.now().millis,
         firstPlayerMark = firstPlayerMark,
-        secondPlayerMark = secondPlayerMark,
-        modificationDate = DateTime.now().millis
+        secondPlayerMark = secondPlayerMark
     )
   }
 

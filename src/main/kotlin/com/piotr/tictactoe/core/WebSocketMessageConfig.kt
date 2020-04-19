@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 class WebSocketMessageConfig : WebSocketMessageBrokerConfigurer {
 
   override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-    registry.addEndpoint("/multiplayer-game-socket")
+    registry.addEndpoint("/multiplayer-socket")
         .setAllowedOrigins("*")
   }
 }

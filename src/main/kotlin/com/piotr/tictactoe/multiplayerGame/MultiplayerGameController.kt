@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
-@RequestMapping("/multiplayer-game")
+@RequestMapping("/multiplayer")
 class MultiplayerGameController @Autowired constructor(
   private val multiplayerGameFacade: MultiplayerGameFacade
 ) {
