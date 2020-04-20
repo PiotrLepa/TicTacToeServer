@@ -2,16 +2,15 @@ package com.piotr.tictactoe.gameResult.converter
 
 import com.piotr.tictactoe.core.converter.Converter1
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
-import com.piotr.tictactoe.gameResult.dto.GameResultDetailsDto
-import com.piotr.tictactoe.singlePlayerGame.dto.SinglePlayerGameDetailsDto
+import com.piotr.tictactoe.gameResult.dto.SinglePlayerGameResultDetailsDto
+import com.piotr.tictactoe.gameResult.dto.SinglePlayerGameResultDto
 import org.springframework.stereotype.Component
 
 @Component
-class GameResultDetailsConverter : Converter1<SinglePlayerGameDetailsDto, GameResultDetailsDto, AllGameMovesDto> {
+class SinglePlayerGameResultDetailsConverter : Converter1<SinglePlayerGameResultDto, SinglePlayerGameResultDetailsDto, AllGameMovesDto> {
 
-  override fun convert(from: SinglePlayerGameDetailsDto, param1: AllGameMovesDto) = GameResultDetailsDto(
+  override fun convert(from: SinglePlayerGameResultDto, param1: AllGameMovesDto) = SinglePlayerGameResultDetailsDto(
       gameId = from.gameId,
-      playerId = from.playerId,
       status = from.status,
       difficultyLevel = from.difficultyLevel,
       playerMark = from.playerMark,

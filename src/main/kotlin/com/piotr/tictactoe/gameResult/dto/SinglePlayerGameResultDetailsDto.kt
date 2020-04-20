@@ -6,9 +6,8 @@ import com.piotr.tictactoe.singlePlayerGame.domain.model.DifficultyLevel
 import com.piotr.tictactoe.singlePlayerGame.domain.model.SinglePlayerGameStatus
 import java.sql.Timestamp
 
-data class GameResultDetailsDto(
+data class SinglePlayerGameResultDetailsDto(
   val gameId: Long,
-  val playerId: Long,
   val status: SinglePlayerGameStatus,
   val difficultyLevel: DifficultyLevel,
   var playerMark: FieldMark,

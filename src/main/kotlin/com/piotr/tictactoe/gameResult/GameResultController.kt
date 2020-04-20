@@ -1,8 +1,10 @@
 package com.piotr.tictactoe.gameResult
 
 import com.piotr.tictactoe.gameResult.domain.GameResultFacade
-import com.piotr.tictactoe.gameResult.dto.GameResultDetailsDto
-import com.piotr.tictactoe.gameResult.dto.GameResultDto
+import com.piotr.tictactoe.gameResult.dto.MultiplayerGameResultDetailsDto
+import com.piotr.tictactoe.gameResult.dto.MultiplayerGameResultDto
+import com.piotr.tictactoe.gameResult.dto.SinglePlayerGameResultDetailsDto
+import com.piotr.tictactoe.gameResult.dto.SinglePlayerGameResultDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,21 +21,39 @@ class GameResultController @Autowired constructor(
   private val gameResultFacade: GameResultFacade
 ) {
 
-  @GetMapping("/user")
-  fun getUserResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
-    val pagedResults = gameResultFacade.getUserGameResults(pageable)
+  @GetMapping("/single-player/user")
+  fun getSinglePlayerUserResults(pageable: Pageable): ResponseEntity<Page<SinglePlayerGameResultDto>> {
+    val pagedResults = gameResultFacade.getSinglePlayerUserResults(pageable)
     return ResponseEntity(pagedResults, HttpStatus.OK)
   }
 
-  @GetMapping("/all")
-  fun getAllResults(pageable: Pageable): ResponseEntity<Page<GameResultDto>> {
-    val pagedResults = gameResultFacade.getAllGameResults(pageable)
+  @GetMapping("/single-player/all")
+  fun getSinglePlayerAllResults(pageable: Pageable): ResponseEntity<Page<SinglePlayerGameResultDto>> {
+    val pagedResults = gameResultFacade.getSinglePlayerAllResults(pageable)
     return ResponseEntity(pagedResults, HttpStatus.OK)
   }
 
-  @GetMapping("/{gameId}")
-  fun getResultDetails(@PathVariable("gameId") gameId: Long): ResponseEntity<GameResultDetailsDto> {
-    val resultDetails = gameResultFacade.getGameResultDetails(gameId)
+  @GetMapping("/single-player/{gameId}")
+  fun getSinglePlayerResultDetails(@PathVariable("gameId") gameId: Long): ResponseEntity<SinglePlayerGameResultDetailsDto> {
+    val resultDetails = gameResultFacade.getSinglePlayerResultDetails(gameId)
+    return ResponseEntity(resultDetails, HttpStatus.OK)
+  }
+
+  @GetMapping("/multiplayer/user")
+  fun getMultiplayerUserResults(pageable: Pageable): ResponseEntity<Page<MultiplayerGameResultDto>> {
+    val pagedResults = gameResultFacade.getMultiplayerUserResults(pageable)
+    return ResponseEntity(pagedResults, HttpStatus.OK)
+  }
+
+  @GetMapping("/multiplayer/all")
+  fun getMultiplayerAllResults(pageable: Pageable): ResponseEntity<Page<MultiplayerGameResultDto>> {
+    val pagedResults = gameResultFacade.getMultiplayerAllResults(pageable)
+    return ResponseEntity(pagedResults, HttpStatus.OK)
+  }
+
+  @GetMapping("/multiplayer/{gameId}")
+  fun getMultiplayerResultDetails(@PathVariable("gameId") gameId: Long): ResponseEntity<MultiplayerGameResultDetailsDto> {
+    val resultDetails = gameResultFacade.getMultiplayerResultDetails(gameId)
     return ResponseEntity(resultDetails, HttpStatus.OK)
   }
 }
