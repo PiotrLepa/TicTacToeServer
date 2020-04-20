@@ -54,8 +54,7 @@ class SinglePlayerGameFacade @Autowired constructor(
     singlePlayerGameChecker.checkIfGameIsOnGoing(game)
     singlePlayerGameChecker.checkIfPlayerMatch(game, player)
 
-    gameMoveFacade.setMove(gameId, fieldIndex, game.playerMark)
-    val moves = gameMoveFacade.getAllMoves(gameId).moves
+    val moves = gameMoveFacade.setSinglePlayerMove(gameId, fieldIndex, game.playerMark).moves
     val updatedMoves = doComputerMove(game, moves)
 
     return updateGame(game, updatedMoves, game.playerMark)
@@ -63,8 +62,7 @@ class SinglePlayerGameFacade @Autowired constructor(
 
   private fun doComputerMove(game: SinglePlayerGame, moves: List<GameMoveDto>): List<GameMoveDto> {
     return if (singlePlayerGameHelper.isGameOnGoing(moves, game.playerMark)) {
-      val computerMove = setComputeMove(game.gameId!!, game.difficultyLevel, game.computerMark, moves)
-      moves + listOf(computerMove)
+      setComputeMove(game.gameId!!, game.difficultyLevel, game.computerMark, moves)
     } else {
       moves
     }
@@ -87,9 +85,9 @@ class SinglePlayerGameFacade @Autowired constructor(
     difficultyLevel: DifficultyLevel,
     computerMark: FieldMark,
     moves: List<GameMoveDto>
-  ): GameMoveDto {
+  ): List<GameMoveDto> {
     val computerMoveFieldIndex = computerMoveLogic.calculateComputerMove(difficultyLevel, computerMark, moves)
-    return gameMoveFacade.setMove(gameId, computerMoveFieldIndex, computerMark)
+    return gameMoveFacade.setSinglePlayerMove(gameId, computerMoveFieldIndex, computerMark).moves
   }
 
   fun getUserGames(pageable: Pageable, playerId: Long): Page<SinglePlayerGameResultDto> =

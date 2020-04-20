@@ -73,14 +73,13 @@ class MultiplayerGameFacade @Autowired constructor(
     multiplayerGameChecker.checkIfPlayerMatch(game, player)
     multiplayerGameChecker.checkGameTurn(game, player)
 
-    gameMoveFacade.setMove(gameId, fieldIndex, multiplayerGameHelper.getMarkForPlayer(game, player))
-    val allMovesDto = gameMoveFacade.getAllMoves(gameId)
+    val moves = gameMoveFacade.setMultiplayerMove(gameId, fieldIndex, multiplayerGameHelper.getMarkForPlayer(game, player)).moves
 
     val updatedGame = multiplayerGameRepository.save(game.copy(
         currentTurn = if (game.currentTurn == FIRST_PLAYER) SECOND_PLAYER else FIRST_PLAYER,
-        status = multiplayerGameHelper.getGameResult(allMovesDto.moves, game.firstPlayerMark)
+        status = multiplayerGameHelper.getGameResult(moves, game.firstPlayerMark)
     ))
-    val gameDto = multiplayerGameDtoConverter.convert(updatedGame, allMovesDto)
+    val gameDto = multiplayerGameDtoConverter.convert(updatedGame, AllGameMovesDto(moves))
     multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 
@@ -89,7 +88,7 @@ class MultiplayerGameFacade @Autowired constructor(
     if (game.status in MultiplayerGameStatus.getEndedGameStatus()) {
       return
     }
-    val allMovesDto = gameMoveFacade.getAllMoves(gameId)
+    val allMovesDto = gameMoveFacade.getMultiplayerAllMoves(gameId)
     val updatedGame = multiplayerGameRepository.save(game.copy(
         status = MultiplayerGameStatus.PLAYER_LEFT_GAME
     ))

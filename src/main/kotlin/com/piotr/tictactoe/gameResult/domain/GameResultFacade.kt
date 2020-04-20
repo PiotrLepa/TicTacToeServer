@@ -39,7 +39,7 @@ class GameResultFacade @Autowired constructor(
   fun getSinglePlayerResultDetails(gameId: Long): SinglePlayerGameResultDetailsDto {
     val game = singlePlayerGameFacade.getGameDetails(gameId)
     checkIfSinglePlayerGameDidEnd(game)
-    val allMoves = gameMoveFacade.getAllMoves(gameId)
+    val allMoves = gameMoveFacade.getSinglePlayerAllMoves(gameId)
     return singlePlayerGameResultDetailsConverter.convert(game, allMoves)
   }
 
@@ -54,7 +54,7 @@ class GameResultFacade @Autowired constructor(
   fun getMultiplayerResultDetails(gameId: Long): MultiplayerGameResultDetailsDto {
     val game = multiplayerGameFacade.getGameDetails(gameId)
     checkIfMultiplayerGameDidEnd(game)
-    val allMoves = gameMoveFacade.getAllMoves(gameId)
+    val allMoves = gameMoveFacade.getMultiplayerAllMoves(gameId)
     return multiplayerGameResultDetailsConverter.convert(game, allMoves)
   }
 

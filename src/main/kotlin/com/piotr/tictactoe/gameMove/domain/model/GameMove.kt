@@ -26,6 +26,9 @@ data class GameMove(
   @Enumerated(EnumType.STRING)
   val mark: FieldMark,
 
+  @Enumerated(EnumType.STRING)
+  val moveType: GameMoveType,
+
   @Column(name = "creation_date")
   @CreationTimestamp
   val creationDate: Timestamp = Timestamp(0),
@@ -35,5 +38,5 @@ data class GameMove(
   val moveId: Long? = null
 ) {
 
-  constructor() : this(-1, -1, -1, FieldMark.X)
+  constructor() : this(-1, -1, -1, FieldMark.X, GameMoveType.SINGLE_PLAYER)
 }
