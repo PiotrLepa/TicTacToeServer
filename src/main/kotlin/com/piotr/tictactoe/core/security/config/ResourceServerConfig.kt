@@ -14,16 +14,11 @@ import org.springframework.security.oauth2.provider.token.TokenStore
 
 @Configuration
 @EnableResourceServer
-class ResourceServerConfig : ResourceServerConfigurerAdapter() {
-
-  @Autowired
-  private lateinit var oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator
-
-  @Autowired
-  private lateinit var oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
-
-  @Autowired
-  private lateinit var tokenStore: TokenStore
+class ResourceServerConfig @Autowired constructor(
+  private val oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator,
+  private val oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint,
+  private val tokenStore: TokenStore
+) : ResourceServerConfigurerAdapter() {
 
   override fun configure(http: HttpSecurity) {
     http.anonymous().disable()
