@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.user.domain
 
+import com.piotr.tictactoe.core.converter.Converter
 import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
@@ -8,19 +9,19 @@ import com.piotr.tictactoe.user.exception.PasswordTooShortException
 import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.user.exception.UsernameTooShortException
+import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
-class UserFacade {
-
-  @Autowired
-  private lateinit var userRepository: UserRepository
-
-  @Autowired
-  private lateinit var passwordEncoder: PasswordEncoder
+class UserFacade @Autowired constructor(
+  private val userRepository: UserRepository,
+  private val passwordEncoder: PasswordEncoder,
+  private val playerCodeGenerator: PlayerCodeGenerator,
+  private val userDtoConverter: Converter<User, UserDto>
+) {
 
   fun register(dto: RegisterDto): UserDto {
     checkUsernameLength(dto)
@@ -28,7 +29,8 @@ class UserFacade {
     checkIfPasswordsAreTheSame(dto)
     checkIfEmailIsUnique(dto)
     checkIfUsernameIsUnique(dto)
-    return userRepository.save(mapUserFromRegisterDto(dto)).toDto()
+    val playerCode = getUniquePlayerCode()
+    return userRepository.save(mapUserFromRegisterDto(dto, playerCode)).let(userDtoConverter::convert)
   }
 
   fun getLoggedUser(): UserDto {
@@ -36,10 +38,25 @@ class UserFacade {
     return findUserByEmail(email)!!
   }
 
+  fun findUserByPlayerCode(code: String): UserDto? =
+      userRepository.findUserByPlayerCode(code)?.let(userDtoConverter::convert)
+
+  fun findUserById(id: Long): UserDto =
+      userRepository.findById(id).get().let(userDtoConverter::convert)
+
   private fun findUserByEmail(email: String): UserDto? =
-      userRepository.findUserByEmail(email)?.toDto()
+      userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
 
   private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
+
+  private fun getUniquePlayerCode(): String {
+    val playerCode = playerCodeGenerator.generate()
+    return if (userRepository.findUserByPlayerCode(playerCode) == null) {
+      playerCode
+    } else {
+      getUniquePlayerCode()
+    }
+  }
 
   private fun checkUsernameLength(dto: RegisterDto) {
     if (dto.username.length < USERNAME_MIN_LENGTH) {
@@ -71,14 +88,16 @@ class UserFacade {
     }
   }
 
-  private fun mapUserFromRegisterDto(dto: RegisterDto) = User(
+  private fun mapUserFromRegisterDto(dto: RegisterDto, playerCode: String) = User(
       email = dto.email,
       username = dto.username,
-      password = passwordEncoder.encode(dto.password)
+      password = passwordEncoder.encode(dto.password),
+      deviceToken = "",
+      playerCode = playerCode
   )
 
   companion object {
-    private val PASSWORD_MIN_LENGTH = 6
-    private val USERNAME_MIN_LENGTH = 3
+    private const val PASSWORD_MIN_LENGTH = 6
+    private const val USERNAME_MIN_LENGTH = 3
   }
 }

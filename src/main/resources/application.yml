@@ -1,3 +1,6 @@
+app:
+  firebase-configuration-file: firebase/serviceAccountKey.json
+
 oauth2:
   client_id: tictactoe
   client_secret: tictactoeSecret

@@ -18,16 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
-
-  @Autowired
-  private lateinit var authUserDetailsService: UserDetailsService
-
-  @Autowired
-  private lateinit var passwordEncoder: PasswordEncoder
-
-  @Autowired
-  private lateinit var oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
+class WebSecurityConfig @Autowired constructor(
+  private val authUserDetailsService: UserDetailsService,
+  private val passwordEncoder: PasswordEncoder,
+  private val oAuth2ExceptionEntryPoint: OAuth2ExceptionEntryPoint
+) : WebSecurityConfigurerAdapter() {
 
   @Autowired
   fun configureGlobal(auth: AuthenticationManagerBuilder) {
@@ -38,6 +33,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   override fun configure(web: WebSecurity) {
     web.ignoring()
         .antMatchers("/user/register")
+        .antMatchers("/multiplayer-socket")
   }
 
   override fun configure(http: HttpSecurity) {

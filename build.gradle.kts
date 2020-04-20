@@ -30,6 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-web:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-security:$springBootStarter")
   implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootStarter")
+  implementation("org.springframework.boot:spring-boot-starter-websocket:$springBootStarter")
   testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootStarter") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
@@ -38,6 +39,7 @@ dependencies {
   implementation("joda-time:joda-time:2.10.5")
   implementation("org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE")
   implementation("org.postgresql:postgresql:42.2.9")
+  implementation("com.google.firebase:firebase-admin:6.8.1")
 }
 
 tasks.withType<Test> {

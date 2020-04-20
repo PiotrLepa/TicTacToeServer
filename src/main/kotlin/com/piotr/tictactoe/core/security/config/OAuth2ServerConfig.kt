@@ -17,22 +17,13 @@ import javax.sql.DataSource
 
 @Configuration
 @EnableAuthorizationServer
-class OAuth2ServerConfig : AuthorizationServerConfigurerAdapter() {
-
-  @Autowired
-  private lateinit var authenticationManager: AuthenticationManager
-
-  @Autowired
-  private lateinit var passwordEncoder: PasswordEncoder
-
-  @Autowired
-  private lateinit var oath2Properties: Oath2Properties
-
-  @Autowired
-  private lateinit var oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator
-
-  @Autowired
-  private lateinit var dataSource: DataSource
+class OAuth2ServerConfig @Autowired constructor(
+  private val authenticationManager: AuthenticationManager,
+  private val passwordEncoder: PasswordEncoder,
+  private val oath2Properties: Oath2Properties,
+  private val oAuth2ResponseExceptionTranslator: OAuth2ResponseExceptionTranslator,
+  private val dataSource: DataSource
+) : AuthorizationServerConfigurerAdapter() {
 
   @Bean
   fun tokenStore(): TokenStore = JdbcTokenStore(dataSource)
