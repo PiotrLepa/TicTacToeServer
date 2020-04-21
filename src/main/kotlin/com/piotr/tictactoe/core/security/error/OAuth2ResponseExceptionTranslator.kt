@@ -27,10 +27,10 @@ class OAuth2ResponseExceptionTranslator @Autowired constructor(
     with(oAuth2Exception) {
       addAdditionalInformation("code", httpErrorCode.toString())
       addAdditionalInformation("developerMessage", this::class.simpleName.toString())
-      getMessageCodeForException(this)?.let {
-        addAdditionalInformation("printableMessage",
-            messageSource.getMessage(it, null, LocaleContextHolder.getLocale()))
+      val printableMessage = getMessageCodeForException(this)?.let {
+        messageSource.getMessage(it, null, LocaleContextHolder.getLocale())
       }
+      addAdditionalInformation("printableMessage", printableMessage)
     }
   }
 
