@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class FirebasePushService {
 
-  private val firebaseMessaging = FirebaseMessaging.getInstance()
+  private val firebaseMessaging by lazy { FirebaseMessaging.getInstance() }
 
   fun sendGameInvitation(token: String, gameDto: MultiplayerGameCreatedDto) {
     val message = Message.builder()

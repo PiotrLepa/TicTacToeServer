@@ -10,16 +10,22 @@ import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
 @Service
-class FirebaseInitializer @Autowired constructor(
+class FirebaseConfiguration @Autowired constructor(
   @Value("\${app.firebase-configuration-file}")
-  private val firebaseConfigPath: String
+  private val firebaseConfigPath: String,
+  @Value("\${app.firebase-database-url}")
+  private val firebaseDatabaseUrl: String
 ) {
 
   @PostConstruct
   fun initialize() {
+    if (FirebaseApp.getApps() == null || FirebaseApp.getApps().isNotEmpty()) {
+      return
+    }
+
     val options = FirebaseOptions.Builder()
         .setCredentials(GoogleCredentials.fromStream(ClassPathResource(firebaseConfigPath).inputStream))
-        .setDatabaseUrl("https://tic-tac-toe-67105.firebaseio.com")
+        .setDatabaseUrl(firebaseDatabaseUrl)
         .build()
     FirebaseApp.initializeApp(options)
   }
