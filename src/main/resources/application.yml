@@ -1,5 +1,6 @@
 app:
   firebase-configuration-file: firebase/serviceAccountKey.json
+  firebase-database-url: https://tic-tac-toe-67105.firebaseio.com
 
 oauth2:
   client_id: tictactoe
