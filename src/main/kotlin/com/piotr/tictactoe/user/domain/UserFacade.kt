@@ -11,11 +11,11 @@ import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.stereotype.Service
 
-@Configuration
+@Service
 class UserFacade @Autowired constructor(
   private val userRepository: UserRepository,
   private val passwordEncoder: PasswordEncoder,
