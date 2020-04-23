@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.core.security
 
+import com.piotr.tictactoe.core.security.config.OAuth2ServerConfig.Companion.GRANT_TYPE_PASSWORD
 import com.piotr.tictactoe.core.security.exception.MissingDeviceToken
 import com.piotr.tictactoe.core.security.exception.SecurityUserNotExistsException
 import com.piotr.tictactoe.user.domain.UserRepository
@@ -24,11 +25,16 @@ class AuthUserDetailsService @Autowired constructor(
 
   fun updateFirebaseToken(user: com.piotr.tictactoe.user.domain.model.User) {
     val servletRequest = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
-    val deviceId = servletRequest.request.getParameter(DEVICE_TOKEN_KEY) ?: throw MissingDeviceToken()
+    val request = servletRequest.request
+    if (request.getParameter(GRANT_TYPE_KEY) != GRANT_TYPE_PASSWORD) {
+      return
+    }
+    val deviceId = request.getParameter(DEVICE_TOKEN_KEY) ?: throw MissingDeviceToken()
     userRepository.save(user.copy(deviceToken = deviceId))
   }
 
   companion object {
+    private const val GRANT_TYPE_KEY = "grant_type"
     private const val DEVICE_TOKEN_KEY = "device_token"
   }
 }
