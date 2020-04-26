@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import sun.plugin.dom.exception.InvalidStateException
 import java.util.Locale
 
 @Service
@@ -42,8 +41,8 @@ class UserFacade @Autowired constructor(
   }
 
   fun getLoggedInUser(): UserDto {
-    val email = getAuthenticatedUserEmail() ?: throw InvalidStateException("No logged in user found")
-    return findUserByEmail(email) ?: throw InvalidStateException("No logged in user found")
+    val email = getAuthenticatedUserEmail() ?: throw Exception("No logged in user found")
+    return findUserByEmail(email) ?: throw Exception("No logged in user found")
   }
 
   fun findUserByPlayerCode(code: String): UserDto? =
