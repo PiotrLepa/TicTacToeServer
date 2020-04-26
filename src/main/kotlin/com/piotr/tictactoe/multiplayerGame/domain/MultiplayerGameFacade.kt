@@ -1,13 +1,12 @@
 package com.piotr.tictactoe.multiplayerGame.domain
 
 import com.piotr.tictactoe.core.converter.Converter
-import com.piotr.tictactoe.core.converter.Converter1
-import com.piotr.tictactoe.core.converter.Converter2
+import com.piotr.tictactoe.core.converter.ConverterWithArgs
 import com.piotr.tictactoe.core.firebase.FirebasePushService
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
-import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameResult.dto.MultiplayerGameResultDto
+import com.piotr.tictactoe.multiplayerGame.converter.MultiplayerGameCreatedDtoConverterArgs
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGame
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn.FIRST_PLAYER
@@ -34,28 +33,36 @@ class MultiplayerGameFacade @Autowired constructor(
   private val multiplayerGameDispatcher: MultiplayerGameDispatcher,
   private val multiplayerGameChecker: MultiplayerGameChecker,
   private val firebasePushService: FirebasePushService,
-  private val multiplayerGameDtoConverter: Converter1<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>,
-  private val multiplayerGameCreatedDtoConverter: Converter2<MultiplayerGame, MultiplayerGameCreatedDto, FieldMark, PlayerType>,
+  private val multiplayerGameDtoConverter: ConverterWithArgs<MultiplayerGame, MultiplayerGameDto, AllGameMovesDto>,
+  private val multiplayerGameCreatedDtoConverter: ConverterWithArgs<MultiplayerGame, MultiplayerGameCreatedDto, MultiplayerGameCreatedDtoConverterArgs>,
   private val multiplayerGameResultDtoConverter: Converter<MultiplayerGame, MultiplayerGameResultDto>
 ) {
 
   fun createMultiplayerGame(opponentCode: String): MultiplayerGameCreatedDto {
-    val firstPlayer = userFacade.getLoggedUser()
+    val firstPlayer = userFacade.getLoggedInUser()
     val secondPlayer = userFacade.findUserByPlayerCode(opponentCode) ?: throw InvalidOpponentCodeException()
     multiplayerGameChecker.checkIfPlayerInvitedHimself(firstPlayer, secondPlayer)
 
     val game = multiplayerGameHelper.createMultiplayerGame(firstPlayer, secondPlayer)
         .let(multiplayerGameRepository::save)
 
-    val secondPlayerGameDto = multiplayerGameCreatedDtoConverter.convert(game, game.secondPlayerMark, PlayerType.SECOND_PLAYER)
+    val secondPlayerConverterArgs = MultiplayerGameCreatedDtoConverterArgs(
+        yourMark = game.secondPlayerMark,
+        playerType = PlayerType.SECOND_PLAYER
+    )
+    val secondPlayerGameDto = multiplayerGameCreatedDtoConverter.convert(game, secondPlayerConverterArgs)
     firebasePushService.sendGameInvitation(secondPlayer.deviceToken, secondPlayerGameDto, secondPlayer)
 
-    return multiplayerGameCreatedDtoConverter.convert(game, game.firstPlayerMark, PlayerType.FIRST_PLAYER)
+    val firstPlayerConverterArgs = MultiplayerGameCreatedDtoConverterArgs(
+        yourMark = game.firstPlayerMark,
+        playerType = PlayerType.FIRST_PLAYER
+    )
+    return multiplayerGameCreatedDtoConverter.convert(game, firstPlayerConverterArgs)
   }
 
   fun joinToGame(gameId: Long) {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
 
     multiplayerGameChecker.checkIfOpponentIsCorrect(game, player)
     multiplayerGameChecker.checkIfGameHasNotStarted(game)
@@ -69,7 +76,7 @@ class MultiplayerGameFacade @Autowired constructor(
 
   fun setPlayerMove(gameId: Long, fieldIndex: Int) {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
 
     multiplayerGameChecker.checkIfGameIsOnGoing(game)
     multiplayerGameChecker.checkIfPlayerMatch(game, player)

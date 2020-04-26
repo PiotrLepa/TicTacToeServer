@@ -1,48 +1,49 @@
 package com.piotr.tictactoe.user.domain
 
 import com.piotr.tictactoe.core.converter.Converter
+import com.piotr.tictactoe.core.converter.ConverterWithArgs
+import com.piotr.tictactoe.user.converter.RegisterEntityConverterArgs
 import com.piotr.tictactoe.user.domain.model.User
+import com.piotr.tictactoe.user.domain.utils.UserChecker
 import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
-import com.piotr.tictactoe.user.exception.PasswordTooShortException
-import com.piotr.tictactoe.user.exception.PasswordsAreDifferentException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
-import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import sun.plugin.dom.exception.InvalidStateException
 import java.util.Locale
 
 @Service
 class UserFacade @Autowired constructor(
   private val userRepository: UserRepository,
-  private val passwordEncoder: PasswordEncoder,
   private val playerCodeGenerator: PlayerCodeGenerator,
-  private val userDtoConverter: Converter<User, UserDto>
+  private val userChecker: UserChecker,
+  private val userDtoConverter: Converter<User, UserDto>,
+  private val registerEntityConverter: ConverterWithArgs<RegisterDto, User, RegisterEntityConverterArgs>
 ) {
 
   fun register(dto: RegisterDto): UserDto {
-    checkUsernameLength(dto)
-    checkPasswordLength(dto)
-    checkIfPasswordsAreTheSame(dto)
+    userChecker.checkUsernameLength(dto)
+    userChecker.checkPasswordLength(dto)
+    userChecker.checkIfPasswordsAreTheSame(dto)
     checkIfEmailIsUnique(dto)
     checkIfUsernameIsUnique(dto)
-    val playerCode = getUniquePlayerCode()
-    return userRepository.save(mapUserFromRegisterDto(dto, playerCode)).let(userDtoConverter::convert)
+    val converterArgs = RegisterEntityConverterArgs(
+        languageTag = LocaleContextHolder.getLocale().toLanguageTag(),
+        deviceToken = "",
+        playerCode = getUniquePlayerCode()
+    )
+    val entity = registerEntityConverter.convert(dto, converterArgs)
+    return userRepository.save(entity).let(userDtoConverter::convert)
   }
 
-  fun getLoggedUser(): UserDto {
-    val email = getAuthenticatedUserEmail()
-    return findUserByEmail(email)!!
-  }
-
-  fun getLoggedUserOrNull(): UserDto? {
-    val email = getAuthenticatedUserEmail()
-    return findUserByEmail(email)
+  fun getLoggedInUser(): UserDto {
+    val email = getAuthenticatedUserEmail() ?: throw InvalidStateException("No logged in user found")
+    return findUserByEmail(email) ?: throw InvalidStateException("No logged in user found")
   }
 
   fun findUserByPlayerCode(code: String): UserDto? =
@@ -52,7 +53,7 @@ class UserFacade @Autowired constructor(
       userRepository.findById(id).get().let(userDtoConverter::convert)
 
   fun updateUserLocale(locale: Locale) {
-    val email = getAuthenticatedUserEmail()
+    val email = getAuthenticatedUserEmail() ?: return
     val user = userRepository.findUserByEmail(email) ?: return
     userRepository.save(user.copy(languageTag = locale.toLanguageTag()))
   }
@@ -60,7 +61,7 @@ class UserFacade @Autowired constructor(
   private fun findUserByEmail(email: String): UserDto? =
       userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
 
-  private fun getAuthenticatedUserEmail(): String = SecurityContextHolder.getContext().authentication.name
+  private fun getAuthenticatedUserEmail(): String? = SecurityContextHolder.getContext().authentication?.name
 
   private fun getUniquePlayerCode(): String {
     val playerCode = playerCodeGenerator.generate()
@@ -71,47 +72,15 @@ class UserFacade @Autowired constructor(
     }
   }
 
-  private fun checkUsernameLength(dto: RegisterDto) {
-    if (dto.username.length < USERNAME_MIN_LENGTH) {
-      throw UsernameTooShortException()
-    }
-  }
-
-  private fun checkPasswordLength(dto: RegisterDto) {
-    if (dto.password.length < PASSWORD_MIN_LENGTH) {
-      throw PasswordTooShortException()
-    }
-  }
-
-  private fun checkIfPasswordsAreTheSame(dto: RegisterDto) {
-    if (dto.password != dto.repeatedPassword) {
-      throw PasswordsAreDifferentException()
-    }
-  }
-
-  private fun checkIfEmailIsUnique(dto: RegisterDto) {
+  fun checkIfEmailIsUnique(dto: RegisterDto) {
     if (userRepository.findUserByEmail(dto.email) != null) {
       throw EmailAlreadyExistsException()
     }
   }
 
-  private fun checkIfUsernameIsUnique(dto: RegisterDto) {
+  fun checkIfUsernameIsUnique(dto: RegisterDto) {
     if (userRepository.findUserByUsername(dto.username) != null) {
       throw UsernameAlreadyExistsException()
     }
-  }
-
-  private fun mapUserFromRegisterDto(dto: RegisterDto, playerCode: String) = User(
-      email = dto.email,
-      username = dto.username,
-      password = passwordEncoder.encode(dto.password),
-      languageTag = LocaleContextHolder.getLocale().toLanguageTag(),
-      deviceToken = "",
-      playerCode = playerCode
-  )
-
-  companion object {
-    private const val PASSWORD_MIN_LENGTH = 6
-    private const val USERNAME_MIN_LENGTH = 3
   }
 }
