@@ -11,9 +11,11 @@ import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.Locale
 
 @Service
 class UserFacade @Autowired constructor(
@@ -38,11 +40,22 @@ class UserFacade @Autowired constructor(
     return findUserByEmail(email)!!
   }
 
+  fun getLoggedUserOrNull(): UserDto? {
+    val email = getAuthenticatedUserEmail()
+    return findUserByEmail(email)
+  }
+
   fun findUserByPlayerCode(code: String): UserDto? =
       userRepository.findUserByPlayerCode(code)?.let(userDtoConverter::convert)
 
   fun findUserById(id: Long): UserDto =
       userRepository.findById(id).get().let(userDtoConverter::convert)
+
+  fun updateUserLocale(locale: Locale) {
+    val email = getAuthenticatedUserEmail()
+    val user = userRepository.findUserByEmail(email) ?: return
+    userRepository.save(user.copy(languageTag = locale.toLanguageTag()))
+  }
 
   private fun findUserByEmail(email: String): UserDto? =
       userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
@@ -92,6 +105,7 @@ class UserFacade @Autowired constructor(
       email = dto.email,
       username = dto.username,
       password = passwordEncoder.encode(dto.password),
+      languageTag = LocaleContextHolder.getLocale().toLanguageTag(),
       deviceToken = "",
       playerCode = playerCode
   )
