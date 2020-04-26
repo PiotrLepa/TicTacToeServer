@@ -42,11 +42,13 @@ class MultiplayerGameFacade @Autowired constructor(
   fun createMultiplayerGame(opponentCode: String): MultiplayerGameCreatedDto {
     val firstPlayer = userFacade.getLoggedUser()
     val secondPlayer = userFacade.findUserByPlayerCode(opponentCode) ?: throw InvalidOpponentCodeException()
+    multiplayerGameChecker.checkIfPlayerInvitedHimself(firstPlayer, secondPlayer)
+
     val game = multiplayerGameHelper.createMultiplayerGame(firstPlayer, secondPlayer)
         .let(multiplayerGameRepository::save)
 
     val secondPlayerGameDto = multiplayerGameCreatedDtoConverter.convert(game, game.secondPlayerMark, PlayerType.SECOND_PLAYER)
-    firebasePushService.sendGameInvitation(secondPlayer.deviceToken, secondPlayerGameDto)
+    firebasePushService.sendGameInvitation(secondPlayer.deviceToken, secondPlayerGameDto, secondPlayer)
 
     return multiplayerGameCreatedDtoConverter.convert(game, game.firstPlayerMark, PlayerType.FIRST_PLAYER)
   }

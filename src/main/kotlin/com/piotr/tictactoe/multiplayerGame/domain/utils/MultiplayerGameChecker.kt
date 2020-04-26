@@ -4,6 +4,7 @@ import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGame
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameStatus
 import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn
 import com.piotr.tictactoe.multiplayerGame.exception.GameAlreadyStaredException
+import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidPlayerException
 import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
 import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
@@ -13,6 +14,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class MultiplayerGameChecker {
+
+  fun checkIfPlayerInvitedHimself(player: UserDto, opponent: UserDto) {
+    if (player.id == opponent.id) {
+      throw InvalidOpponentCodeException()
+    }
+  }
 
   fun checkIfOpponentIsCorrect(game: MultiplayerGame, player: UserDto) {
     if (game.secondPlayerId != player.id) {
