@@ -51,7 +51,7 @@ class MultiplayerGameFacade @Autowired constructor(
         playerType = PlayerType.SECOND_PLAYER
     )
     val secondPlayerGameDto = multiplayerGameCreatedDtoConverter.convert(game, secondPlayerConverterArgs)
-    firebasePushService.sendGameInvitation(secondPlayer.deviceToken, secondPlayerGameDto, secondPlayer)
+    firebasePushService.sendGameInvitation(secondPlayer.deviceToken, secondPlayerGameDto, firstPlayer)
 
     val firstPlayerConverterArgs = MultiplayerGameCreatedDtoConverterArgs(
         yourMark = game.firstPlayerMark,

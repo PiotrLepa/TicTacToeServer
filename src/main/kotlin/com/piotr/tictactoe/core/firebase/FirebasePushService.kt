@@ -21,17 +21,16 @@ class FirebasePushService @Autowired constructor(
     gameDto: MultiplayerGameCreatedDto,
     opponent: UserDto
   ) {
-    val notification = Notification(
-        messageSource.getLocalizedMessage("push.game_request.title"),
-        messageSource.getLocalizedMessage("push.game_request.body", opponent.username)
-    )
+    val title = messageSource.getLocalizedMessage("push.game_request.title")
+    val body = messageSource.getLocalizedMessage("push.game_request.body", opponent.username)
     val message = Message.builder()
         .setToken(token)
-        .setNotification(notification)
+        .setNotification(Notification(title, body))
         .putAllData(mapOf(
             "gameId" to gameDto.gameId.toString(),
             "yourMark" to gameDto.yourMark.toString(),
             "playerType" to gameDto.playerType.toString(),
+            "body" to body,
             getFlutterClickAction()
         ))
         .build()
