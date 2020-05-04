@@ -7,7 +7,9 @@ import com.piotr.tictactoe.user.domain.model.User
 import com.piotr.tictactoe.user.domain.utils.UserChecker
 import com.piotr.tictactoe.user.dto.RegisterDto
 import com.piotr.tictactoe.user.dto.UserDto
+import com.piotr.tictactoe.user.dto.UserProfileDto
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
+import com.piotr.tictactoe.user.exception.UserNotLoggedInException
 import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.utils.PlayerCodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +24,8 @@ class UserFacade @Autowired constructor(
   private val playerCodeGenerator: PlayerCodeGenerator,
   private val userChecker: UserChecker,
   private val userDtoConverter: Converter<User, UserDto>,
-  private val registerEntityConverter: ConverterWithArgs<RegisterDto, User, RegisterEntityConverterArgs>
+  private val registerEntityConverter: ConverterWithArgs<RegisterDto, User, RegisterEntityConverterArgs>,
+  private val userProfileDtoConverter: Converter<User, UserProfileDto>
 ) {
 
   fun register(dto: RegisterDto): UserDto {
@@ -40,10 +43,11 @@ class UserFacade @Autowired constructor(
     return userRepository.save(entity).let(userDtoConverter::convert)
   }
 
-  fun getLoggedInUser(): UserDto {
-    val email = getAuthenticatedUserEmail() ?: throw Exception("No logged in user found")
-    return findUserByEmail(email) ?: throw Exception("No logged in user found")
-  }
+  fun getLoggedInUser(): UserDto =
+      getLoggedInUserEntity()?.let(userDtoConverter::convert) ?: throw UserNotLoggedInException()
+
+  fun getUserProfile(): UserProfileDto =
+      getLoggedInUserEntity()?.let(userProfileDtoConverter::convert) ?: throw UserNotLoggedInException()
 
   fun findUserByPlayerCode(code: String): UserDto? =
       userRepository.findUserByPlayerCode(code)?.let(userDtoConverter::convert)
@@ -52,13 +56,12 @@ class UserFacade @Autowired constructor(
       userRepository.findById(id).get().let(userDtoConverter::convert)
 
   fun updateUserLocale(locale: Locale) {
-    val email = getAuthenticatedUserEmail() ?: return
-    val user = userRepository.findUserByEmail(email) ?: return
+    val user = getLoggedInUserEntity() ?: return
     userRepository.save(user.copy(languageTag = locale.toLanguageTag()))
   }
 
-  private fun findUserByEmail(email: String): UserDto? =
-      userRepository.findUserByEmail(email)?.let(userDtoConverter::convert)
+  private fun getLoggedInUserEntity(): User? =
+      getAuthenticatedUserEmail()?.let(userRepository::findUserByEmail)
 
   private fun getAuthenticatedUserEmail(): String? = SecurityContextHolder.getContext().authentication?.name
 
