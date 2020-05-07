@@ -24,6 +24,9 @@ data class User(
   @Column(name = "device_token")
   val deviceToken: String,
 
+  @Column(name = "language_tag")
+  val languageTag: String,
+
   @Column(name = "creation_date")
   @CreationTimestamp
   val creationDate: Timestamp = Timestamp(0),
@@ -33,5 +36,5 @@ data class User(
   val id: Long? = null
 ) {
 
-  constructor() : this("", "", "", "", "")
+  constructor() : this("", "", "", "", "", "")
 }

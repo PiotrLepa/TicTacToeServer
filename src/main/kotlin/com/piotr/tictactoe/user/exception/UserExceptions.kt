@@ -9,3 +9,5 @@ class UsernameTooShortException(override val message: String? = null) : Exceptio
 class PasswordTooShortException(override val message: String? = null) : Exception(message)
 
 class PasswordsAreDifferentException(override val message: String? = null) : Exception(message)
+
+class UserNotLoggedInException(override val message: String? = null) : Exception(message)

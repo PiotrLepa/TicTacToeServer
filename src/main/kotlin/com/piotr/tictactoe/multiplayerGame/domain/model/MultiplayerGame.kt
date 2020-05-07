@@ -23,6 +23,9 @@ data class MultiplayerGame(
   @Column(name = "second_player_id")
   val secondPlayerId: Long,
 
+  @Column(name = "socket_destination")
+  val socketDestination: String,
+
   @Enumerated(EnumType.STRING)
   val status: MultiplayerGameStatus,
 
@@ -50,7 +53,7 @@ data class MultiplayerGame(
   val gameId: Long? = null
 ) {
 
-  constructor() : this(-1, -1, MultiplayerGameStatus.ON_GOING,
+  constructor() : this(-1, -1, "", MultiplayerGameStatus.ON_GOING,
       MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O
   )
 }

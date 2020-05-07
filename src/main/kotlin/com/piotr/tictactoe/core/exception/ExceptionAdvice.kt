@@ -1,5 +1,6 @@
 package com.piotr.tictactoe.core.exception
 
+import com.piotr.tictactoe.core.extensions.getLocalizedMessage
 import com.piotr.tictactoe.gameMove.domain.FieldAlreadyTakenException
 import com.piotr.tictactoe.gameMove.domain.InvalidFieldIndexRangeException
 import com.piotr.tictactoe.gameResult.exception.GameIsOnGoingException
@@ -16,7 +17,6 @@ import com.piotr.tictactoe.user.exception.UsernameAlreadyExistsException
 import com.piotr.tictactoe.user.exception.UsernameTooShortException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
-import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -86,16 +86,14 @@ class GameEndedExceptionHandlerAdvice @Autowired constructor(
   private fun createErrorResponse(
     status: HttpStatus,
     exception: Exception,
-    messageKey: String? = null
+    messageKey: String? = null,
+    vararg messageArgs: Any = arrayOf()
   ): ResponseEntity<ErrorResponse> =
       ResponseEntity
           .status(status)
           .body(ErrorResponse(
               code = status.value(),
               exception = exception,
-              printableMessage = messageKey?.let { getMessage(it) }
+              printableMessage = messageKey?.let { messageSource.getLocalizedMessage(it, messageArgs) }
           ))
-
-  private fun getMessage(code: String, args: Array<Any>? = null): String =
-      messageSource.getMessage(code, args, LocaleContextHolder.getLocale())
 }
