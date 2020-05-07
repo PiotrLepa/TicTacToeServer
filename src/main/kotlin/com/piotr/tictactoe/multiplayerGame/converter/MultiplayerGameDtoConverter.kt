@@ -11,6 +11,7 @@ class MultiplayerGameDtoConverter : ConverterWithArgs<MultiplayerGame, Multiplay
 
   override fun convert(from: MultiplayerGame, args: AllGameMovesDto) = MultiplayerGameDto(
       gameId = from.gameId!!,
+      socketDestination = from.socketDestination,
       currentTurn = from.currentTurn,
       status = from.status,
       moves = args.moves

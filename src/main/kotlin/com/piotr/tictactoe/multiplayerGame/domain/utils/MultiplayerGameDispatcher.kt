@@ -11,7 +11,7 @@ class MultiplayerGameDispatcher @Autowired constructor(
 ) {
 
   fun updateGameStatus(gameDto: MultiplayerGameDto) {
-    messagingTemplate.convertAndSend(GAME_STATUS_URL + gameDto.gameId, gameDto)
+    messagingTemplate.convertAndSend(GAME_STATUS_URL + gameDto.socketDestination, gameDto)
   }
 
   companion object {

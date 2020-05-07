@@ -27,7 +27,7 @@ class FirebasePushService @Autowired constructor(
         .setToken(token)
         .setNotification(Notification(title, body))
         .putAllData(mapOf(
-            "gameId" to gameDto.gameId.toString(),
+            "socketDestination" to gameDto.socketDestination,
             "yourMark" to gameDto.yourMark.toString(),
             "playerType" to gameDto.playerType.toString(),
             "body" to body,

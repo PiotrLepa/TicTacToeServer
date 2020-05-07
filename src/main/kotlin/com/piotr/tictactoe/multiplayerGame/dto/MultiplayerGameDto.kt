@@ -6,6 +6,7 @@ import com.piotr.tictactoe.multiplayerGame.domain.model.MultiplayerGameTurn
 
 data class MultiplayerGameDto(
   val gameId: Long,
+  val socketDestination: String,
   val status: MultiplayerGameStatus,
   val currentTurn: MultiplayerGameTurn,
   val moves: List<GameMoveDto>

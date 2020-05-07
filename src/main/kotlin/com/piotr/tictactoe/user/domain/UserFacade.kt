@@ -28,7 +28,7 @@ class UserFacade @Autowired constructor(
   private val userProfileDtoConverter: Converter<User, UserProfileDto>
 ) {
 
-  fun register(dto: RegisterDto): UserDto {
+  fun register(dto: RegisterDto): UserProfileDto {
     userChecker.checkUsernameLength(dto)
     userChecker.checkPasswordLength(dto)
     userChecker.checkIfPasswordsAreTheSame(dto)
@@ -40,7 +40,7 @@ class UserFacade @Autowired constructor(
         playerCode = getUniquePlayerCode()
     )
     val entity = registerEntityConverter.convert(dto, converterArgs)
-    return userRepository.save(entity).let(userDtoConverter::convert)
+    return userRepository.save(entity).let(userProfileDtoConverter::convert)
   }
 
   fun getLoggedInUser(): UserDto =

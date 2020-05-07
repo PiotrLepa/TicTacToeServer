@@ -11,6 +11,7 @@ class MultiplayerGameCreatedDtoConverter :
 
   override fun convert(from: MultiplayerGame, args: MultiplayerGameCreatedDtoConverterArgs) = MultiplayerGameCreatedDto(
       gameId = from.gameId!!,
+      socketDestination = from.socketDestination,
       yourMark = args.yourMark,
       playerType = args.playerType
   )
