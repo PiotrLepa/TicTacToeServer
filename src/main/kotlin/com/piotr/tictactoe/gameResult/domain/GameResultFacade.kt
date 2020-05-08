@@ -65,7 +65,7 @@ class GameResultFacade @Autowired constructor(
   }
 
   private fun checkIfMultiplayerGameDidEnd(game: MultiplayerGameResultDto) {
-    if (game.status !in MultiplayerGameStatus.getEndedGameStatus()) {
+    if (game.status !in MultiplayerGameStatus.getFinishedGameStatus()) {
       throw GameIsOnGoingException()
     }
   }

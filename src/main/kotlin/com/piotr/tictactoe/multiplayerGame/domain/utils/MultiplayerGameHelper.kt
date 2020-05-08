@@ -49,7 +49,7 @@ class MultiplayerGameHelper @Autowired constructor(
         game.secondPlayerMark
       }
 
-  private fun getStartingPlayer(): MultiplayerGameTurn =
+  fun getStartingPlayer(): MultiplayerGameTurn =
       if (Random.nextBoolean()) MultiplayerGameTurn.FIRST_PLAYER else MultiplayerGameTurn.SECOND_PLAYER
 
   private fun createSocketDestination(firstPlayerCode: String, secondPlayerCode: String) =

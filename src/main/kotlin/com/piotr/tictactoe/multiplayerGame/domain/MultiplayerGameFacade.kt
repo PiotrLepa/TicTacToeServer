@@ -94,7 +94,7 @@ class MultiplayerGameFacade @Autowired constructor(
 
   fun setPlayerLeftFromGame(gameId: Long) {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
-    if (game.status in MultiplayerGameStatus.getEndedGameStatus()) {
+    if (game.status in MultiplayerGameStatus.getFinishedGameStatus()) {
       return
     }
     val allMovesDto = gameMoveFacade.getMultiplayerAllMoves(gameId)
@@ -105,17 +105,41 @@ class MultiplayerGameFacade @Autowired constructor(
     multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 
+  fun restartGame(gameId: Long) {
+    val game = multiplayerGameRepository.findGameByGameId(gameId)
+    val player = userFacade.getLoggedInUser()
+    val opponentId = if (game.firstPlayerId == player.id) game.secondPlayerId else game.firstPlayerId
+
+    multiplayerGameChecker.checkIfGameFinished(game)
+
+    val opponentRestartedGame = multiplayerGameRepository.findRecentGameByPlayerId(opponentId)
+
+    val gameToSave = if (game.gameId == opponentRestartedGame.gameId) {
+      game.copy(
+          gameId = null,
+          currentTurn = multiplayerGameHelper.getStartingPlayer(),
+          status = MultiplayerGameStatus.CREATED
+      )
+    } else {
+      game.copy(status = MultiplayerGameStatus.ON_GOING)
+    }
+
+    val newGame = multiplayerGameRepository.save(gameToSave)
+    val gameDto = multiplayerGameDtoConverter.convert(newGame, AllGameMovesDto(listOf()))
+    multiplayerGameDispatcher.updateGameStatus(gameDto)
+  }
+
   fun getUserGames(pageable: Pageable, playerId: Long): Page<MultiplayerGameResultDto> =
       multiplayerGameRepository.findPlayerGameResultsOrderByModificationDateDesc(
           pageable,
-          MultiplayerGameStatus.getEndedGameStatus(),
+          MultiplayerGameStatus.getFinishedGameStatus(),
           playerId
       ).map(multiplayerGameResultDtoConverter::convert)
 
   fun getAllGames(pageable: Pageable): Page<MultiplayerGameResultDto> =
       multiplayerGameRepository.findAllByStatusInOrderByModificationDateDesc(
           pageable,
-          MultiplayerGameStatus.getEndedGameStatus()
+          MultiplayerGameStatus.getFinishedGameStatus()
       ).map(multiplayerGameResultDtoConverter::convert)
 
   fun getGameDetails(gameId: Long): MultiplayerGameResultDto =

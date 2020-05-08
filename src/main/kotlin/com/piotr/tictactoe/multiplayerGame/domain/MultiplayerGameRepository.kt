@@ -13,6 +13,12 @@ interface MultiplayerGameRepository : JpaRepository<MultiplayerGame, Long> {
 
   fun findGameByGameId(id: Long): MultiplayerGame
 
+  @Query("""SELECT g
+    FROM MultiplayerGame g
+    WHERE g.firstPlayerId = :playerId OR g.secondPlayerId = :playerId
+    ORDER BY g.gameId DESC""")
+  fun findRecentGameByPlayerId(playerId: Long): MultiplayerGame
+
   fun findAllByStatusInOrderByModificationDateDesc(pageable: Pageable, status: List<MultiplayerGameStatus>): Page<MultiplayerGame>
 
   @Query("""SELECT game FROM MultiplayerGame game

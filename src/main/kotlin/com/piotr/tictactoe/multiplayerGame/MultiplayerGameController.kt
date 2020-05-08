@@ -38,4 +38,10 @@ class MultiplayerGameController @Autowired constructor(
     multiplayerGameFacade.setPlayerMove(gameId, fieldIndex)
     return ResponseEntity(HttpStatus.OK)
   }
+
+  @PutMapping("/{gameId}/restart")
+  fun restartGame(@PathVariable("gameId") gameId: Long): ResponseEntity<Unit> {
+    multiplayerGameFacade.restartGame(gameId)
+    return ResponseEntity(HttpStatus.OK)
+  }
 }
