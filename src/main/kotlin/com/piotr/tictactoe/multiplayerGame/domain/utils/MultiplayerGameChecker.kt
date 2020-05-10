@@ -57,7 +57,7 @@ class MultiplayerGameChecker {
   }
 
   fun checkIfGameFinished(game: MultiplayerGame) {
-    if (game.status in MultiplayerGameStatus.getFinishedGameStatus()) {
+    if (game.status !in MultiplayerGameStatus.getFinishedGameStatus()) {
       throw GameNotFinishedException()
     }
   }
