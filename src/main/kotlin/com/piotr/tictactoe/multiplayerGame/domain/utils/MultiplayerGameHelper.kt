@@ -26,6 +26,7 @@ class MultiplayerGameHelper @Autowired constructor(
     return MultiplayerGame(
         firstPlayerId = firstPlayer.id,
         secondPlayerId = secondPlayer.id,
+        nextGameIdInSession = null,
         socketDestination = createSocketDestination(firstPlayer.playerCode, secondPlayer.playerCode),
         status = MultiplayerGameStatus.CREATED,
         currentTurn = startingPlayer,

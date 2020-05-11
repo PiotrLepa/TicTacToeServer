@@ -21,7 +21,6 @@ import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeExceptio
 import com.piotr.tictactoe.user.domain.UserFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -108,25 +107,23 @@ class MultiplayerGameFacade @Autowired constructor(
 
   fun restartGame(gameId: Long): MultiplayerGameDto {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
-    val player = userFacade.getLoggedInUser()
-    val opponentId = if (game.firstPlayerId == player.id) game.secondPlayerId else game.firstPlayerId
 
     multiplayerGameChecker.checkIfGameFinished(game)
 
-    val opponentRestartedGame = getRecentPlayerGame(opponentId)
-
-    val gameToSave = if (game.gameId == opponentRestartedGame.gameId) {
+    val savedGame = if (game.nextGameIdInSession == null) {
       game.copy(
           gameId = null,
           currentTurn = multiplayerGameHelper.getStartingPlayer(),
           status = MultiplayerGameStatus.CREATED
-      )
+      ).let(multiplayerGameRepository::save)
+          .also { multiplayerGameRepository.save(game.copy(nextGameIdInSession = it.gameId)) }
     } else {
-      game.copy(status = MultiplayerGameStatus.ON_GOING)
+      multiplayerGameRepository.findGameByGameId(game.nextGameIdInSession)
+          .copy(status = MultiplayerGameStatus.ON_GOING)
+          .let(multiplayerGameRepository::save)
     }
 
-    val newGame = multiplayerGameRepository.save(gameToSave)
-    return multiplayerGameDtoConverter.convert(newGame, AllGameMovesDto(listOf()))
+    return multiplayerGameDtoConverter.convert(savedGame, AllGameMovesDto(listOf()))
         .also(multiplayerGameDispatcher::updateGameStatus)
   }
 
@@ -145,10 +142,4 @@ class MultiplayerGameFacade @Autowired constructor(
 
   fun getGameDetails(gameId: Long): MultiplayerGameResultDto =
       multiplayerGameRepository.findGameByGameId(gameId).let(multiplayerGameResultDtoConverter::convert)
-
-  private fun getRecentPlayerGame(playerId: Long): MultiplayerGame {
-    return multiplayerGameRepository.findRecentGameByPlayerId(playerId, PageRequest.of(0, 1))
-        .content
-        .first()
-  }
 }

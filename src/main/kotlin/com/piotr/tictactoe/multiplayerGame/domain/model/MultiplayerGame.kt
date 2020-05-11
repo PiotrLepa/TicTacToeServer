@@ -23,6 +23,9 @@ data class MultiplayerGame(
   @Column(name = "second_player_id")
   val secondPlayerId: Long,
 
+  @Column(name = "next_game_id_in_session")
+  val nextGameIdInSession: Long?,
+
   @Column(name = "socket_destination")
   val socketDestination: String,
 
@@ -53,7 +56,7 @@ data class MultiplayerGame(
   val gameId: Long? = null
 ) {
 
-  constructor() : this(-1, -1, "", MultiplayerGameStatus.ON_GOING,
-      MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O
+  constructor() : this(-1, -1, null, "",
+      MultiplayerGameStatus.ON_GOING, MultiplayerGameTurn.FIRST_PLAYER, FieldMark.X, FieldMark.O
   )
 }
