@@ -106,7 +106,7 @@ class MultiplayerGameFacade @Autowired constructor(
     multiplayerGameDispatcher.updateGameStatus(gameDto)
   }
 
-  fun restartGame(gameId: Long) {
+  fun restartGame(gameId: Long): MultiplayerGameDto {
     val game = multiplayerGameRepository.findGameByGameId(gameId)
     val player = userFacade.getLoggedInUser()
     val opponentId = if (game.firstPlayerId == player.id) game.secondPlayerId else game.firstPlayerId
@@ -126,8 +126,8 @@ class MultiplayerGameFacade @Autowired constructor(
     }
 
     val newGame = multiplayerGameRepository.save(gameToSave)
-    val gameDto = multiplayerGameDtoConverter.convert(newGame, AllGameMovesDto(listOf()))
-    multiplayerGameDispatcher.updateGameStatus(gameDto)
+    return multiplayerGameDtoConverter.convert(newGame, AllGameMovesDto(listOf()))
+        .also(multiplayerGameDispatcher::updateGameStatus)
   }
 
   fun getUserGames(pageable: Pageable, playerId: Long): Page<MultiplayerGameResultDto> =

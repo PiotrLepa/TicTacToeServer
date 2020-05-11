@@ -2,6 +2,7 @@ package com.piotr.tictactoe.multiplayerGame
 
 import com.piotr.tictactoe.multiplayerGame.domain.MultiplayerGameFacade
 import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameCreatedDto
+import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -40,8 +41,8 @@ class MultiplayerGameController @Autowired constructor(
   }
 
   @PutMapping("/{gameId}/restart")
-  fun restartGame(@PathVariable("gameId") gameId: Long): ResponseEntity<Unit> {
-    multiplayerGameFacade.restartGame(gameId)
-    return ResponseEntity(HttpStatus.OK)
+  fun restartGame(@PathVariable("gameId") gameId: Long): ResponseEntity<MultiplayerGameDto> {
+    val gameDto = multiplayerGameFacade.restartGame(gameId)
+    return ResponseEntity(gameDto, HttpStatus.OK)
   }
 }
