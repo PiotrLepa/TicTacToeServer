@@ -26,6 +26,7 @@ class MultiplayerGameHelper @Autowired constructor(
     return MultiplayerGame(
         firstPlayerId = firstPlayer.id,
         secondPlayerId = secondPlayer.id,
+        nextGameIdInSession = null,
         socketDestination = createSocketDestination(firstPlayer.playerCode, secondPlayer.playerCode),
         status = MultiplayerGameStatus.CREATED,
         currentTurn = startingPlayer,
@@ -49,7 +50,7 @@ class MultiplayerGameHelper @Autowired constructor(
         game.secondPlayerMark
       }
 
-  private fun getStartingPlayer(): MultiplayerGameTurn =
+  fun getStartingPlayer(): MultiplayerGameTurn =
       if (Random.nextBoolean()) MultiplayerGameTurn.FIRST_PLAYER else MultiplayerGameTurn.SECOND_PLAYER
 
   private fun createSocketDestination(firstPlayerCode: String, secondPlayerCode: String) =

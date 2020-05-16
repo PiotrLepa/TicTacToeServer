@@ -7,7 +7,8 @@ import com.piotr.tictactoe.multiplayerGame.exception.GameAlreadyStaredException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidPlayerException
 import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
-import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
+import com.piotr.tictactoe.singlePlayerGame.exception.GameFinishedException
+import com.piotr.tictactoe.singlePlayerGame.exception.GameNotFinishedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
 import com.piotr.tictactoe.user.dto.UserDto
 import org.springframework.stereotype.Component
@@ -51,7 +52,13 @@ class MultiplayerGameChecker {
 
   fun checkIfGameIsOnGoing(game: MultiplayerGame) {
     if (game.status != MultiplayerGameStatus.ON_GOING) {
-      throw GameEndedException()
+      throw GameFinishedException()
+    }
+  }
+
+  fun checkIfGameFinished(game: MultiplayerGame) {
+    if (game.status !in MultiplayerGameStatus.getFinishedGameStatus()) {
+      throw GameNotFinishedException()
     }
   }
 }

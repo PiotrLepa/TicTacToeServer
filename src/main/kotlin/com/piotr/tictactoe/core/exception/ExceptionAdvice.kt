@@ -8,7 +8,8 @@ import com.piotr.tictactoe.multiplayerGame.exception.GameAlreadyStaredException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidOpponentCodeException
 import com.piotr.tictactoe.multiplayerGame.exception.InvalidPlayerException
 import com.piotr.tictactoe.multiplayerGame.exception.OpponentMoveException
-import com.piotr.tictactoe.singlePlayerGame.exception.GameEndedException
+import com.piotr.tictactoe.singlePlayerGame.exception.GameFinishedException
+import com.piotr.tictactoe.singlePlayerGame.exception.GameNotFinishedException
 import com.piotr.tictactoe.singlePlayerGame.exception.WrongPlayerException
 import com.piotr.tictactoe.user.exception.EmailAlreadyExistsException
 import com.piotr.tictactoe.user.exception.PasswordTooShortException
@@ -51,8 +52,12 @@ class GameEndedExceptionHandlerAdvice @Autowired constructor(
   fun handleFieldAlreadyTakenException(exception: FieldAlreadyTakenException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
-  @ExceptionHandler(GameEndedException::class)
-  fun handleGameEndedException(exception: GameEndedException) =
+  @ExceptionHandler(GameFinishedException::class)
+  fun handleGameEndedException(exception: GameFinishedException) =
+      createErrorResponse(HttpStatus.BAD_REQUEST, exception)
+
+  @ExceptionHandler(GameNotFinishedException::class)
+  fun handleGameNotFinishedException(exception: GameNotFinishedException) =
       createErrorResponse(HttpStatus.BAD_REQUEST, exception)
 
   @ExceptionHandler(WrongPlayerException::class)

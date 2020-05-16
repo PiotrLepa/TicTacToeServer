@@ -9,11 +9,10 @@ enum class MultiplayerGameStatus {
   PLAYER_LEFT_GAME;
 
   companion object {
-    fun getEndedGameStatus(): List<MultiplayerGameStatus> = listOf(
+    fun getFinishedGameStatus(): List<MultiplayerGameStatus> = listOf(
         FIRST_PLAYER_WON,
         SECOND_PLAYER_WON,
-        DRAW,
-        PLAYER_LEFT_GAME
+        DRAW
     )
   }
 }
