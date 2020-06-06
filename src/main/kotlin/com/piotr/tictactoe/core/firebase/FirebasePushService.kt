@@ -3,7 +3,7 @@ package com.piotr.tictactoe.core.firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
-import com.piotr.tictactoe.core.extensions.getLocalizedMessage
+import com.piotr.tictactoe.core.extensions.getMessageForTag
 import com.piotr.tictactoe.multiplayerGame.dto.MultiplayerGameCreatedDto
 import com.piotr.tictactoe.user.dto.UserDto
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,8 +21,8 @@ class FirebasePushService @Autowired constructor(
     gameDto: MultiplayerGameCreatedDto,
     opponent: UserDto
   ) {
-    val title = messageSource.getLocalizedMessage("push.game_request.title")
-    val body = messageSource.getLocalizedMessage("push.game_request.body", opponent.username)
+    val title = messageSource.getMessageForTag("push.game_request.title", opponent.languageTag)
+    val body = messageSource.getMessageForTag("push.game_request.body", opponent.languageTag, opponent.username)
     val message = Message.builder()
         .setToken(token)
         .setNotification(Notification(title, body))
