@@ -1,6 +1,6 @@
 package com.piotr.tictactoe.gameResult.domain
 
-import com.piotr.tictactoe.core.converter.Converter1
+import com.piotr.tictactoe.core.converter.ConverterWithArgs
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
 import com.piotr.tictactoe.gameResult.dto.MultiplayerGameResultDetailsDto
@@ -24,12 +24,12 @@ class GameResultFacade @Autowired constructor(
   private val singlePlayerGameFacade: SinglePlayerGameFacade,
   private val multiplayerGameFacade: MultiplayerGameFacade,
   private val gameMoveFacade: GameMoveFacade,
-  private val singlePlayerGameResultDetailsConverter: Converter1<SinglePlayerGameResultDto, SinglePlayerGameResultDetailsDto, AllGameMovesDto>,
-  private val multiplayerGameResultDetailsConverter: Converter1<MultiplayerGameResultDto, MultiplayerGameResultDetailsDto, AllGameMovesDto>
+  private val singlePlayerGameResultDetailsConverter: ConverterWithArgs<SinglePlayerGameResultDto, SinglePlayerGameResultDetailsDto, AllGameMovesDto>,
+  private val multiplayerGameResultDetailsConverter: ConverterWithArgs<MultiplayerGameResultDto, MultiplayerGameResultDetailsDto, AllGameMovesDto>
 ) {
 
   fun getSinglePlayerUserResults(pageable: Pageable): Page<SinglePlayerGameResultDto> {
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
     return singlePlayerGameFacade.getUserGames(pageable, player.id)
   }
 
@@ -44,7 +44,7 @@ class GameResultFacade @Autowired constructor(
   }
 
   fun getMultiplayerUserResults(pageable: Pageable): Page<MultiplayerGameResultDto> {
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
     return multiplayerGameFacade.getUserGames(pageable, player.id)
   }
 
@@ -65,7 +65,7 @@ class GameResultFacade @Autowired constructor(
   }
 
   private fun checkIfMultiplayerGameDidEnd(game: MultiplayerGameResultDto) {
-    if (game.status !in MultiplayerGameStatus.getEndedGameStatus()) {
+    if (game.status !in MultiplayerGameStatus.getFinishedGameStatus()) {
       throw GameIsOnGoingException()
     }
   }

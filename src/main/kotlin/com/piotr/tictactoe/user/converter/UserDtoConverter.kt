@@ -13,6 +13,7 @@ class UserDtoConverter : Converter<User, UserDto> {
       email = from.email,
       username = from.username,
       deviceToken = from.deviceToken,
-      playerCode = from.playerCode
+      playerCode = from.playerCode,
+      languageTag = from.languageTag
   )
 }

@@ -52,7 +52,7 @@ class OAuth2ServerConfig @Autowired constructor(
   }
 
   companion object {
-    private const val GRANT_TYPE_PASSWORD = "password"
+    const val GRANT_TYPE_PASSWORD = "password"
     private const val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
     private const val GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 

@@ -1,10 +1,10 @@
 package com.piotr.tictactoe.core.security.error
 
+import com.piotr.tictactoe.core.extensions.getLocalizedMessage
 import com.piotr.tictactoe.core.security.exception.SecurityUserNotExistsException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator
@@ -27,9 +27,7 @@ class OAuth2ResponseExceptionTranslator @Autowired constructor(
     with(oAuth2Exception) {
       addAdditionalInformation("code", httpErrorCode.toString())
       addAdditionalInformation("developerMessage", this::class.simpleName.toString())
-      val printableMessage = getMessageCodeForException(this)?.let {
-        messageSource.getMessage(it, null, LocaleContextHolder.getLocale())
-      }
+      val printableMessage = getMessageCodeForException(this)?.let { messageSource.getLocalizedMessage(it) }
       addAdditionalInformation("printableMessage", printableMessage)
     }
   }

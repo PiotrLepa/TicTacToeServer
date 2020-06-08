@@ -5,5 +5,6 @@ data class UserDto(
   val email: String,
   val username: String,
   val deviceToken: String,
-  val playerCode: String
+  val playerCode: String,
+  val languageTag: String
 )

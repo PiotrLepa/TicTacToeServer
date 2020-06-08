@@ -26,15 +26,14 @@ class MultiplayerGameHelper @Autowired constructor(
     return MultiplayerGame(
         firstPlayerId = firstPlayer.id,
         secondPlayerId = secondPlayer.id,
+        nextGameIdInSession = null,
+        socketDestination = createSocketDestination(firstPlayer.playerCode, secondPlayer.playerCode),
         status = MultiplayerGameStatus.CREATED,
         currentTurn = startingPlayer,
         firstPlayerMark = firstPlayerMark,
         secondPlayerMark = secondPlayerMark
     )
   }
-
-  private fun getStartingPlayer(): MultiplayerGameTurn =
-      if (Random.nextBoolean()) MultiplayerGameTurn.FIRST_PLAYER else MultiplayerGameTurn.SECOND_PLAYER
 
   fun getGameResult(moves: List<GameMoveDto>, firstPlayer: FieldMark): MultiplayerGameStatus =
       when (gameEndChecker.checkGameEnd(moves, firstPlayer)) {
@@ -44,11 +43,16 @@ class MultiplayerGameHelper @Autowired constructor(
         GameEndChecker.GameResultType.ON_GOING -> MultiplayerGameStatus.ON_GOING
       }
 
-  fun getMarkForPlayer(game: MultiplayerGame, player: UserDto): FieldMark {
-    return if (game.firstPlayerId == player.id) {
-      game.firstPlayerMark
-    } else {
-      game.secondPlayerMark
-    }
-  }
+  fun getMarkForPlayer(game: MultiplayerGame, player: UserDto): FieldMark =
+      if (game.firstPlayerId == player.id) {
+        game.firstPlayerMark
+      } else {
+        game.secondPlayerMark
+      }
+
+  fun getStartingPlayer(): MultiplayerGameTurn =
+      if (Random.nextBoolean()) MultiplayerGameTurn.FIRST_PLAYER else MultiplayerGameTurn.SECOND_PLAYER
+
+  private fun createSocketDestination(firstPlayerCode: String, secondPlayerCode: String) =
+      firstPlayerCode + secondPlayerCode
 }

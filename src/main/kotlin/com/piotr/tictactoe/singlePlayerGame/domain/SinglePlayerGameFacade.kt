@@ -1,7 +1,7 @@
 package com.piotr.tictactoe.singlePlayerGame.domain
 
 import com.piotr.tictactoe.core.converter.Converter
-import com.piotr.tictactoe.core.converter.Converter1
+import com.piotr.tictactoe.core.converter.ConverterWithArgs
 import com.piotr.tictactoe.gameMove.domain.GameMoveFacade
 import com.piotr.tictactoe.gameMove.domain.model.FieldMark
 import com.piotr.tictactoe.gameMove.dto.AllGameMovesDto
@@ -29,12 +29,12 @@ class SinglePlayerGameFacade @Autowired constructor(
   private val singlePlayerGameHelper: SinglePlayerGameHelper,
   private val singlePlayerGameChecker: SinglePlayerGameChecker,
   private val computerMoveLogic: ComputerMoveLogic,
-  private val singlePlayerDtoMapperGame: Converter1<SinglePlayerGame, SinglePlayerGameDto, AllGameMovesDto>,
+  private val singlePlayerDtoMapperGame: ConverterWithArgs<SinglePlayerGame, SinglePlayerGameDto, AllGameMovesDto>,
   private val singlePlayerDetailsDtoMapperSinglePlayer: Converter<SinglePlayerGame, SinglePlayerGameResultDto>
 ) {
 
   fun createSinglePlayerGame(difficultyLevel: DifficultyLevel): SinglePlayerGameDto {
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
     val startingPlayer = singlePlayerGameHelper.getStartingPlayer()
     val game = singlePlayerGameHelper.createSinglePlayerGame(player.id, difficultyLevel, startingPlayer)
         .let(singlePlayerGameRepository::save)
@@ -49,7 +49,7 @@ class SinglePlayerGameFacade @Autowired constructor(
 
   fun setPlayerMoveAndGetComputerMove(gameId: Long, fieldIndex: Int): SinglePlayerGameDto {
     val game = singlePlayerGameRepository.findGameByGameId(gameId)
-    val player = userFacade.getLoggedUser()
+    val player = userFacade.getLoggedInUser()
 
     singlePlayerGameChecker.checkIfGameIsOnGoing(game)
     singlePlayerGameChecker.checkIfPlayerMatch(game, player)
