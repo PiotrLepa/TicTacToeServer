@@ -59,7 +59,7 @@ class OAuth2ServerConfig @Autowired constructor(
     private const val SCOPE_READ = "read"
     private const val SCOPE_WRITE = "write"
 
-    private const val ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 // 1 hour
-    private const val REFRESH_TOKEN_VALIDITY_SECONDS = 24 * 60 * 60 // 1 day
+    private const val ACCESS_TOKEN_VALIDITY_SECONDS = 180
+    private const val REFRESH_TOKEN_VALIDITY_SECONDS = 300
   }
 }
